@@ -1,0 +1,2 @@
+# quick info about project
+

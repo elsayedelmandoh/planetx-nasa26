@@ -1,0 +1,1 @@
+# research notes and observations

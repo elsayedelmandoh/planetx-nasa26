@@ -1,0 +1,17 @@
+.git
+.github
+.venv
+__pycache__
+*.pyc
+.pytest_cache
+.ruff_cache
+.env
+data
+artifacts
+logs
+notebooks
+docs
+tests
+evals/results
+Dockerfile
+.dockerignore
