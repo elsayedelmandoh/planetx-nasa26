@@ -226,10 +226,8 @@ logs/*.log
 # *.zip
 
 
-# # private docs and notes
-docs/.internal/*
-# the team profiles are published, the agent skills and logs stay private
-!docs/.internal/team/
+# # private docs and notes (team profiles included)
+docs/.internal/
 
 # # tools
 # AGENTS.md

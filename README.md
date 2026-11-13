@@ -183,8 +183,6 @@ the team behind planetx-nasa26, built for the 2026 nasa space apps challenge "pl
 | hazem | devops and coding |
 | mohsen | graphics |
 
-per-member notes live in [`docs/.internal/team/`](docs/.internal/team/).
-
 [![github](https://img.shields.io/badge/GitHub-planetx--nasa26-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/elsayedelmandoh/planetx-nasa26)
 [![spaceapps](https://img.shields.io/badge/NASA%20Space%20Apps%202026-0B3D91?style=for-the-badge&logoColor=white)](https://www.spaceappschallenge.org/2026/challenges/planet-x-and-spherex/)
 

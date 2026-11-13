@@ -64,6 +64,8 @@ never simplify away: input validation at trust boundaries, error handling that p
  
 **never delete anything** without explicit user confirmation.
  
+**never change what git ignores.** do not add, remove, comment or uncomment any `.gitignore` entry, and do not move any file or folder into or out of ignored status (`git rm --cached`, `git add -f` on an ignored path, renaming a path across an ignore rule). only do it when the user explicitly asks for that exact change in the current request.
+ 
 **always show first, then act:**
 1. show what you found / what you plan to change
 2. explain the impact
