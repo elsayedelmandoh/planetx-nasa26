@@ -227,7 +227,7 @@ logs/*.log
 
 
 # # private docs and notes
-# docs/00-internal/
+docs/.internal/
 
 # # tools
 # AGENTS.md
