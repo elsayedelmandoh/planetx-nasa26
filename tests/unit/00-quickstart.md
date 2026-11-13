@@ -7,7 +7,7 @@
 **output:** fast assertions, no network, no database.
 
 **structure:**
-- one test file per module, named after it (`test_settings.py`, `test_rag.py`, ...)
+- one test file per module, named after it (`test_settings.py`, `test_coords.py`, ...)
 
 **rules:**
 - a unit test never builds the whole app.
