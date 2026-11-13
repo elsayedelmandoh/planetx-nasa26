@@ -179,6 +179,7 @@ the team behind planetx-nasa26, built for the 2026 nasa space apps challenge "pl
 | elsayed elmandoh | data engineer, research, project lead |
 | youssef | web frontend |
 | mostafa | research |
+| salam | research |
 | hazem | devops and coding |
 | mohsen | graphics |
 
