@@ -98,3 +98,7 @@ why the project looks the way it does. one line per decision, oldest first.
 - 2026-11-13 -- backend stays the existing fastapi app; /api/cutouts is added in src/api/routes.py
   and the server fetches from irsa -- no node relay or cloudflare worker, no browser cors problem --
   the server does all irsa traffic.
+- 2026-11-13 -- supersedes the data/processed/<target>/ entry: precomputed frames (png + json) are
+  committed under web/cache/<target>/ -- data/processed/ stays gitignored, while web/ is already copied
+  into the docker image and served at / by the static mount, so no new route or dockerfile line is
+  needed -- web/ mixes code and generated assets.
