@@ -227,7 +227,9 @@ logs/*.log
 
 
 # # private docs and notes
-docs/.internal/
+docs/.internal/*
+# the team profiles are published, the agent skills and logs stay private
+!docs/.internal/team/
 
 # # tools
 # AGENTS.md

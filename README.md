@@ -1,10 +1,5 @@
 # planetx-nasa26
 
-[![github](https://img.shields.io/badge/GitHub-planetx--nasa26-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/elsayedelmandoh/planetx-nasa26)
-[![spaceapps](https://img.shields.io/badge/NASA%20Space%20Apps%202026-0B3D91?style=for-the-badge&logoColor=white)](https://www.spaceappschallenge.org/2026/challenges/planet-x-and-spherex/)
-[![twitter](https://img.shields.io/badge/X-1DA1F2?style=for-the-badge&logo=x&logoColor=white)](https://x.com/aangpy)
-[![linkedin](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/elsayed-elmandoh-b5849a1b8/)
-
 <!-- screenshots: drop res1.png / res2.png into docs/results/ and uncomment
 <p align="center">
   <img src="docs/results/res1.png" alt="project name - pos results" width="45%">
@@ -177,6 +172,21 @@ contributions are welcome! if you'd like to improve this project, please follow 
 
 ## author
 
+the team behind planetx-nasa26, built for the 2026 nasa space apps challenge "planet x and spherex".
+
+| member | role |
+|---|---|
+| elsayed elmandoh | data engineer, research, project lead |
+| youssef | web frontend |
+| mostafa | research |
+| hazem | devops and coding |
+| mohsen | graphics |
+
+per-member notes live in [`docs/.internal/team/`](docs/.internal/team/).
+
 Elsayed Elmandoh - data engineer
 
-* connect on linkedin and x [linktree](https://linktr.ee/elsayedelmandoh)
+[![github](https://img.shields.io/badge/GitHub-planetx--nasa26-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/elsayedelmandoh/planetx-nasa26)
+[![spaceapps](https://img.shields.io/badge/NASA%20Space%20Apps%202026-0B3D91?style=for-the-badge&logoColor=white)](https://www.spaceappschallenge.org/2026/challenges/planet-x-and-spherex/)
+
+[![linkedin](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/elsayed-elmandoh-b5849a1b8/)
