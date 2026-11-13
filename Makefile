@@ -20,9 +20,9 @@ format:
 test:
 	uv run pytest
 
-# --- eval gate (offline, mock provider) ---
+# --- eval gate (offline benchmark checks) ---
 eval:
-	uv run python -m src.evals.runner --provider mock --gate
+	uv run python -m src.evals.runner --gate
 
 # --- cleanup ---
 clean:

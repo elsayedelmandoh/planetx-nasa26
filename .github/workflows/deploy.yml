@@ -3,40 +3,31 @@ name: deploy
 on:
   push:
     branches: [main]
-    tags: ["v*"]
   workflow_dispatch:
 
-# oidc needs id-token to mint aws credentials, contents to read the repo.
 permissions:
   contents: read
-  id-token: write
 
 jobs:
-  image:
+  space:
     runs-on: ubuntu-latest
+    # skip until the space is configured: repo variable HF_SPACE=<user>/<space>, secret HF_TOKEN (write).
+    if: vars.HF_SPACE != ''
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
 
-      # short lived credentials, no long lived access keys in secrets.
-      # the role trust policy must allow this repo and workflow.
-      - uses: aws-actions/configure-aws-credentials@e1253824e5c10ff9df46874f81ed3ec929e19cfd # v6.3.0
-        with:
-          role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
-          aws-region: ${{ vars.AWS_REGION }}
-
-      # ecr login uses the oidc credentials, the token expires with them.
-      - uses: aws-actions/amazon-ecr-login@aded0d722166a37980e030aa969dda0bfe6b6947 # v2.1.7
-        id: login-ecr
-        with:
-          registry-type: private
-          repository: ${{ vars.IMAGE_NAME || github.event.repository.name }}
-
-      - uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3.12.0
-
-      - uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6.19.2
-        with:
-          context: .
-          push: true
-          tags: |
-            ${{ steps.login-ecr.outputs.repository }}:latest
-            ${{ steps.login-ecr.outputs.repository }}:${{ github.sha }}
+      # hugging face builds the Dockerfile itself; it reads sdk and port from readme frontmatter,
+      # so the frontmatter is added only to the pushed copy and the github readme stays clean.
+      - name: push to hugging face space
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          HF_SPACE: ${{ vars.HF_SPACE }}
+        run: |
+          printf -- '---\ntitle: planetx-nasa26\nsdk: docker\napp_port: 8000\n---\n\n' | cat - README.md > README.tmp
+          mv README.tmp README.md
+          git config user.name "github-actions"
+          git config user.email "github-actions@users.noreply.github.com"
+          git checkout --orphan space
+          git add -A
+          git commit -qm "deploy ${GITHUB_SHA}"
+          git push --force "https://user:${HF_TOKEN}@huggingface.co/spaces/${HF_SPACE}" space:main

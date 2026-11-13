@@ -1,15 +1,33 @@
-# default configuration
-# uncomment and customize sections for your use case
+# default configuration (values only, loaded by src/core/settings.py)
 
-# model:
-#   name: "your-model-name"
-#   version: "v1"
+PROJECT_NAME: planetx-nasa26
 
-# training:
-#   learning_rate: 1e-4
-#   batch_size: 32
-#   num_epochs: 10
+# spherex data release to read (qr2 now; qr3, dr1 later)
+DATA_RELEASE: qr2
 
-# inference:
-#   temperature: 0.7
-#   max_new_tokens: 256
+# field of view choices for the cutout, in arcminutes
+FOV_PRESETS_ARCMIN: [2, 5, 15, 30]
+DEFAULT_FOV_ARCMIN: 5
+
+# the 5 benchmark targets from the brief (docs/requirements/01-quickinfo.md section 4)
+TARGETS:
+  - name: WISE 0855
+    ra_deg: 133.795129
+    dec_deg: -7.245147
+    kind: fast-moving brown dwarf
+  - name: Barnard's Star
+    ra_deg: 269.452075
+    dec_deg: 4.693364
+    kind: high proper-motion red dwarf
+  - name: Epsilon Indi B
+    ra_deg: 331.044147
+    dec_deg: -56.782844
+    kind: binary brown dwarfs
+  - name: RW Aurigae
+    ra_deg: 76.956375
+    dec_deg: 30.401389
+    kind: variable star
+  - name: R Draconis
+    ra_deg: 248.167625
+    dec_deg: 66.755000
+    kind: variable star

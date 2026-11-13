@@ -13,7 +13,7 @@ COPY --from=ghcr.io/astral-sh/uv:0.11.2 /uv /usr/local/bin/uv
 COPY pyproject.toml README.md ./
 COPY src/ ./src/
 COPY configs/ ./configs/
-COPY prompts/ ./prompts/
+COPY web/ ./web/
 
 RUN uv sync --no-dev
 

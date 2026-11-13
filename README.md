@@ -1,60 +1,48 @@
-# base-product
+# planetx-nasa26
 
-boilerplate for llm apps (agent / rag) that ship as a running product.
+public web tool to blink spherex sky images over time, so anyone can spot moving and variable objects. built for the 2026 nasa space apps challenge "planet x and spherex".
 
-one repo per project: copy this folder, rename, set `.env`, implement, deploy.
+## run
 
-## start a new project
+1. `cp .env.example .env`
+2. `uv sync`
+3. `make serve`
+4. open http://localhost:8000/
 
-1. copy this folder into a new repo, set `PROJECT_NAME` in `.env`.
-2. `cp .env.example .env`, pick `PROVIDER` (`openai`, `gemini`, `local`, `mock`), add the matching key.
-3. `uv sync --all-extras`
-4. implement in this order: `src/llm/provider.py` -> `src/llm/openai_compat.py` -> `src/api/routes.py` -> `src/evals/runner.py`.
-5. write expected answers in `evals/golden/golden.jsonl`.
-6. `make test` then `make eval` (the eval gate) then `make serve`.
+`make test` runs the tests, `make eval` runs the offline gate.
 
 ## what goes where
 
 | path | holds |
 |---|---|
-| `src/llm/` | the one provider interface, its backends, prompt loading, cost tracking |
-| `src/rag/` | chunking and similarity search over your documents |
-| `src/api/` | fastapi app, routes, request and response models |
+| `web/` | the frontend: `index.html` (ra/dec input, fov, presets, blink player) |
+| `src/api/` | fastapi app and routes, serves `web/` at `/` |
 | `src/core/` | settings loader (`configs/*.yaml` + `.env`), logging |
-| `src/evals/` | eval code: golden set runner, pass-rate / latency gate, metrics |
-| `src/utils/` | shared helpers |
-| `prompts/` | system prompts, templates, few-shot examples, version controlled |
-| `data/` | raw and processed documents that feed the knowledge store |
-| `evals/golden/` | the fixed split: prompt plus expected answer, one case per line |
-| `evals/results/` | eval reports, gitignored |
-| `tests/` | unit, contract, integration. offline by default |
-| `docs/project-definition/` | problem, goal, api contract, decision log |
+| `src/utils/` | coordinate parsing, data acquisition and processing helpers |
+| `src/evals/` | offline eval gate runner (stub for now) |
+| `configs/` | values: data release, fov presets, benchmark targets |
+| `data/` | `raw/` downloads (not shipped), `processed/` cached cutouts, `samples/` small fixtures |
+| `evals/` | benchmark notes and figures |
+| `notebooks/` | exploration: data acquisition, eda, data processing |
+| `tests/` | unit, integration. offline by default |
+| `docs/project-definition/` | problem, goal, architecture, api contract, decision log |
 | `docs/.internal/` | agent plans and notes, not product docs |
 | `.github/workflows/` | ci (lint, test, eval gate) and image push |
 
-## where things go
+every folder holds an `00-quickstart.md` with the details for that folder.
 
-- `data/` inputs
-- `configs/` values (hyperparams, model names, thresholds), versioned
-- `src/core/` loader for configs and `.env`
-- `src/` code
-- `evals/` eval data and results (golden, predictions, results, figures, benchmarks)
-- `artifacts/` model outputs (preparing, training, exports)
-- `logs/` runtime logs
+## benchmark targets
 
-every folder holds an `00-quickstart.md` with the same details for that folder.
+| target | ra (deg) | dec (deg) | kind |
+|---|---:|---:|---|
+| WISE 0855 | 133.795129 | -7.245147 | fast-moving brown dwarf |
+| Barnard's Star | 269.452075 | +4.693364 | high proper-motion red dwarf |
+| Epsilon Indi B | 331.044147 | -56.782844 | binary brown dwarfs |
+| RW Aurigae | 76.956375 | +30.401389 | variable star |
+| R Draconis | 248.167625 | +66.755000 | variable star |
 
-## rules
+values live in `configs/default.yaml` and load as preset buttons from `GET /api/targets`.
 
-- one provider interface, in `src/llm/provider.py`: `complete(...)` and `embed(...)`. api and local backends differ only by base url and model name.
-- no network in tests. everything offline goes through `src/llm/mock.py`.
-- the golden set is the quality contract. add a case per bug you fix.
-- `.env` stays out of git. keys live in env vars, never in code.
-- no new dependency without a reason.
+## data credit
 
-## legacy folders
-
-ml leftovers from the old template, safe to delete when you start a project:
-`src/models/`, `src/inference/`, `src/utils/data_*.py`,
-`notebooks/05-model-training/` .. `notebooks/07-model-inference/`,
-`evals/01-evaluation.md` .. `evals/04-results-analysis.md`, `docs/deliverables/`.
+spherex data: NASA / JPL-Caltech / IPAC via IRSA. doi: [10.26131/IRSA652](https://doi.org/10.26131/IRSA652).

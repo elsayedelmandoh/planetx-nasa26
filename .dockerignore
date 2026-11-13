@@ -6,12 +6,10 @@ __pycache__
 .pytest_cache
 .ruff_cache
 .env
-data
-artifacts
+data/raw
 logs
 notebooks
 docs
 tests
-evals/results
 Dockerfile
 .dockerignore

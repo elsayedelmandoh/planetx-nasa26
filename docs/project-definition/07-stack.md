@@ -11,7 +11,8 @@ ml, dl, nlp, genai, agentic ai
 - tests: tests/
 - notebooks: notebooks/
 - docs: docs/
-- data layout: data/raw, data/processed, data/samples, artifacts/training/models, evals/predictions, artifacts/preparing/vectorizers
+- frontend: web/ (static html served by fastapi)
+- data layout: data/raw (downloads), data/processed (cached cutouts), data/samples
 - project manager: gemini 3.5 thinking
 - ide: vscode (wsl2)
 - architect: claude 4.6 opus

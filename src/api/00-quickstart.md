@@ -1,22 +1,21 @@
 # src/api quickstart
 
-**propose:** expose the product over http.
+**propose:** expose the sky blink tool over http.
 
-**input:** json requests from clients.
+**input:** http requests from the browser.
 
-**output:** json responses, request ids, access logs.
+**output:** json responses and the static web frontend.
 
 **structure:**
-- `app.py` -- fastapi app, lifespan wiring (provider, client, knowledge store), request-id middleware, error handling
-- `routes.py` -- the endpoints and their request and response models
+- `app.py` -- fastapi app, includes the router, mounts `settings.WEB_DIR` at `/`
+- `routes.py` -- the endpoints
 
-**suggested endpoints:**
-- `GET /health` -- is it up, which provider and model
-- `POST /v1/chat` -- one completion, returns text plus usage and cost
-- `POST /v1/knowledge/documents` -- ingest documents into the store
-- `POST /v1/knowledge/query` -- answer from retrieved context, returns citations
+**endpoints:**
+- `GET /health` -- is it up, which data release
+- `GET /api/targets` -- the 5 benchmark targets from `configs/default.yaml`
+- `GET /api/cutouts` -- planned: multi-epoch cutouts for ra, dec, fov
 
 **rules:**
-- every response carries a request id.
-- the api never calls a provider directly, it goes through `src/llm/client.py`.
+- api routes are registered before the static mount so they win over files in `web/`.
 - optional inbound api key via `INBOUND_API_KEY` in `.env`.
+- every endpoint is documented in `docs/project-definition/12-api.md`.

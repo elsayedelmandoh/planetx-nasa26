@@ -1,14 +1,11 @@
 # data directory
 
-**propose:** central store for input data only -- raw sources through processed splits.
+**propose:** central store for input data only -- downloaded fits and cached cutouts.
 
-**input:** external datasets, api responses, user uploads, generated samples.
+**input:** spherex fits from irsa / s3, small fixtures.
 
-**output:** processed datasets ready for training and evaluation.
+**output:** cached, aligned cutouts the web tool serves.
 
 **pipeline map:**
-- `raw/` -> `processed/` -> `train/`, `val/`, `test/`
-- `samples/` -> mock / small-scale test data
-- `curated/`, `instructions/` -> reference / label sets
-
-> model outputs (weights, checkpoints, predictions) live in **`artifacts/`**.
+- `raw/` -> `processed/` (downloaded fits -> reprojected cutouts per epoch)
+- `samples/` -> tiny fits fixtures for offline tests

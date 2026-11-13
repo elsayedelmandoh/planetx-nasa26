@@ -1,16 +1,15 @@
 # src/evals quickstart
 
-**propose:** score the product against the golden set and gate on it.
+**propose:** check the tool against the 5 benchmark targets and gate ci on it.
 
-**input:** `evals/golden/golden.jsonl`, a provider from `src/llm/`.
+**input:** cached cutouts for the benchmark targets (planned).
 
-**output:** a report in `evals/results/` and a pass or fail exit code.
+**output:** a report in `evals/benchmarks/` and a pass or fail exit code.
 
 **structure:**
-- `runner.py` -- load the golden set, run every case, compare, summarize (pass rate, p50/p95 latency, tokens, cost), write the report, exit 1 when a threshold is missed
-- `metrics.py` -- alignment and loss metric stubs (ml leftover)
+- `runner.py` -- parses `--gate`. stub for now: prints "no benchmark checks yet" and exits 0
 
 **rules:**
-- the ci gate runs against the mock provider so it is deterministic and free. a scheduled job runs it against the real provider.
-- thresholds are settings, not code. set them in `.env` once you know your bar.
-- one golden case per bug you fix.
+- the gate runs offline so ci stays deterministic and free.
+- until the runner has a real assertion, `make eval` is a false green.
+- thresholds are settings, not code.

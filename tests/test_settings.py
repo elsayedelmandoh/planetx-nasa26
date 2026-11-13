@@ -9,15 +9,13 @@ def test_create_required_directories_creates_all_paths(tmp_path) -> None:
 
     expected = [
         settings.DATA_DIR,
-        settings.ARTIFACTS_DIR,
         settings.LOGS_DIR,
         settings.FIGURES_DIR,
         settings.EVALS_DIR,
-        settings.PREDICTIONS_DIR,
     ]
     for path in expected:
         assert (tmp_path / path).exists(), f"{path} not created"
-    assert settings.PREDICTIONS_DIR == tmp_path / "evals" / "predictions"
+    assert settings.FIGURES_DIR == tmp_path / "evals" / "figures"
 
 
 def test_env_overrides_yaml_value(tmp_path, monkeypatch) -> None:

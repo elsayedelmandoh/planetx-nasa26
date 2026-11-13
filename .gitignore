@@ -218,15 +218,6 @@
 # *.pt
 
 # --- generated outputs, never committed ---
-# model outputs, fit artifacts and exports
-artifacts/preparing/tokenizers/*
-artifacts/preparing/vectorizers/*
-artifacts/training/checkpoints/*
-artifacts/training/models/*
-artifacts/exports/*
-# eval reports are build output
-evals/results/*
-evals/predictions/*
 # inputs and their transformed copies
 data/raw/*
 data/processed/*

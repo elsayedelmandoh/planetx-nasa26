@@ -201,7 +201,6 @@ jupyter notebook
 - data: `data/` (inputs only: raw, processed, splits)
 - config values: `configs/*.yaml` (non-secret, versioned). secrets: `.env`
 - eval data + results: `evals/`. eval code: `src/evals/`
-- model outputs (tokenizers, checkpoints, exports): `artifacts/`
 - project docs: `docs/project-definition/`. plan + lessons: `docs/.internal/agent-workflow/`
 
 **code conventions (non-negotiable):**
@@ -210,7 +209,7 @@ jupyter notebook
   from src.core.settings import settings
   from src.utils.helpers import *
   ```
-- never hardcode paths, variables, or thresholds. use `src/core/settings.py` (`settings.DATA_DIR`, `ARTIFACTS_DIR`, `EVALS_DIR`, `PREDICTIONS_DIR`, `FIGURES_DIR`, `LOGS_DIR`, `CONFIGS_DIR`) and `src/utils/helpers.py`.
+- never hardcode paths, variables, or thresholds. use `src/core/settings.py` (`settings.DATA_DIR`, `EVALS_DIR`, `FIGURES_DIR`, `LOGS_DIR`, `CONFIGS_DIR`, `WEB_DIR`) and `src/utils/helpers.py`.
 - one home per concern: configs/ = values, src/core/ = loader code. evals/ = eval data, src/evals/ = eval code. do not add a second location.
 ---
 
@@ -220,20 +219,15 @@ jupyter notebook
 project/
 ├── src/
 │   ├── core/          settings.py (loads configs/ + .env), logger.py
-│   ├── api/           app.py, routes.py
-│   ├── llm/           provider, client, mock, openai_compat, prompts
-│   ├── rag/           store.py
-│   ├── models/        build.py, model_1.py
-│   ├── inference/     generate.py
-│   ├── evals/         runner.py, metrics.py
-│   └── utils/         helpers.py, data_acquisition.py, data_processing.py, eda.py
+│   ├── api/           app.py (serves web/ at /), routes.py
+│   ├── evals/         runner.py
+│   └── utils/         helpers.py, data_acquisition.py, data_processing.py
+├── web/               index.html (frontend)
 ├── configs/           default.yaml (values, not code)
-├── data/              raw, processed, train, val, test, samples, curated, instructions
-├── evals/             golden/, results/, figures/, benchmarks/, predictions/
-├── artifacts/         preparing/, training/, exports/ (model outputs only)
-├── prompts/           system/, few-shot/, templates/
-├── notebooks/         01-data-acquisition ... 07-model-inference
-├── tests/             unit/, contract/, integration/
+├── data/              raw, processed, samples
+├── evals/             figures/, benchmarks/
+├── notebooks/         01-data-acquisition, 02-eda, 03-data-processing
+├── tests/             unit/, integration/
 ├── logs/
 ├── docs/
 │   ├── project-definition/   00-quickstart ... 13-decisions (06-architecture, 08-structure)

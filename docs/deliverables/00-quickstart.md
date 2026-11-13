@@ -1,15 +1,5 @@
-# deliverables 
+# deliverables
 
-
-01-proposal/
-
-02-presentation/
+02-presentation/ - 30-second video script and slides for judging
 
 03-video/ if needed
-
-04-patch/ if needed
-
-05-paper/ if needed
-
-06-brochure/ if needed
-

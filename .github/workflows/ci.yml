@@ -33,5 +33,5 @@ jobs:
       - name: test
         run: uv run pytest
 
-      - name: eval gate (offline, deterministic mock provider)
-        run: uv run python -m src.evals.runner --provider mock --gate
+      - name: eval gate (offline benchmark checks)
+        run: uv run python -m src.evals.runner --gate

@@ -1,6 +1,6 @@
 """propose: application entrypoint -- run this to execute the full project lifecycle.
-input: .env, configs/default.yaml, trained model from artifacts/training/models/.
-output: project runs, user receives results and visualizations."""
+input: .env, configs/default.yaml.
+output: prints project name and environment. the web tool runs via `make serve`."""
 
 from src.core.settings import settings
 

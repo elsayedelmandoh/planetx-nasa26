@@ -1,19 +1,15 @@
 # evals quickstart
 
-**propose:** hold the product to a fixed set of expected answers.
+**propose:** hold the tool to the 5 benchmark targets from the brief.
 
-**input:** `golden/golden.jsonl` plus a provider from `src/llm/`.
+**input:** cached cutouts for the targets, run by `src/evals/runner.py`.
 
 **output:** a report in `results/`, and a gate result for ci.
 
 **structure:**
-- `golden/` -- the fixed split, one case per line: id, prompt, expected answer, match rule
-- `results/` -- eval reports, gitignored
-- `figures/` -- charts from the reports, committed
-- `benchmarks/` -- benchmark configs and notes
-- `predictions/` -- model outputs from inference runs
+- `figures/` -- blink frames and difference images from the reports, committed
+- `benchmarks/` -- benchmark target notes and expected behaviour
 
 **rules:**
-- a golden case is a promise about behaviour. changing an expected answer needs a reason in the commit.
-- add a case for every bug the product had.
-- match rules: `contains` (default), `exact`, `json`.
+- a benchmark check is a promise about behaviour. changing an expected result needs a reason in the commit.
+- add a check for every bug the tool had.

@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>planetx-nasa26: spherex sky blink</title>
+  <style>
+    body { font-family: system-ui, sans-serif; margin: 0 auto; max-width: 900px; padding: 1rem; }
+    form, #presets { display: flex; flex-wrap: wrap; gap: .5rem; margin-bottom: 1rem; }
+    canvas { width: 100%; max-width: 600px; aspect-ratio: 1; background: #111; display: block; }
+    footer { margin-top: 2rem; font-size: .85rem; color: #555; }
+  </style>
+</head>
+<body>
+  <h1>spherex sky blink</h1>
+
+  <form id="coords">
+    <label>ra <input id="ra" name="ra" placeholder="133.795 or 08h 55m 10.8s" required></label>
+    <label>dec <input id="dec" name="dec" placeholder="-7.245 or -07d 14m 42.5s" required></label>
+    <label>fov
+      <select id="fov" name="fov">
+        <option value="2">2'</option>
+        <option value="5" selected>5'</option>
+        <option value="15">15'</option>
+        <option value="30">30'</option>
+      </select>
+    </label>
+    <button type="submit">show</button>
+  </form>
+
+  <div id="presets" aria-label="benchmark targets"></div>
+
+  <!-- blink player draws here (features task) -->
+  <canvas id="player" width="600" height="600" aria-label="sky image player"></canvas>
+
+  <footer>
+    data: NASA / JPL-Caltech / IPAC via IRSA.
+    <a href="https://doi.org/10.26131/IRSA652">doi:10.26131/IRSA652</a>
+  </footer>
+
+  <script>
+    const form = document.getElementById("coords");
+    const fields = ["ra", "dec", "fov"].map((id) => document.getElementById(id));
+
+    // read ?ra=&dec=&fov= so the tool is linkable and embeddable
+    const params = new URLSearchParams(location.search);
+    fields.forEach((el) => { if (params.has(el.id)) el.value = params.get(el.id); });
+
+    function writeUrl() {
+      const q = new URLSearchParams(fields.map((el) => [el.id, el.value]));
+      history.replaceState(null, "", "?" + q);
+    }
+
+    form.addEventListener("submit", (e) => { e.preventDefault(); writeUrl(); });
+
+    fetch("/api/targets")
+      .then((r) => r.json())
+      .then((targets) => {
+        const box = document.getElementById("presets");
+        targets.forEach((t) => {
+          const b = document.createElement("button");
+          b.type = "button";
+          b.textContent = t.name;
+          b.title = t.kind;
+          b.onclick = () => { fields[0].value = t.ra_deg; fields[1].value = t.dec_deg; writeUrl(); };
+          box.appendChild(b);
+        });
+      })
+      .catch(() => { document.getElementById("presets").textContent = "presets failed to load"; });
+  </script>
+</body>
+</html>
