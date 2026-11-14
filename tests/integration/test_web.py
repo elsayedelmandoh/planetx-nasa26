@@ -50,6 +50,19 @@ def test_root_contains_mode_control() -> None:
     assert 'value="difference"' in response.text
 
 
+def test_root_contains_detection_legend_labels() -> None:
+    response = client.get("/")
+
+    assert response.status_code == 200
+    for label in (
+        "known high-proper-motion object",
+        "variable source",
+        "unmatched moving candidate",
+        "unmatched residual",
+    ):
+        assert label in response.text
+
+
 def test_root_contains_expected_motion_checkbox_and_legend() -> None:
     response = client.get("/")
 

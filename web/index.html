@@ -12,6 +12,7 @@
     #player-controls { display: flex; flex-wrap: wrap; gap: .5rem .75rem; align-items: center; margin: .5rem 0; max-width: 600px; }
     #player-controls label { display: flex; align-items: center; gap: .35rem; }
     #caption { margin: .25rem 0; min-height: 1.4rem; }
+    #detection-legend { margin: .25rem 0; font-size: .85rem; color: #444; }
     #motion-legend { margin: .25rem 0; font-size: .85rem; color: #444; }
     #marker-legend { margin: .25rem 0; font-size: .85rem; color: #444; }
     #marker-legend[hidden] { display: none; }
@@ -59,6 +60,7 @@
     <label><input type="radio" name="mode" value="difference"> difference</label>
   </div>
   <canvas id="player" width="600" height="600" aria-label="sky image player"></canvas>
+  <p id="detection-legend">legend: <span style="color:#39d353">known high-proper-motion object</span> &middot; <span style="color:#ffa657">variable source</span> &middot; <span style="color:#ff5cf4">unmatched moving candidate</span> &middot; <span style="color:#8b949e">unmatched residual</span></p>
   <p id="no-cache" role="status" aria-live="polite" hidden>no cached frames for this position yet; live queries are not available on this static site</p>
   <p id="diff-note" role="status" aria-live="polite" hidden>no difference frames for this detector yet</p>
   <p id="caption" aria-live="polite"></p>
@@ -174,6 +176,13 @@
     const noCache = document.getElementById("no-cache");
     const diffNote = document.getElementById("diff-note");
     const ARC_MIN_DEG = 1 / 60;
+    // marker circle and legend colours per detection label
+    const LABEL_COLORS = {
+      "known high-proper-motion object": "#39d353",
+      "variable source": "#ffa657",
+      "unmatched moving candidate": "#ff5cf4",
+      "unmatched residual": "#8b949e",
+    };
     let targets = [];
     let frames = [];
     let frameIndex = 0;
@@ -263,19 +272,31 @@
         if (frame.markers) {
           try {
             const markers = await fetchMeta(frame.markers);
-            ctx.font = `${Math.max(10, canvas.width / 45)}px system-ui, sans-serif`;
+            ctx.font = "bold 13px system-ui, sans-serif";
             for (const d of markers.detections || []) {
               const [cx, cy] = toCanvas([d.x, d.y]);
-              const color = d.label === "known high-proper-motion object" ? "#39d353"
-                : d.label === "variable source" ? "#58a6ff" : "#ff7b72";
+              const color = LABEL_COLORS[d.label] || LABEL_COLORS["unmatched residual"];
+              const radius = canvas.width / 70;
               ctx.strokeStyle = color;
-              ctx.fillStyle = color;
               ctx.lineWidth = Math.max(1.5, canvas.width / 400);
               ctx.beginPath();
-              ctx.arc(cx, cy, canvas.width / 70, 0, 2 * Math.PI);
+              ctx.arc(cx, cy, radius, 0, 2 * Math.PI);
               ctx.stroke();
               const text = d.label + (d.ml_score !== undefined ? ` (ml ${Number(d.ml_score).toFixed(2)})` : "");
-              ctx.fillText(text, cx + canvas.width / 60, cy + 4);
+              const pad = 4;
+              const boxH = 13 + 2 * pad;
+              const textW = ctx.measureText(text).width;
+              const boxW = textW + 2 * pad;
+              let tx = cx + radius + 6;
+              if (tx + boxW > canvas.width) tx = cx - radius - 6 - boxW;
+              let ty = cy - boxH / 2;
+              ty = Math.max(0, Math.min(canvas.height - boxH, ty));
+              ctx.fillStyle = "rgba(0,0,0,0.75)";
+              ctx.fillRect(tx, ty, boxW, boxH);
+              ctx.fillStyle = "#ffffff";
+              ctx.textBaseline = "middle";
+              ctx.fillText(text, tx + pad, ty + boxH / 2);
+              ctx.textBaseline = "alphabetic";
             }
             markerLegend.hidden = false;
             fetch("cache/ml_metrics.json")
