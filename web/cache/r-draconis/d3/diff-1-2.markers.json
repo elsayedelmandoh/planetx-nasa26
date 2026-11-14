@@ -3,18 +3,18 @@
     {
       "x": 26.0,
       "y": 17.0,
-      "label": "unmatched moving candidate",
       "peak_sigma": 8.0415731053516,
       "sign": "dipole",
-      "ml_score": 1.0
+      "label": "unmatched moving candidate",
+      "ml_score": 0.97
     },
     {
       "x": 27.75,
       "y": 18.5,
-      "label": "unmatched moving candidate",
       "peak_sigma": 15.805495390850776,
       "sign": "dipole",
-      "ml_score": 0.93
+      "label": "unmatched moving candidate",
+      "ml_score": 0.82
     },
     {
       "x": 24.256880733944953,
@@ -22,7 +22,7 @@
       "label": "unmatched residual",
       "peak_sigma": 54.63140537896177,
       "sign": 1,
-      "ml_score": 0.44
+      "ml_score": 0.75
     },
     {
       "x": 15.5,
@@ -30,7 +30,7 @@
       "label": "unmatched residual",
       "peak_sigma": 7.5309425782352895,
       "sign": 1,
-      "ml_score": 1.0
+      "ml_score": 0.99
     },
     {
       "x": 16.5,
@@ -38,7 +38,7 @@
       "label": "unmatched residual",
       "peak_sigma": 9.580364037333103,
       "sign": 1,
-      "ml_score": 1.0
+      "ml_score": 0.96
     },
     {
       "x": 28.818181818181817,
@@ -46,7 +46,7 @@
       "label": "unmatched residual",
       "peak_sigma": 13.712137341312005,
       "sign": 1,
-      "ml_score": 1.0
+      "ml_score": 0.94
     },
     {
       "x": 24.5,
@@ -54,7 +54,7 @@
       "label": "unmatched residual",
       "peak_sigma": 11.758557658845595,
       "sign": 1,
-      "ml_score": 0.14
+      "ml_score": 0.96
     },
     {
       "x": 20.5,
@@ -62,7 +62,7 @@
       "label": "unmatched residual",
       "peak_sigma": 6.438341085950417,
       "sign": 1,
-      "ml_score": 0.94
+      "ml_score": 0.72
     },
     {
       "x": 24.16842105263158,
@@ -78,9 +78,10 @@
       "label": "unmatched residual",
       "peak_sigma": 7.951771258207236,
       "sign": -1,
-      "ml_score": 0.11
+      "ml_score": 0.43
     }
   ],
   "sigma": 0.18204453456401823,
-  "method": "rule-based: 5-sigma threshold, dipole pairing, proper-motion match"
+  "n_gaia_stars": 50000,
+  "method": "rule-based: 5-sigma threshold, dipole pairing, proper-motion match, gaia dr3 cross-match"
 }

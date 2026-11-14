@@ -5,21 +5,24 @@
       "y": 24.0,
       "label": "variable source",
       "peak_sigma": 5.755244696045514,
-      "sign": 1
+      "sign": 1,
+      "ml_score": 0.14
     },
     {
       "x": 2.5,
       "y": 15.0,
       "label": "unmatched residual",
       "peak_sigma": 5.894816497926112,
-      "sign": -1
+      "sign": -1,
+      "ml_score": 0.14
     },
     {
       "x": 43.0,
       "y": 35.0,
       "label": "unmatched residual",
       "peak_sigma": 10.91262565317769,
-      "sign": -1
+      "sign": -1,
+      "ml_score": 0.78
     }
   ],
   "sigma": 0.018603509590029717,

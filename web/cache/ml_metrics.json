@@ -1,10 +1,10 @@
 {
   "model": "GradientBoostingClassifier",
-  "n_train": 352,
-  "n_test": 88,
-  "recall": 0.9545,
-  "false_positive_rate": 0.0,
-  "roc_auc": 0.9892,
-  "trained_on": "synthetic movers injected into real spherex dr1 difference images",
+  "n_train": 864,
+  "n_test": 216,
+  "recall": 0.9352,
+  "false_positive_rate": 0.0463,
+  "roc_auc": 0.992,
+  "trained_on": "synthetic movers injected into real spherex dr1 difference images; negatives include real static-star residuals (gaia dr3)",
   "note": "scores rank candidates; they are not discoveries"
 }

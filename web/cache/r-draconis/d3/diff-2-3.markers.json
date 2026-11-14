@@ -6,9 +6,10 @@
       "label": "variable source",
       "peak_sigma": 34.71085411388966,
       "sign": -1,
-      "ml_score": 0.0
+      "ml_score": 0.01
     }
   ],
   "sigma": 0.7213995966374873,
-  "method": "rule-based: 5-sigma threshold, dipole pairing, proper-motion match"
+  "n_gaia_stars": 50000,
+  "method": "rule-based: 5-sigma threshold, dipole pairing, proper-motion match, gaia dr3 cross-match"
 }

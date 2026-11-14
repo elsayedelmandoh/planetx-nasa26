@@ -5,7 +5,8 @@
       "y": 23.523809523809526,
       "peak_sigma": 36.53397035249782,
       "sign": "dipole",
-      "label": "known high-proper-motion object"
+      "label": "known high-proper-motion object",
+      "ml_score": 1.0
     }
   ],
   "sigma": 0.028455841666460036,

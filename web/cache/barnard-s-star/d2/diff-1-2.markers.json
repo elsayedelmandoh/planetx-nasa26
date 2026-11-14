@@ -5,126 +5,144 @@
       "y": 1.8333333333333335,
       "peak_sigma": 109.23141597671413,
       "sign": "dipole",
-      "label": "unmatched moving candidate"
+      "label": "unmatched moving candidate",
+      "ml_score": 0.89
     },
     {
       "x": 38.5,
       "y": 3.5,
       "peak_sigma": 6.39420916711344,
       "sign": "dipole",
-      "label": "unmatched moving candidate"
+      "label": "unmatched moving candidate",
+      "ml_score": 0.23
     },
     {
       "x": 31.65,
       "y": 6.0,
       "peak_sigma": 30.576080716201837,
       "sign": "dipole",
-      "label": "unmatched moving candidate"
+      "label": "unmatched moving candidate",
+      "ml_score": 0.97
     },
     {
       "x": 37.875,
       "y": 13.375,
       "peak_sigma": 36.39987994671098,
       "sign": "dipole",
-      "label": "unmatched moving candidate"
+      "label": "unmatched moving candidate",
+      "ml_score": 0.87
     },
     {
       "x": 3.25,
       "y": 14.5,
       "peak_sigma": 25.683635133512592,
       "sign": "dipole",
-      "label": "unmatched moving candidate"
+      "label": "unmatched moving candidate",
+      "ml_score": 0.81
     },
     {
       "x": 42.0,
       "y": 15.5,
       "peak_sigma": 12.09621274240004,
       "sign": "dipole",
-      "label": "unmatched moving candidate"
+      "label": "unmatched moving candidate",
+      "ml_score": 0.48
     },
     {
       "x": 28.5,
       "y": 35.08333333333333,
       "peak_sigma": 29.032439922483725,
       "sign": "dipole",
-      "label": "unmatched moving candidate"
+      "label": "unmatched moving candidate",
+      "ml_score": 0.78
     },
     {
       "x": 4.791666666666666,
       "y": 36.875,
       "peak_sigma": 37.527234197626605,
       "sign": "dipole",
-      "label": "unmatched moving candidate"
+      "label": "unmatched moving candidate",
+      "ml_score": 0.98
     },
     {
       "x": 25.458333333333336,
       "y": 40.125,
       "peak_sigma": 455.3640889744312,
       "sign": "dipole",
-      "label": "unmatched moving candidate"
+      "label": "unmatched moving candidate",
+      "ml_score": 0.95
     },
     {
       "x": 36.33333333333333,
       "y": 40.91666666666667,
       "peak_sigma": 32.71891052069025,
       "sign": "dipole",
-      "label": "unmatched moving candidate"
+      "label": "unmatched moving candidate",
+      "ml_score": 0.91
     },
     {
       "x": 21.57142857142857,
       "y": 45.83333333333333,
       "peak_sigma": 73.79564429549694,
       "sign": "dipole",
-      "label": "unmatched moving candidate"
+      "label": "unmatched moving candidate",
+      "ml_score": 0.95
     },
     {
       "x": 35.75,
       "y": 46.5,
       "peak_sigma": 27.011714610954606,
       "sign": "dipole",
-      "label": "unmatched moving candidate"
+      "label": "unmatched moving candidate",
+      "ml_score": 0.93
     },
     {
       "x": 17.125,
       "y": 47.875,
       "peak_sigma": 266.7261033057359,
       "sign": "dipole",
-      "label": "unmatched moving candidate"
+      "label": "unmatched moving candidate",
+      "ml_score": 0.9
     },
     {
       "x": 26.5,
       "y": 4.0,
       "label": "unmatched residual",
       "peak_sigma": 6.846180945278971,
-      "sign": 1
+      "sign": 1,
+      "ml_score": 0.82
     },
     {
       "x": 37.5,
       "y": 15.0,
       "label": "unmatched residual",
       "peak_sigma": 14.043441725379907,
-      "sign": 1
+      "sign": 1,
+      "ml_score": 0.71
     },
     {
       "x": 42.5,
       "y": 17.0,
       "label": "unmatched residual",
       "peak_sigma": 7.024582994146161,
-      "sign": 1
+      "sign": 1,
+      "ml_score": 0.16
     },
     {
       "x": 21.425,
       "y": 27.5625,
       "label": "unmatched residual",
       "peak_sigma": 231.8675998376002,
-      "sign": 1
+      "sign": 1,
+      "ml_score": 0.69
     },
     {
       "x": 27.015873015873016,
       "y": 19.428571428571427,
       "label": "unmatched residual",
       "peak_sigma": 240.13637091813467,
-      "sign": -1
+      "sign": -1,
+      "ml_score": 0.68
     }
   ],
   "sigma": 0.0247035696208477,

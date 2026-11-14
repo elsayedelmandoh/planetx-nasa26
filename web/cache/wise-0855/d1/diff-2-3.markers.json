@@ -5,56 +5,64 @@
       "y": 8.642857142857142,
       "label": "unmatched moving candidate",
       "peak_sigma": 69.49360852246694,
-      "sign": "dipole"
+      "sign": "dipole",
+      "ml_score": 0.84
     },
     {
       "x": 2.4,
       "y": 14.883333333333333,
       "label": "unmatched moving candidate",
       "peak_sigma": 95.15390593288312,
-      "sign": "dipole"
+      "sign": "dipole",
+      "ml_score": 0.96
     },
     {
       "x": 43.3,
       "y": 34.55,
       "label": "unmatched moving candidate",
       "peak_sigma": 56.540685824640725,
-      "sign": "dipole"
+      "sign": "dipole",
+      "ml_score": 0.85
     },
     {
       "x": 47.0625,
       "y": 39.9375,
       "label": "unmatched moving candidate",
       "peak_sigma": 38.49495344710911,
-      "sign": "dipole"
+      "sign": "dipole",
+      "ml_score": 0.81
     },
     {
       "x": 0.5,
       "y": 39.0,
       "label": "unmatched moving candidate",
       "peak_sigma": 21.617612624717353,
-      "sign": "dipole"
+      "sign": "dipole",
+      "ml_score": 0.89
     },
     {
       "x": 23.625,
       "y": 46.0,
       "label": "unmatched moving candidate",
       "peak_sigma": 17.627757696600685,
-      "sign": "dipole"
+      "sign": "dipole",
+      "ml_score": 0.98
     },
     {
       "x": 31.0,
       "y": 6.285714285714286,
       "label": "unmatched residual",
       "peak_sigma": 24.117128185958887,
-      "sign": -1
+      "sign": -1,
+      "ml_score": 0.52
     },
     {
       "x": 25.0,
       "y": 24.0,
       "label": "variable source",
       "peak_sigma": 5.456736982879793,
-      "sign": -1
+      "sign": -1,
+      "ml_score": 0.3
     }
   ],
   "sigma": 0.007558427605032921,

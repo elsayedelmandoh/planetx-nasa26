@@ -5,91 +5,104 @@
       "y": 6.666666666666666,
       "label": "unmatched moving candidate",
       "peak_sigma": 16.21814869691853,
-      "sign": "dipole"
+      "sign": "dipole",
+      "ml_score": 0.79
     },
     {
       "x": 17.0,
       "y": 7.5,
       "label": "unmatched moving candidate",
       "peak_sigma": 18.024590157610028,
-      "sign": "dipole"
+      "sign": "dipole",
+      "ml_score": 0.54
     },
     {
       "x": 26.5,
       "y": 8.25,
       "label": "unmatched moving candidate",
       "peak_sigma": 47.45965211605602,
-      "sign": "dipole"
+      "sign": "dipole",
+      "ml_score": 0.47
     },
     {
       "x": 44.0,
       "y": 9.5,
       "label": "unmatched moving candidate",
       "peak_sigma": 10.42904568995852,
-      "sign": "dipole"
+      "sign": "dipole",
+      "ml_score": 0.29
     },
     {
       "x": 2.446428571428571,
       "y": 15.214285714285715,
       "label": "unmatched moving candidate",
       "peak_sigma": 119.15528278817905,
-      "sign": "dipole"
+      "sign": "dipole",
+      "ml_score": 0.96
     },
     {
       "x": 26.5,
       "y": 30.5,
       "label": "unmatched moving candidate",
       "peak_sigma": 15.180096781991278,
-      "sign": "dipole"
+      "sign": "dipole",
+      "ml_score": 0.23
     },
     {
       "x": 43.075,
       "y": 35.1,
       "label": "unmatched moving candidate",
       "peak_sigma": 197.98472549641426,
-      "sign": "dipole"
+      "sign": "dipole",
+      "ml_score": 0.95
     },
     {
       "x": 47.36666666666667,
       "y": 39.8,
       "label": "unmatched moving candidate",
       "peak_sigma": 110.0076262757246,
-      "sign": "dipole"
+      "sign": "dipole",
+      "ml_score": 0.86
     },
     {
       "x": 16.0,
       "y": 43.5,
       "label": "unmatched moving candidate",
       "peak_sigma": 7.0392700466747025,
-      "sign": "dipole"
+      "sign": "dipole",
+      "ml_score": 0.28
     },
     {
       "x": 23.5,
       "y": 45.75,
       "label": "unmatched moving candidate",
       "peak_sigma": 19.37912837828839,
-      "sign": "dipole"
+      "sign": "dipole",
+      "ml_score": 0.5
     },
     {
       "x": 25.5,
       "y": 46.5,
       "label": "unmatched moving candidate",
       "peak_sigma": 7.220098382927251,
-      "sign": "dipole"
+      "sign": "dipole",
+      "ml_score": 0.05
     },
     {
       "x": 28.4,
       "y": 8.8,
       "label": "unmatched residual",
       "peak_sigma": 70.83691478421785,
-      "sign": -1
+      "sign": -1,
+      "ml_score": 0.96
     },
     {
       "x": 25.0,
       "y": 25.0,
       "label": "variable source",
       "peak_sigma": 13.928845336380546,
-      "sign": -1
+      "sign": -1,
+      "ml_score": 0.07
     }
   ],
   "sigma": 0.008144010391831397,
