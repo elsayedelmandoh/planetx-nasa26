@@ -156,7 +156,10 @@ values live in `configs/default.yaml` and load as preset buttons from `GET /api/
 
 ## data credit
 
-spherex data: NASA / JPL-Caltech / IPAC via IRSA. doi: [10.26131/IRSA652](https://doi.org/10.26131/IRSA652).
+spherex data: nasa / jpl-caltech / ipac via the nasa/ipac infrared science archive (irsa).
+
+- spherex dr1 doi: [10.26131/IRSA678](https://doi.org/10.26131/IRSA678)
+- spherex qr3 doi: [10.26131/IRSA662](https://doi.org/10.26131/IRSA662)
 
 ## contributing
 
