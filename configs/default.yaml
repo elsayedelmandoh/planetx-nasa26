@@ -14,46 +14,62 @@ DEFAULT_FOV_ARCMIN: 5
 POS_EPOCH: J2000.0
 
 # the 5 benchmark targets from the brief (docs/requirements/01-quickinfo.md section 4).
-# pm_ra_cosdec_masyr is mu_alpha* = mu_alpha * cos(dec). sources:
-#   WISE 0855: components from Kirkpatrick et al. 2021, ApJS 253, 7 (WISE 20 pc census),
-#     quoted as Luhman & Esplin 2016 in the brief (SIMBAD unreachable when added).
-#   Barnard's Star, Epsilon Indi B, RW Aurigae, R Draconis: Gaia DR3, epoch J2016.0
-#     (Epsilon Indi B: unresolved Ba/Bb, ruwe 4.3; pm matches its host within 70 mas/yr).
-#   RW Aurigae: variable with elevated ruwe; positional frame shift < 0.5 arcsec/dec,
-#     carried for completeness.
+# ra_deg/dec_deg stay the j2000 values shown in the ui; the astrometry block drives
+# the cutout center, propagated to the middle of each run's visits (see src/utils/data_processing.py).
+# pmra_mas_yr is mu_alpha* = mu_alpha * cos(dec). sources: gaia dr3, epoch 2016.0; wise 0855 not in gaia.
 TARGETS:
   - name: WISE 0855
     ra_deg: 133.795129
     dec_deg: -7.245147
     kind: fast-moving brown dwarf
-    pm_ra_cosdec_masyr: -8123.7
-    pm_dec_masyr: 673.2
-    pm_source: "Kirkpatrick et al. 2021, ApJS 253, 7 (SIMBAD unreachable)"
+    astrometry:
+      ra_deg: 133.795129
+      dec_deg: -7.245147
+      pmra_mas_yr: -8120.0
+      pmdec_mas_yr: 670.0
+      epoch: 2010.5
+      source: "luhman and esplin 2016, unverified: simbad was down"
   - name: Barnard's Star
     ra_deg: 269.452075
     dec_deg: 4.693364
     kind: high proper-motion red dwarf
-    pm_ra_cosdec_masyr: -801.55
-    pm_dec_masyr: 10362.39
-    pm_source: "Gaia DR3, epoch J2016.0, source_id 4472832130942575872"
+    astrometry:
+      ra_deg: 269.44850252543836
+      dec_deg: 4.739420051112412
+      pmra_mas_yr: -801.5509783684709
+      pmdec_mas_yr: 10362.394206546573
+      epoch: 2016.0
+      source: "gaia dr3 4472832130942575872"
   - name: Epsilon Indi B
     ra_deg: 331.044147
     dec_deg: -56.782844
     kind: binary brown dwarfs
-    pm_ra_cosdec_masyr: 3981.98
-    pm_dec_masyr: -2466.83
-    pm_source: "Gaia DR3, epoch J2016.0, source_id 6412596012146801152 (G=18.0)"
+    astrometry:
+      ra_deg: 331.07645259656397
+      dec_deg: -56.79381206688221
+      pmra_mas_yr: 3981.97666296105
+      pmdec_mas_yr: -2466.8318147663504
+      epoch: 2016.0
+      source: "gaia dr3 6412596012146801152"
   - name: RW Aurigae
     ra_deg: 76.956375
     dec_deg: 30.401389
     kind: variable star
-    pm_ra_cosdec_masyr: 2.64
-    pm_dec_masyr: -27.40
-    pm_source: "Gaia DR3, epoch J2016.0, source_id 156430822114424576 (G=12.2)"
+    astrometry:
+      ra_deg: 76.95608119552952
+      dec_deg: 30.401204589097233
+      pmra_mas_yr: 2.6406431770317083
+      pmdec_mas_yr: -27.397582540455325
+      epoch: 2016.0
+      source: "gaia dr3 156430822114424576"
   - name: R Draconis
     ra_deg: 248.167625
     dec_deg: 66.755000
     kind: variable star
-    pm_ra_cosdec_masyr: -20.64
-    pm_dec_masyr: 6.15
-    pm_source: "Gaia DR3, epoch J2016.0, source_id 1648328016354496384 (G=6.4)"
+    astrometry:
+      ra_deg: 248.1673783672889
+      dec_deg: 66.75500674547219
+      pmra_mas_yr: -20.642811719160797
+      pmdec_mas_yr: 6.148818852711324
+      epoch: 2016.0
+      source: "gaia dr3 1648328016354496384"

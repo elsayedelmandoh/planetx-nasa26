@@ -3,7 +3,6 @@ input: ra/dec strings, visit dicts {"mjd", "path"} pointing at level 2 fits cuto
 output: web/cache/<target-slug>/<detector>/pass-<n>.png + .json."""
 
 import json
-import math
 from pathlib import Path
 
 import astropy.units as u
@@ -26,26 +25,21 @@ BAD_FLAG_NAMES = (
     "PERSIST", "STREAK", "BLOOM", "SNOWBALL", "HALO",
 )  # fmt: skip
 
-# mean epoch of J2000.0 in mjd. TARGETS coords in configs are epoch J2000.0.
-POS_EPOCH_MJD = 51544.0
-
-
-def propagate_proper_motion(
-    ra_deg: float,
-    dec_deg: float,
-    pm_ra_cosdec_masyr: float,
-    pm_dec_masyr: float,
-    years: float,
-) -> tuple[float, float]:
-    """linear motion from the config position (epoch J2000.0) to `years` after it.
-
-    small-angle approximation; over 26 years the shift is a few arcminutes,
-    so the tangent-plane error is negligible at 6 arcsec pixels.
-    pm_ra_cosdec_masyr is mu_alpha* = mu_alpha * cos(dec), matching Gaia/SIMBAD convention.
-    """
-    dra = pm_ra_cosdec_masyr * years / 3600 / 1000 / math.cos(math.radians(dec_deg))
-    ddec = pm_dec_masyr * years / 3600 / 1000
-    return ra_deg + dra, dec_deg + ddec
+# pmra_mas_yr is mu_alpha* = mu_alpha * cos(dec), matching Gaia/SIMBAD convention.
+def propagate(target: dict, year: float) -> tuple[float, float]:
+    """position of the target at `year` (jyear). falls back to ra_deg/dec_deg without astrometry."""
+    ast = target.get("astrometry")
+    if not ast:
+        return float(target["ra_deg"]), float(target["dec_deg"])
+    c = SkyCoord(
+        ast["ra_deg"], ast["dec_deg"], unit=u.deg,
+        pm_ra_cosdec=ast["pmra_mas_yr"] * u.mas / u.yr,
+        pm_dec=ast["pmdec_mas_yr"] * u.mas / u.yr,
+        radial_velocity=0 * u.km / u.s,
+        obstime=Time(ast["epoch"], format="jyear"),
+    )
+    c = c.apply_space_motion(new_obstime=Time(year, format="jyear"))
+    return float(c.ra.deg), float(c.dec.deg)
 
 
 
@@ -165,6 +159,11 @@ def render_passes(
             "date_range": {"start": start, "end": end},
             "visit_count": len(group),
             "frame_center": {"ra_deg": ra, "dec_deg": dec},
+            "center_ra_deg": ra,
+            "center_dec_deg": dec,
+            "center_epoch": (
+                Time(frame_epoch_mjd, format="mjd").jyear if frame_epoch_mjd is not None else None
+            ),
             "stretch": "zscale",
             "width": shape[1],
             "height": shape[0],

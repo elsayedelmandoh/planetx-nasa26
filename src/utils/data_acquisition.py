@@ -13,9 +13,10 @@ from pathlib import Path
 
 import requests
 from astropy.io.votable import parse_single_table
+from astropy.time import Time
 
 from src.core.settings import settings
-from src.utils.data_processing import POS_EPOCH_MJD, propagate_proper_motion, render_passes
+from src.utils.data_processing import propagate, render_passes
 
 SIA_URL = "https://irsa.ipac.caltech.edu/SIA"
 TIMEOUT_S = 120
@@ -44,11 +45,11 @@ def query_sia_visits(ra: float, dec: float, detector: str, releases: list[str]) 
     return visits
 
 
-def download_cutout(url: str, ra: float, dec: float, fov_arcmin: float, dest) -> None:
+def download_cutout(url: str, ra: float, dec: float, size_deg: float, dest) -> None:
     """get a cutout fits. the service sometimes answers 200 with a text 'server busy' body."""
     if dest.exists():
         return
-    params = {"center": f"{ra},{dec}", "size": fov_arcmin / 60}
+    params = {"center": f"{ra},{dec}", "size": size_deg}
     for attempt in range(1, TRIES + 1):
         resp = requests.get(url, params=params, timeout=TIMEOUT_S)
         if resp.ok and resp.content[:6] == b"SIMPLE":
@@ -121,20 +122,15 @@ def write_index(web_dir: Path | None = None) -> Path:
     return dest
 
 
-def center_slug(ra: float, dec: float) -> str:
-    """center tag for cache file names: keeps old J2000-centered cutouts from being reused."""
-    return f"{ra:.4f}_{dec:.4f}".replace("-", "m")
+def center_slug(ra: float, dec: float, size_deg: float | None = None) -> str:
+    """center tag for cache file names: keeps stale cutouts from being reused."""
+    tag = f"{ra:.4f}_{dec:.4f}".replace("-", "m")
+    return f"{tag}_{size_deg:.4f}" if size_deg is not None else tag
 
 
-def target_now(t: dict, mean_mjd: float) -> tuple[float, float]:
-    """propagate the config (epoch J2000.0) position to the run's mean visit time."""
-    for key in ("pm_ra_cosdec_masyr", "pm_dec_masyr"):
-        if key not in t:
-            raise SystemExit(f"target {t.get('name')!r} missing {key} in configs/default.yaml")
-    years = (mean_mjd - POS_EPOCH_MJD) / 365.25
-    return propagate_proper_motion(
-        t["ra_deg"], t["dec_deg"], t["pm_ra_cosdec_masyr"], t["pm_dec_masyr"], years
-    )
+def cutout_size_deg(fov_arcmin: float) -> float:
+    """request 1.5x fov so reprojected north-up frames keep data to the edges."""
+    return 1.5 * fov_arcmin / 60
 
 
 def run(target: str, detector: str, fov_arcmin: float | None = None) -> list[dict]:
@@ -146,22 +142,26 @@ def run(target: str, detector: str, fov_arcmin: float | None = None) -> list[dic
     fov = fov_arcmin or settings.DEFAULT_FOV_ARCMIN
     slug = slugify(t["name"])
 
-    # the cone search picks visits by sky coverage; SPHEREx scans whole sky, arcminute
-    # drift is irrelevant here. the propagated center moves the cutouts instead.
-    visits = query_sia_visits(t["ra_deg"], t["dec_deg"], detector, settings.DATA_RELEASES)
-    if not visits:
+    # the j2000 cone only estimates the mean visit epoch (SPHEREx scans whole sky);
+    # the real visit list, cutouts and common wcs center use the propagated position.
+    rough = query_sia_visits(t["ra_deg"], t["dec_deg"], detector, settings.DATA_RELEASES)
+    if not rough:
         raise SystemExit(f"no {detector} visits for {t['name']} in {settings.DATA_RELEASES}")
+    mean_mjd = sum(v["mjd"] for v in rough) / len(rough)
+    year = Time(mean_mjd, format="mjd").jyear
+    ra_c, dec_c = propagate(t, year)
+    visits = query_sia_visits(ra_c, dec_c, detector, settings.DATA_RELEASES) or rough
+    # recenter on the final visit list (the propagated cone can pick slightly different visits)
     mean_mjd = sum(v["mjd"] for v in visits) / len(visits)
-    ra_c, dec_c = target_now(t, mean_mjd)
-    # ask for 1.5x the fov so reprojected frames don't end in black corners
-    fov_ask = fov * 1.5
-    ctr = center_slug(ra_c, dec_c)
+    ra_c, dec_c = propagate(t, Time(mean_mjd, format="mjd").jyear)
+    size_deg = cutout_size_deg(fov)
+    ctr = center_slug(ra_c, dec_c, size_deg)
     raw_dir = settings.DATA_DIR / "raw" / slug / detector
     raw_dir.mkdir(parents=True, exist_ok=True)
     for v in visits:
         v["path"] = raw_dir / (f"{ctr}_" + v["url"].rsplit("/", 1)[-1])
         try:
-            download_cutout(v["url"], ra_c, dec_c, fov_ask, v["path"])
+            download_cutout(v["url"], ra_c, dec_c, size_deg, v["path"])
         except (RuntimeError, requests.RequestException) as err:
             # irsa is often busy; one lost visit must not kill the run, a rerun fetches it later
             print(f"skipped visit: {err}")
@@ -169,7 +169,7 @@ def run(target: str, detector: str, fov_arcmin: float | None = None) -> list[dic
     if not got:
         raise SystemExit(f"no {detector} cutouts for {t['name']}, irsa busy: rerun later")
     print(f"{len(got)}/{len(visits)} visits on disk")
-    print(f"frames centered on J2000+pm at mean mjd {mean_mjd:.1f}")
+    print(f"frames centered on the propagated position at mean mjd {mean_mjd:.1f}")
     out_dir = settings.WEB_DIR / "cache" / slug / detector
     return render_passes(got, ra_c, dec_c, fov, out_dir, frame_epoch_mjd=mean_mjd)
 

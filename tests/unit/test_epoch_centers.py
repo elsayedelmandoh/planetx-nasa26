@@ -1,48 +1,39 @@
 import json
-import math
 from pathlib import Path
 
 import pytest
-from src.utils.data_acquisition import center_slug, target_now
-from src.utils.data_processing import POS_EPOCH_MJD, propagate_proper_motion, render_passes
+from src.utils.data_acquisition import center_slug, cutout_size_deg
+from src.utils.data_processing import propagate, render_passes
 
 FIX = Path(__file__).resolve().parents[1] / "fixtures"
-BARNARD = {"ra_deg": 269.452075, "dec_deg": 4.693364,
-           "pm_ra_cosdec_masyr": -801.55, "pm_dec_masyr": 10362.39,
-           "name": "Barnard's Star"}
+BARNARD = {"ra_deg": 269.452075, "dec_deg": 4.693364, "name": "Barnard's Star",
+           "astrometry": {"ra_deg": 269.44850252543836, "dec_deg": 4.739420051112412,
+                          "pmra_mas_yr": -801.5509783684709, "pmdec_mas_yr": 10362.394206546573,
+                          "epoch": 2016.0, "source": "gaia dr3 4472832130942575872"}}
 
 
 def test_propagate_moves_north_at_the_gaia_rate() -> None:
-    ra, dec = propagate_proper_motion(*[BARNARD[k] for k in ("ra_deg", "dec_deg")],
-                                      BARNARD["pm_ra_cosdec_masyr"], BARNARD["pm_dec_masyr"], 1.0)
-    assert dec - BARNARD["dec_deg"] == pytest.approx(10362.39 / 3600 / 1000, abs=1e-9)
-    assert ra - BARNARD["ra_deg"] == pytest.approx(
-        -801.55 / 3600 / 1000 / math.cos(math.radians(4.693364)), abs=1e-9
-    )
+    ra, dec = propagate(BARNARD, 2017.0)
+    assert (dec - BARNARD["astrometry"]["dec_deg"]) * 3600 == pytest.approx(10.362, abs=0.5)
 
 
-def test_barnard_drift_over_26_years_is_about_4_5_arcmin() -> None:
-    ra, dec = propagate_proper_motion(BARNARD["ra_deg"], BARNARD["dec_deg"],
-                                      BARNARD["pm_ra_cosdec_masyr"], BARNARD["pm_dec_masyr"], 26.0)
-    dist_arcmin = math.hypot(
-        (ra - BARNARD["ra_deg"]) * math.cos(math.radians(BARNARD["dec_deg"])) * 60,
-        (dec - BARNARD["dec_deg"]) * 60,
-    )
-    assert dist_arcmin == pytest.approx(4.5, abs=0.1)
+def test_propagate_barnard_2016_to_2026_moves_103_6_arcsec_dec() -> None:
+    ra, dec = propagate(BARNARD, 2026.0)
+    assert (dec - BARNARD["astrometry"]["dec_deg"]) * 3600 == pytest.approx(103.624, abs=0.5)
 
 
-def test_target_now_uses_j2000_reference() -> None:
-    ra, dec = target_now(BARNARD, POS_EPOCH_MJD)
-    assert (ra, dec) == (pytest.approx(BARNARD["ra_deg"]), pytest.approx(BARNARD["dec_deg"]))
+def test_propagate_without_astrometry_is_unchanged() -> None:
+    t = {"ra_deg": 133.795129, "dec_deg": -7.245147, "name": "x"}
+    assert propagate(t, 2026.0) == (pytest.approx(133.795129), pytest.approx(-7.245147))
 
 
-def test_target_now_requires_proper_motion() -> None:
-    with pytest.raises(SystemExit):
-        target_now({"name": "x", "ra_deg": 1.0, "dec_deg": 2.0}, POS_EPOCH_MJD)
+def test_cutout_size_is_1_5x_fov() -> None:
+    assert cutout_size_deg(5) == pytest.approx(1.5 * 5 / 60)
 
 
-def test_center_slug_strips_minus_signs() -> None:
+def test_center_slug_strips_minus_signs_and_tags_size() -> None:
     assert center_slug(133.7951, -7.2451) == "133.7951_m7.2451"
+    assert center_slug(133.7951, -7.2451, 0.125) == "133.7951_m7.2451_0.1250"
 
 
 def test_render_passes_writes_frame_center(tmp_path) -> None:
@@ -58,4 +49,7 @@ def test_render_passes_writes_frame_center(tmp_path) -> None:
     assert meta["frame_center"]["dec_deg"] == -7.245147
     assert meta["frame_center"]["mjd"] == 60001.0
     assert meta["frame_center"]["epoch"] == "2023-02-26"
+    assert meta["center_ra_deg"] == 133.795129
+    assert meta["center_dec_deg"] == -7.245147
+    assert meta["center_epoch"] == pytest.approx(2023.15, abs=0.01)
     assert metas[0]["frame_center"]["ra_deg"] == 133.795129
