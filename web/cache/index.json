@@ -21,6 +21,18 @@
             "json": "cache/wise-0855/d6/pass-3.json"
           }
         ]
+      },
+      "differences": {
+        "d6": [
+          {
+            "png": "cache/wise-0855/d6/diff-1-2.png",
+            "json": "cache/wise-0855/d6/diff-1-2.json"
+          },
+          {
+            "png": "cache/wise-0855/d6/diff-2-3.png",
+            "json": "cache/wise-0855/d6/diff-2-3.json"
+          }
+        ]
       }
     }
   ]

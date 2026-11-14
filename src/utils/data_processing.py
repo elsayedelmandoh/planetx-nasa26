@@ -91,6 +91,24 @@ def write_png(img: np.ndarray, path: Path) -> None:
     Image.fromarray((up * 255).astype(np.uint8), mode="L").save(path)
 
 
+def difference_image(coadd_a: np.ndarray, coadd_b: np.ndarray) -> np.ndarray:
+    """epoch b minus epoch a with each coadd's own background removed. propagates nan."""
+    a = coadd_a.astype(np.float32) - np.nanmedian(coadd_a)
+    b = coadd_b.astype(np.float32) - np.nanmedian(coadd_b)
+    return b - a
+
+
+def write_diff_png(img: np.ndarray, path: Path) -> None:
+    """zero-centered symmetric stretch, 4x upsample. nan pixels mid gray."""
+    finite = img[np.isfinite(img)]
+    mad = np.median(np.abs(finite - np.median(finite))) if finite.size else 0.0
+    sigma = 1.4826 * mad
+    limit = 5 * sigma if sigma > 0 else 1.0
+    scaled = np.clip((np.nan_to_num(img, nan=0.0) / limit) * 0.5 + 0.5, 0, 1)
+    up = np.kron(scaled, np.ones((UPSAMPLE_FACTOR, UPSAMPLE_FACTOR)))
+    Image.fromarray((up * 255).astype(np.uint8), mode="L").save(path)
+
+
 def epoch_label(start: str, end: str) -> str:
     """survey pass label from its date range: "2025-08/10", or "2025-05" for one month."""
     if start[:7] == end[:7]:
@@ -107,8 +125,11 @@ def render_passes(
     out_dir.mkdir(parents=True, exist_ok=True)
     wcs, shape = common_wcs(ra, dec, fov_arcmin)
     metas = []
-    for n, group in enumerate(group_into_passes(visits), start=1):
+    coadds = []
+    groups = group_into_passes(visits)
+    for n, group in enumerate(groups, start=1):
         img = coadd_pass([v["path"] for v in group], wcs, shape)
+        coadds.append(img)
         write_png(img, out_dir / f"pass-{n}.png")
         start, end = (Time(group[i]["mjd"], format="mjd").strftime("%Y-%m-%d") for i in (0, -1))
         meta = {
@@ -123,4 +144,21 @@ def render_passes(
         }
         (out_dir / f"pass-{n}.json").write_text(json.dumps(meta, indent=2) + "\n")
         metas.append(meta)
+    for a in range(len(groups) - 1):
+        b = a + 1
+        label_a = metas[a]["epoch_label"]
+        label_b = metas[b]["epoch_label"]
+        diff = difference_image(coadds[a], coadds[b])
+        write_diff_png(diff, out_dir / f"diff-{a + 1}-{b + 1}.png")
+        meta = {
+            "kind": "difference",
+            "subtraction": f"pass-{b + 1} - pass-{a + 1}",
+            "epoch_label": f"{label_b} minus {label_a}",
+            "stretch": "symmetric",
+            "width": shape[1],
+            "height": shape[0],
+            "native_pixel_scale_arcsec": NATIVE_PIXEL_SCALE_ARCSEC,
+            "upsample_factor": UPSAMPLE_FACTOR,
+        }
+        (out_dir / f"diff-{a + 1}-{b + 1}.json").write_text(json.dumps(meta, indent=2) + "\n")
     return metas

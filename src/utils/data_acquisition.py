@@ -66,12 +66,13 @@ def slugify(name: str) -> str:
 
 
 def build_index(web_dir: Path) -> dict:
-    """scan web_dir/cache/<slug>/<detector>/pass-*.json -> the index.json contract."""
+    """scan pass-*.json and diff-*.json under web_dir/cache -> index.json contract."""
     cache = web_dir / "cache"
     targets = []
     for t in settings.TARGETS:  # config order
         slug = slugify(t["name"])
         detectors = {}
+        differences_map = {}
         for d in range(1, 7):
             det = f"d{d}"
             det_dir = cache / slug / det
@@ -84,8 +85,18 @@ def build_index(web_dir: Path) -> dict:
                     continue
                 rel = f"cache/{slug}/{det}"
                 passes.append({"png": f"{rel}/{png.name}", "json": f"{rel}/{js.name}"})
+            differences = []
+            diffs = det_dir.glob("diff-*.json")
+            for js in sorted(diffs, key=lambda p: tuple(int(x) for x in p.stem.split("-")[1:])):
+                png = js.with_suffix(".png")
+                if not png.exists():
+                    continue
+                rel = f"cache/{slug}/{det}"
+                differences.append({"png": f"{rel}/{png.name}", "json": f"{rel}/{js.name}"})
             if passes:
                 detectors[det] = passes
+            if differences:
+                differences_map[det] = differences
         if detectors:
             targets.append(
                 {
@@ -95,6 +106,7 @@ def build_index(web_dir: Path) -> dict:
                     "dec_deg": t["dec_deg"],
                     "kind": t["kind"],
                     "detectors": detectors,
+                    "differences": differences_map,
                 }
             )
     return {"targets": targets}

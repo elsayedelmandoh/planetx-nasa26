@@ -106,3 +106,23 @@ def test_gate_fails_on_thin_detector(tmp_path) -> None:
 
 def test_gate_fails_on_missing_file(tmp_path) -> None:
     assert check_gate(tmp_path / "nope.json")
+
+
+def test_build_index_includes_differences(tmp_path) -> None:
+    _make_cache(tmp_path)
+    det = tmp_path / "cache" / "wise-0855" / "d6"
+    (det / "diff-1-2.json").write_text("{}")
+    (det / "diff-1-2.png").write_bytes(b"png")
+    (det / "diff-2-3.json").write_text("{}")
+    (det / "diff-2-3.png").write_bytes(b"png")
+
+    idx = acq.build_index(tmp_path)
+
+    t = idx["targets"][0]
+    assert [d["png"] for d in t["differences"]["d6"]] == [
+        "cache/wise-0855/d6/diff-1-2.png",
+        "cache/wise-0855/d6/diff-2-3.png",
+    ]
+    assert [p["png"] for p in t["detectors"]["d6"]] == [
+        f"cache/wise-0855/d6/pass-{n}.png" for n in (1, 2, 3)
+    ]
