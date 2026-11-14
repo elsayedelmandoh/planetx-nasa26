@@ -1,0 +1,13 @@
+{
+  "epoch_label": "2026-04/05",
+  "date_range": {
+    "start": "2026-04-21",
+    "end": "2026-05-11"
+  },
+  "visit_count": 21,
+  "stretch": "zscale",
+  "width": 49,
+  "height": 49,
+  "native_pixel_scale_arcsec": 6.15,
+  "upsample_factor": 4
+}

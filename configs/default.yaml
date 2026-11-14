@@ -2,8 +2,8 @@
 
 PROJECT_NAME: planetx-nasa26
 
-# spherex data release to read (qr2 now; qr3, dr1 later)
-DATA_RELEASE: qr2
+# spherex data releases to read (qr2 superseded by dr1+qr3)
+DATA_RELEASES: ["spherex_dr1", "spherex_qr3"]
 
 # field of view choices for the cutout, in arcminutes
 FOV_PRESETS_ARCMIN: [2, 5, 15, 30]

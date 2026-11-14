@@ -11,7 +11,7 @@ router = APIRouter()
 
 @router.get("/health")
 def health() -> dict:
-    return {"status": "ok", "data_release": settings.DATA_RELEASE}
+    return {"status": "ok", "data_releases": settings.DATA_RELEASES}
 
 
 @router.get("/api/targets")
