@@ -15,6 +15,8 @@
     #motion-legend { margin: .25rem 0; font-size: .85rem; color: #444; }
     #marker-legend { margin: .25rem 0; font-size: .85rem; color: #444; }
     #marker-legend[hidden] { display: none; }
+    #ml-note { margin: .25rem 0; font-size: .85rem; color: #444; }
+    #ml-note[hidden] { display: none; }
     #motion-legend[hidden] { display: none; }
     #no-cache { color: #a40000; }
     #diff-note { color: #a40000; }
@@ -61,6 +63,7 @@
   <p id="diff-note" role="status" aria-live="polite" hidden>no difference frames for this detector yet</p>
   <p id="caption" aria-live="polite"></p>
   <p id="marker-legend" hidden>detections are rule-based on real data, not discoveries</p>
+  <p id="ml-note" hidden>ml score: classifier trained on injected movers in real spherex backgrounds; not a discovery</p>
   <p id="motion-legend" hidden>circle: expected position from proper motion (not a detection) &middot; arrow: motion from first to last pass</p>
 
   <div id="player-controls">
@@ -166,6 +169,7 @@
     const caption = document.getElementById("caption");
     const motionLegend = document.getElementById("motion-legend");
     const markerLegend = document.getElementById("marker-legend");
+    const mlNote = document.getElementById("ml-note");
     const showMotion = document.getElementById("show-motion");
     const noCache = document.getElementById("no-cache");
     const diffNote = document.getElementById("diff-note");
@@ -270,14 +274,27 @@
               ctx.beginPath();
               ctx.arc(cx, cy, canvas.width / 70, 0, 2 * Math.PI);
               ctx.stroke();
-              ctx.fillText(d.label, cx + canvas.width / 60, cy + 4);
+              const text = d.label + (d.ml_score !== undefined ? ` (ml ${Number(d.ml_score).toFixed(2)})` : "");
+              ctx.fillText(text, cx + canvas.width / 60, cy + 4);
             }
             markerLegend.hidden = false;
+            fetch("cache/ml_metrics.json")
+              .then((response) => (response.ok ? response.json() : null))
+              .then((metrics) => {
+                if (!metrics) { mlNote.hidden = true; return; }
+                mlNote.textContent =
+                  `ml score: classifier trained on injected movers in real spherex backgrounds; not a discovery ` +
+                  `(recall ${metrics.recall}, false positive rate ${metrics.false_positive_rate})`;
+                mlNote.hidden = false;
+              })
+              .catch(() => { mlNote.hidden = true; });
           } catch {
             markerLegend.hidden = true;
+            mlNote.hidden = true;
           }
         } else {
           markerLegend.hidden = true;
+          mlNote.hidden = true;
         }
         if (showMotion.checked) {
           if (meta.target_px) {
@@ -319,6 +336,7 @@
         caption.textContent = "failed to load frame";
         motionLegend.hidden = true;
         markerLegend.hidden = true;
+        mlNote.hidden = true;
       }
     }
 

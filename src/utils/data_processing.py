@@ -15,6 +15,8 @@ from astropy.wcs import WCS
 from PIL import Image
 from reproject import reproject_interp
 
+from src.core.settings import settings
+
 NATIVE_PIXEL_SCALE_ARCSEC = 6.15
 UPSAMPLE_FACTOR = 4
 PASS_GAP_DAYS = 60
@@ -258,6 +260,10 @@ def render_passes(
         label_a = metas[a]["epoch_label"]
         label_b = metas[b]["epoch_label"]
         diff = difference_image(coadds[a], coadds[b])
+        # raw difference array for the ml classifier (data/processed is gitignored)
+        npy_dir = settings.DATA_DIR / "processed" / out_dir.parent.name / out_dir.name
+        npy_dir.mkdir(parents=True, exist_ok=True)
+        np.save(npy_dir / f"diff-{a + 1}-{b + 1}.npy", diff.astype(np.float32))
         expected = [m["target_px"] for m in (metas[a], metas[b]) if m.get("target_px")]
         markers = detect(diff, sigma_k=5, expected_px=expected)
         markers_name = f"diff-{a + 1}-{b + 1}.markers.json"
