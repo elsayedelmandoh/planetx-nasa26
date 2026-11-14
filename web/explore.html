@@ -4,373 +4,1123 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>NASA Space Apps Planet X | Explore</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Barlow&family=Barlow+Condensed:wght@400;700&family=Bellefair&display=swap" rel="stylesheet">
   <style>
-
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { background: #000000; color: #ffffff; font-family: 'Barlow', sans-serif; min-height: 100vh; overflow-x: hidden; position: relative; }
-    
-    /* Twinkling Starfield Canvas */
-    #starfield { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
-    .ambient-glow { position: fixed; inset: 0; background: radial-gradient(circle at 50% 25%, rgba(28, 37, 72, 0.35) 0%, rgba(0, 0, 0, 0) 65%); z-index: 0; pointer-events: none; }
-
-    /* Unified Heading Bar & Navigation List */
-    header { position: relative; z-index: 10; display: flex; justify-content: space-between; align-items: center; padding: 2rem 0 2rem 3.5rem; }
-    .brand { display: flex; align-items: center; gap: 1rem; text-decoration: none; color: #ffffff; }
-    .logo { width: 48px; height: 48px; background: #ffffff; color: #000000; border-radius: 50%; display: grid; place-items: center; font-weight: 700; font-size: 1.5rem; flex-shrink: 0; }
-    .brand-title { font-family: 'Barlow Condensed', sans-serif; font-size: 1.1rem; letter-spacing: 3px; text-transform: uppercase; color: #D0D6F9; }
-    .header-line { flex: 1; height: 1px; background: rgba(255, 255, 255, 0.2); margin: 0 -2rem 0 2.5rem; z-index: 11; }
-    nav { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); padding: 0 6rem 0 4rem; border-bottom: 1px solid rgba(255, 255, 255, 0.15); border-left: 1px solid rgba(255, 255, 255, 0.1); }
-    nav ul { display: flex; list-style: none; gap: 3rem; }
-    nav a { display: inline-block; padding: 2rem 0; color: #ffffff; text-decoration: none; font-family: 'Barlow Condensed', sans-serif; font-size: 1rem; letter-spacing: 2.7px; text-transform: uppercase; border-bottom: 3px solid transparent; transition: border-color 0.3s ease; }
-    nav a:hover { border-bottom-color: rgba(255, 255, 255, 0.5); }
-    nav a.active { border-bottom-color: #ffffff; }
-    nav a b { font-weight: 700; margin-right: 0.65rem; }
-
-    @media (max-width: 900px) {
-      header { padding: 1.5rem 0 1.5rem 1.5rem; }
-      .header-line, .brand-title { display: none; }
-      nav { padding: 0 2rem; }
-      nav ul { gap: 1.75rem; }
+    :root {
+      --bg-black: #000000;
+      --text-light: #D0D6F9;
+      --white: #FFFFFF;
+      --glass: rgba(255, 255, 255, 0.05);
+      --glass-border: rgba(255, 255, 255, 0.16);
+      --font-serif: 'Bellefair', serif;
+      --font-sans-cond: 'Barlow Condensed', sans-serif;
+      --font-sans: 'Barlow', sans-serif;
     }
 
-    main { position: relative; z-index: 5; max-width: 1200px; margin: 0 auto; padding: 1.5rem 2rem 3rem; text-align: center; }
-    .page-title { text-align: left; font-family: 'Barlow Condensed', sans-serif; font-size: 1.75rem; letter-spacing: 4.72px; text-transform: uppercase; font-weight: 400; margin-bottom: 0.5rem; }
-    .page-title span { opacity: 0.3; font-weight: 700; margin-right: 0.9rem; }
-    .sub { color: #D0D6F9; margin-bottom: 1.5rem; font-size: 1rem; }
-    
-    /* 9 Smaller Photos in 3D Ring */
-    .viewport { width: 100%; height: 310px; perspective: 1200px; display: grid; place-items: center; cursor: grab; user-select: none; }
-    .viewport:active { cursor: grabbing; }
-    .ring { position: relative; width: 195px; height: 240px; transform-style: preserve-3d; }
-    .card { position: absolute; inset: 0; background: rgba(10, 12, 22, 0.94); border: 1px solid rgba(255, 255, 255, 0.22); border-radius: 10px; overflow: hidden; box-shadow: 0 12px 30px rgba(0, 0, 0, 0.8); cursor: pointer; transition: border-color 0.2s, box-shadow 0.2s; }
-    .card:hover { border-color: #ffffff; box-shadow: 0 0 22px rgba(208, 214, 249, 0.35); }
-    .card img { width: 100%; height: 74%; object-fit: cover; pointer-events: none; }
-    .card-info { height: 26%; padding: 0.45rem 0.75rem; text-align: left; border-top: 1px solid rgba(255, 255, 255, 0.12); }
-    .card-info span { font-family: 'Barlow Condensed', sans-serif; font-size: 0.72rem; letter-spacing: 2px; color: #D0D6F9; text-transform: uppercase; display: block; }
-    .card-info h3 { font-family: 'Bellefair', serif; font-size: 1.05rem; font-weight: 400; text-transform: uppercase; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-    /* Lower Spin Controls */
-    .controls { display: inline-flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 1.2rem; background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(12px); padding: 0.8rem 1.8rem; border-radius: 50px; border: 1px solid rgba(255, 255, 255, 0.15); margin-top: 3.5rem; }
-    button { font-family: 'Barlow Condensed', sans-serif; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; border-radius: 30px; }
-    .btn-spin { background: #ffffff; color: #000000; border: none; padding: 0.6rem 1.5rem; font-weight: 700; }
-    .btn-reset { background: transparent; color: #D0D6F9; border: 1px solid rgba(255, 255, 255, 0.25); padding: 0.55rem 1.2rem; }
-    label { font-family: 'Barlow Condensed', sans-serif; letter-spacing: 1.5px; text-transform: uppercase; color: #D0D6F9; font-size: 0.9rem; cursor: pointer; display: flex; align-items: center; gap: 0.4rem; }
+    body {
+      background-color: var(--bg-black);
+      color: var(--white);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
 
-    /* Pop-Out Modal with Per-Photo Smooth Rocket Timeline */
-    .modal { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.88); backdrop-filter: blur(10px); display: none; place-items: center; z-index: 99; padding: 1rem; }
-    .modal.open { display: grid; }
-    .panel { background: #0c0f1d; border: 1px solid rgba(255, 255, 255, 0.22); border-radius: 16px; max-width: 940px; width: 100%; display: grid; grid-template-columns: 1fr 1.2fr; overflow: hidden; position: relative; text-align: left; }
-    .close { position: absolute; top: 1rem; right: 1rem; background: rgba(255, 255, 255, 0.1); color: #ffffff; border: 1px solid rgba(255, 255, 255, 0.25); padding: 0.35rem 0.85rem; z-index: 10; }
-    .img-box { position: relative; background: #000000; min-height: 400px; overflow: hidden; }
-    .img-box img { width: 100%; height: 100%; object-fit: cover; transition: filter 0.3s; }
-    .reticle { position: absolute; top: 50%; left: 50%; width: 90px; height: 90px; transform: translate(-50%,-50%); border: 1px dashed rgba(255,255,255,0.8); border-radius: 50%; pointer-events: none; }
-    .trail-line { position: absolute; top: 50%; left: 0; width: 100%; height: 1px; background: linear-gradient(90deg, transparent, rgba(208,214,249,0.8), transparent); pointer-events: none; }
-    .details { padding: 2rem; display: flex; flex-direction: column; justify-content: space-between; }
-    .tag { font-family: 'Barlow Condensed', sans-serif; color: #D0D6F9; letter-spacing: 2px; text-transform: uppercase; font-size: 0.85rem; }
-    .details h2 { font-family: 'Bellefair', serif; font-size: 2.8rem; font-weight: 400; text-transform: uppercase; margin: 0.3rem 0 0.7rem; }
-    .desc { color: #D0D6F9; line-height: 1.6; padding-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.15); font-size: 0.95rem; }
-    .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 0.9rem; margin-top: 1rem; }
-    .stats span { display: block; font-family: 'Barlow Condensed', sans-serif; font-size: 0.78rem; letter-spacing: 2px; color: #D0D6F9; text-transform: uppercase; }
-    .stats strong { font-family: 'Bellefair', serif; font-size: 1.3rem; font-weight: 400; text-transform: uppercase; }
+    /* Pure Black Twinkling Starfield Canvas */
+    #starfield {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
 
-    /* Write-in Date Bar */
-    .date-input-bar { margin-top: 1.1rem; padding-top: 0.9rem; border-top: 1px solid rgba(255,255,255,0.15); display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem; }
-    .date-input-bar input { background: #000000; color: #ffffff; border: 1px solid rgba(255,255,255,0.3); padding: 0.45rem 0.8rem; border-radius: 6px; font-family: 'Barlow Condensed', sans-serif; letter-spacing: 1.5px; text-transform: uppercase; flex: 1; min-width: 150px; }
-    .btn-show { background: #ffffff; color: #000000; border: none; padding: 0.45rem 1rem; font-weight: 700; border-radius: 6px; }
+    /* Unified Heading Bar */
+    header {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.75rem 0 1.75rem 3.5rem;
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 1.1rem;
+      text-decoration: none;
+      color: var(--white);
+    }
+
+    .logo {
+      width: 46px;
+      height: 46px;
+      background: var(--white);
+      color: #000;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-size: 1.45rem;
+      font-weight: bold;
+      flex-shrink: 0;
+    }
+
+    .brand-title {
+      font-family: var(--font-sans-cond);
+      font-size: 1.15rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--white);
+    }
+
+    .header-line {
+      flex: 1;
+      height: 1px;
+      background: rgba(255, 255, 255, 0.18);
+      margin-left: 2.5rem;
+      margin-right: -1.5rem;
+      z-index: 12;
+    }
+
+    nav {
+      background: var(--glass);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      padding: 0 5.5rem 0 4rem;
+      border-top: 1px solid var(--glass-border);
+      border-bottom: 1px solid var(--glass-border);
+      border-left: 1px solid var(--glass-border);
+    }
+
+    nav ul {
+      display: flex;
+      list-style: none;
+      gap: 3rem;
+    }
+
+    nav a {
+      display: inline-block;
+      padding: 1.75rem 0;
+      color: var(--white);
+      text-decoration: none;
+      font-family: var(--font-sans-cond);
+      font-size: 1rem;
+      letter-spacing: 2.7px;
+      text-transform: uppercase;
+      border-bottom: 3px solid transparent;
+      transition: border-color 0.25s ease;
+    }
+
+    nav a:hover {
+      border-bottom-color: rgba(255, 255, 255, 0.5);
+    }
+
+    nav a.active {
+      border-bottom-color: var(--white);
+    }
+
+    nav a b {
+      margin-right: 0.55rem;
+      font-weight: 700;
+    }
+
+    /* Main Content */
+    main {
+      position: relative;
+      z-index: 5;
+      flex: 1;
+      max-width: 1200px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 1rem 2rem 3.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .page-title {
+      align-self: flex-start;
+      font-family: var(--font-sans-cond);
+      font-size: 1.65rem;
+      letter-spacing: 4.5px;
+      text-transform: uppercase;
+      font-weight: 400;
+      margin-bottom: 0.4rem;
+    }
+
+    .page-title span {
+      opacity: 0.3;
+      font-weight: 700;
+      margin-right: 0.9rem;
+    }
+
+    .sub-hint {
+      align-self: flex-start;
+      color: var(--text-light);
+      font-size: 0.98rem;
+      margin-bottom: 1rem;
+    }
+
+    /* Compact 9-Card 3D Orbit Wheel */
+    .orbit-viewport {
+      width: 100%;
+      height: 310px;
+      perspective: 1200px;
+      display: grid;
+      place-items: center;
+      cursor: grab;
+      user-select: none;
+      margin-top: 0.5rem;
+    }
+
+    .orbit-viewport:active {
+      cursor: grabbing;
+    }
+
+    .orbit-ring {
+      position: relative;
+      width: 195px;
+      height: 240px;
+      transform-style: preserve-3d;
+    }
+
+    .sky-card {
+      position: absolute;
+      inset: 0;
+      background: rgba(10, 12, 20, 0.92);
+      border: 1px solid var(--glass-border);
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.85);
+      cursor: pointer;
+      transition: border-color 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .sky-card:hover {
+      border-color: var(--white);
+      box-shadow: 0 0 22px rgba(208, 214, 249, 0.35);
+    }
+
+    .sky-card img {
+      width: 100%;
+      height: 74%;
+      object-fit: cover;
+      display: block;
+      pointer-events: none;
+    }
+
+    .sky-card-info {
+      height: 26%;
+      padding: 0.45rem 0.75rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      border-top: 1px solid rgba(255, 255, 255, 0.12);
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .sky-card-info span {
+      font-family: var(--font-sans-cond);
+      font-size: 0.72rem;
+      letter-spacing: 2px;
+      color: var(--text-light);
+      text-transform: uppercase;
+    }
+
+    .sky-card-info h3 {
+      font-family: var(--font-serif);
+      font-size: 1.05rem;
+      font-weight: 400;
+      text-transform: uppercase;
+      margin-top: 1px;
+    }
+
+    /* Lowered Controls Bar */
+    .controls-bar {
+      margin-top: 3.5rem;
+      display: inline-flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 1.35rem;
+      background: var(--glass);
+      backdrop-filter: blur(14px);
+      padding: 0.85rem 2rem;
+      border-radius: 50px;
+      border: 1px solid var(--glass-border);
+    }
+
+    .btn-spin {
+      background: var(--white);
+      color: #000;
+      border: none;
+      padding: 0.65rem 1.65rem;
+      border-radius: 30px;
+      font-family: var(--font-sans-cond);
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: 2.2px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .btn-spin:hover {
+      transform: scale(1.04);
+      box-shadow: 0 0 18px rgba(255, 255, 255, 0.4);
+    }
+
+    .btn-reset {
+      background: transparent;
+      color: var(--text-light);
+      border: 1px solid var(--glass-border);
+      padding: 0.6rem 1.25rem;
+      border-radius: 30px;
+      font-family: var(--font-sans-cond);
+      font-size: 0.9rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+
+    .btn-reset:hover {
+      border-color: var(--white);
+      color: var(--white);
+    }
+
+    .toggle-label {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      font-family: var(--font-sans-cond);
+      font-size: 0.9rem;
+      letter-spacing: 1.8px;
+      text-transform: uppercase;
+      color: var(--text-light);
+      cursor: pointer;
+    }
+
+    /* Pop-Out Modal */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.88);
+      backdrop-filter: blur(12px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      padding: 1.25rem;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal-panel {
+      background: #090b12;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      border-radius: 16px;
+      max-width: 960px;
+      width: 100%;
+      overflow: hidden;
+      position: relative;
+      display: grid;
+      grid-template-columns: 1fr 1.25fr;
+      box-shadow: 0 25px 65px rgba(0, 0, 0, 0.95);
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      color: var(--white);
+      padding: 0.35rem 0.9rem;
+      border-radius: 20px;
+      font-family: var(--font-sans-cond);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      cursor: pointer;
+      z-index: 10;
+    }
+
+    .modal-close:hover {
+      background: var(--white);
+      color: #000;
+    }
+
+    .modal-img-wrap {
+      position: relative;
+      background: #000;
+      min-height: 410px;
+      overflow: hidden;
+    }
+
+    .modal-img-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: filter 0.3s ease;
+    }
+
+    .target-reticle {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 92px;
+      height: 92px;
+      transform: translate(-50%, -50%);
+      border: 1px dashed rgba(255, 255, 255, 0.85);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .orbit-trail {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(208, 214, 249, 0.85), transparent);
+      pointer-events: none;
+    }
+
+    .modal-body {
+      padding: 2rem 2.25rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 1.1rem;
+    }
+
+    .modal-fov {
+      font-family: var(--font-sans-cond);
+      color: var(--text-light);
+      letter-spacing: 2.2px;
+      text-transform: uppercase;
+      font-size: 0.85rem;
+    }
+
+    .modal-body h2 {
+      font-family: var(--font-serif);
+      font-size: 2.75rem;
+      font-weight: 400;
+      text-transform: uppercase;
+      margin: 0.25rem 0 0.5rem;
+    }
+
+    .modal-desc {
+      color: var(--text-light);
+      line-height: 1.6;
+      font-size: 0.96rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+    }
+
+    .telemetry-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.9rem 1.2rem;
+      margin-top: 0.9rem;
+    }
+
+    .stat-item span {
+      display: block;
+      font-family: var(--font-sans-cond);
+      font-size: 0.78rem;
+      letter-spacing: 2px;
+      color: var(--text-light);
+      text-transform: uppercase;
+    }
+
+    .stat-item strong {
+      font-family: var(--font-serif);
+      font-size: 1.25rem;
+      font-weight: 400;
+      text-transform: uppercase;
+      word-break: break-word;
+    }
+
+    /* Dual Custom Inputs: Date + Sky Coordinates */
+    .custom-inputs-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.9rem;
+      padding-top: 0.85rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.14);
+    }
+
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .input-group label {
+      font-family: var(--font-sans-cond);
+      font-size: 0.8rem;
+      letter-spacing: 1.8px;
+      text-transform: uppercase;
+      color: var(--text-light);
+    }
+
+    .input-row {
+      display: flex;
+      gap: 0.45rem;
+    }
+
+    .input-row input {
+      flex: 1;
+      min-width: 0;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      color: var(--white);
+      padding: 0.48rem 0.75rem;
+      border-radius: 6px;
+      font-family: var(--font-sans);
+      font-size: 0.88rem;
+      outline: none;
+    }
+
+    .input-row input:focus {
+      border-color: var(--white);
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .btn-show {
+      background: var(--white);
+      color: #000;
+      border: none;
+      padding: 0.48rem 0.95rem;
+      border-radius: 6px;
+      font-family: var(--font-sans-cond);
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 1.8px;
+      text-transform: uppercase;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .btn-show:hover {
+      opacity: 0.9;
+    }
 
     /* Per-Photo Smooth Rocket Timeline */
-    .timeline-box { margin-top: 1.2rem; padding-top: 0.9rem; border-top: 1px solid rgba(255,255,255,0.15); }
-    .timeline-header { display: flex; justify-content: space-between; font-family: 'Barlow Condensed', sans-serif; font-size: 0.82rem; letter-spacing: 2px; text-transform: uppercase; color: #D0D6F9; margin-bottom: 0.9rem; }
-    .track-wrap { position: relative; height: 28px; display: flex; align-items: center; cursor: pointer; user-select: none; }
-    .track-bg { width: 100%; height: 3px; background: rgba(255,255,255,0.18); border-radius: 3px; position: relative; }
-    .track-fill { height: 100%; width: 0%; background: linear-gradient(90deg, #6b8cff, #ffffff); border-radius: 3px; }
-    .rocket { position: absolute; left: 0%; top: 50%; transform: translate(-50%, -50%) rotate(45deg); font-size: 1.25rem; filter: drop-shadow(0 0 8px rgba(255,255,255,0.8)); pointer-events: none; }
-    .nodes { display: flex; justify-content: space-between; margin-top: 0.4rem; }
-    .node-btn { background: none; border: none; color: rgba(208,214,249,0.65); font-family: 'Barlow Condensed', sans-serif; font-size: 0.78rem; letter-spacing: 1.5px; text-transform: uppercase; padding: 0.2rem 0; border-radius: 0; }
-    .node-btn.active, .node-btn:hover { color: #ffffff; font-weight: 700; }
+    .timeline-box {
+      padding-top: 0.85rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.14);
+    }
 
-    @media (max-width: 780px) { .panel { grid-template-columns: 1fr; } .img-box { min-height: 220px; } }
+    .timeline-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.85rem;
+      font-family: var(--font-sans-cond);
+      font-size: 0.82rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-light);
+    }
+
+    .timeline-track-wrap {
+      position: relative;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      user-select: none;
+      margin: 0 10px;
+    }
+
+    .timeline-base {
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 2px;
+    }
+
+    .timeline-fill {
+      position: absolute;
+      left: 0;
+      height: 2px;
+      width: 0%;
+      background: linear-gradient(90deg, #6e85ff, #ffffff);
+      box-shadow: 0 0 10px rgba(208, 214, 249, 0.7);
+      border-radius: 2px;
+    }
+
+    .timeline-rocket {
+      position: absolute;
+      left: 0%;
+      top: 50%;
+      transform: translate(-50%, -50%) rotate(45deg);
+      font-size: 1.25rem;
+      filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.8));
+      pointer-events: none;
+      z-index: 4;
+    }
+
+    .timeline-nodes {
+      position: relative;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      z-index: 2;
+    }
+
+    .t-node {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      background: #090b12;
+      border: 2px solid rgba(255, 255, 255, 0.45);
+      cursor: pointer;
+      transition: transform 0.2s, border-color 0.2s, background 0.2s;
+    }
+
+    .t-node.active {
+      background: var(--white);
+      border-color: var(--white);
+      transform: scale(1.25);
+    }
+
+    .timeline-labels {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 0.35rem;
+      font-family: var(--font-sans-cond);
+      font-size: 0.74rem;
+      letter-spacing: 1.4px;
+      text-transform: uppercase;
+      color: rgba(208, 214, 249, 0.75);
+    }
+
+    .timeline-labels span {
+      cursor: pointer;
+    }
+
+    .timeline-labels span.active {
+      color: var(--white);
+      font-weight: 700;
+    }
+
+    @media (max-width: 860px) {
+      header {
+        padding: 1.25rem 1.5rem;
+      }
+      .header-line {
+        display: none;
+      }
+      nav {
+        padding: 0 1.5rem;
+      }
+      nav ul {
+        gap: 1.5rem;
+      }
+      .modal-panel {
+        grid-template-columns: 1fr;
+      }
+      .modal-img-wrap {
+        min-height: 220px;
+      }
+      .custom-inputs-grid {
+        grid-template-columns: 1fr;
+      }
+    }
   </style>
 </head>
 <body>
-
   <canvas id="starfield"></canvas>
-  <div class="ambient-glow"></div>
+
   <header>
-    <a href="home.html" class="brand">
+    <a href="home.html" class="brand-group">
       <div class="logo">✦</div>
-      <span class="brand-title">NASA Space Apps • Planet X</span>
+      <span class="brand-title">NASA Space Apps &bull; Planet X</span>
     </a>
     <div class="header-line"></div>
     <nav>
       <ul>
-        <li><a href="home.html" class=""><b>00</b> Home</a></li>
+        <li><a href="home.html"><b>00</b> Home</a></li>
         <li><a href="explore.html" class="active"><b>01</b> Explore</a></li>
-        <li><a href="team.html" class=""><b>02</b> Team</a></li>
+        <li><a href="team.html"><b>02</b> Team</a></li>
       </ul>
     </nav>
   </header>
 
   <main>
     <h1 class="page-title"><span>01</span> Pick your destination</h1>
-    <p class="sub">Drag or spin the ring, then click any of the 9 destinations to open its timeline and telemetry.</p>
-    <div class="viewport" id="vp"><div class="ring" id="ring"></div></div>
-    <div class="controls">
-      <button class="btn-spin" id="spin">Spin Orbit</button>
-      <label><input type="checkbox" id="trail" checked> Trail</label>
-      <label><input type="checkbox" id="mark" checked> Mark target</label>
-      <button class="btn-reset" id="reset">Reset view</button>
+    <p class="sub-hint">Drag or spin the ring, then click any of the 9 destinations to open its timeline and telemetry.</p>
+
+    <div class="orbit-viewport" id="viewport">
+      <div class="orbit-ring" id="orbitRing"></div>
+    </div>
+
+    <div class="controls-bar">
+      <button class="btn-spin" id="spinBtn">Spin Orbit</button>
+      <label class="toggle-label"><input type="checkbox" id="trailCheck" checked /> Trail</label>
+      <label class="toggle-label"><input type="checkbox" id="targetCheck" checked /> Mark target</label>
+      <button class="btn-reset" id="resetBtn">Reset view</button>
     </div>
   </main>
 
-  <div class="modal" id="modal">
-    <div class="panel">
-      <button class="close" id="close">✕ Close</button>
-      <div class="img-box">
-        <img id="mImg" src="" alt="Destination Preview">
-        <div class="reticle" id="reticle"></div>
-        <div class="trail-line" id="trailLine"></div>
+  <div class="modal-backdrop" id="modalBackdrop">
+    <div class="modal-panel">
+      <button class="modal-close" id="closeModalBtn">✕ Close</button>
+
+      <div class="modal-img-wrap">
+        <img id="modalImg" src="" alt="Destination Preview" />
+        <div class="target-reticle" id="targetReticle"></div>
+        <div class="orbit-trail" id="orbitTrail"></div>
       </div>
-      <div class="details">
+
+      <div class="modal-body">
         <div>
-          <div class="tag" id="mFov"></div>
-          <h2 id="mTitle"></h2>
-          <p class="desc" id="mDesc"></p>
-          <div class="stats">
-            <div><span>Avg. distance</span><strong id="mDist"></strong></div>
-            <div><span>Est. travel time</span><strong id="mTime"></strong></div>
-            <div><span>Centre</span><strong id="mCentre"></strong></div>
-            <div><span>Observation</span><strong id="mObs"></strong></div>
-          </div>
-          <div class="date-input-bar">
-            <label for="customDate">See this sky on another date</label>
-            <input type="text" id="customDate" placeholder="e.g. Oct 2026 QR3">
-            <button class="btn-show" id="showDateBtn">Show</button>
+          <div class="modal-fov" id="modalFov">Field of view: 2.4° × 2.4°</div>
+          <h2 id="modalTitle">Sector 01</h2>
+          <p class="modal-desc" id="modalDesc">Details for this sky sector.</p>
+
+          <div class="telemetry-grid">
+            <div class="stat-item">
+              <span>Avg. distance</span>
+              <strong id="modalDist">384,400 km</strong>
+            </div>
+            <div class="stat-item">
+              <span>Est. travel time</span>
+              <strong id="modalTime">3 days</strong>
+            </div>
+            <div class="stat-item">
+              <span>Centre</span>
+              <strong id="modalCentre">RA 12h 40m</strong>
+            </div>
+            <div class="stat-item">
+              <span>Observation</span>
+              <strong id="modalObs">May 2025 DR1</strong>
+            </div>
           </div>
         </div>
+
+        <!-- Both Custom Date & Custom Coordinates Inputs Preserved -->
+        <div class="custom-inputs-grid">
+          <div class="input-group">
+            <label for="customDateInput">See this sky on another date</label>
+            <div class="input-row">
+              <input type="text" id="customDateInput" placeholder="e.g. Oct 14, 2026" />
+              <button class="btn-show" id="applyDateBtn">Show</button>
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label for="customCoordsInput">Enter sky coordinates</label>
+            <div class="input-row">
+              <input type="text" id="customCoordsInput" placeholder="e.g. RA 14h 29m, Dec -62°" />
+              <button class="btn-show" id="applyCoordsBtn">Show</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Individual Per-Photo Smooth Rocket Timeline -->
         <div class="timeline-box">
           <div class="timeline-header">
             <span>Mission Timeline</span>
-            <span id="tlActiveLabel">May 2025 DR1</span>
+            <span id="timelineActiveLabel">May 2025 DR1</span>
           </div>
-          <div class="track-wrap" id="trackWrap">
-            <div class="track-bg"><div class="track-fill" id="trackFill"></div></div>
-            <div class="rocket" id="rocket">🚀</div>
+          <div class="timeline-track-wrap" id="timelineTrack">
+            <div class="timeline-base"></div>
+            <div class="timeline-fill" id="timelineFill"></div>
+            <div class="timeline-rocket" id="timelineRocket">🚀</div>
+            <div class="timeline-nodes" id="timelineNodes"></div>
           </div>
-          <div class="nodes" id="tlNodes"></div>
+          <div class="timeline-labels" id="timelineLabels"></div>
         </div>
       </div>
     </div>
   </div>
 
   <script>
-
-    const canvas = document.getElementById('starfield');
-    const ctx = canvas.getContext('2d');
+    /* 1. Pure Black Twinkling Starfield */
+    const canvas = document.getElementById("starfield");
+    const ctx = canvas.getContext("2d");
     let stars = [];
+
     function initStars() {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
-      stars = Array.from({ length: 160 }, () => ({
+      stars = Array.from({ length: 170 }, () => ({
         x: Math.random() * canvas.width,
         y: Math.random() * canvas.height,
-        r: Math.random() * 1.5 + 0.3,
-        a: Math.random(),
-        s: (Math.random() * 0.015 + 0.004) * (Math.random() > 0.5 ? 1 : -1)
+        r: Math.random() * 1.4 + 0.3,
+        alpha: Math.random(),
+        speed: (Math.random() * 0.015 + 0.004) * (Math.random() > 0.5 ? 1 : -1)
       }));
     }
+
     function drawStars() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      stars.forEach(st => {
-        st.a += st.s;
-        if (st.a <= 0.1 || st.a >= 1) st.s *= -1;
+      ctx.fillStyle = "#000000";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      for (const s of stars) {
+        s.alpha += s.speed;
+        if (s.alpha > 1 || s.alpha < 0.15) s.speed *= -1;
         ctx.beginPath();
-        ctx.arc(st.x, st.y, st.r, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(255, 255, 255, ${st.a})`;
+        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255, 255, 255, ${s.alpha.toFixed(2)})`;
         ctx.fill();
-      });
+      }
       requestAnimationFrame(drawStars);
     }
-    window.addEventListener('resize', initStars);
+    window.addEventListener("resize", initStars);
     initStars();
     drawStars();
 
+    /* 2. 9 Destinations with Individual Timelines & Telemetry */
     const destinations = [
-      { id: "01", title: "Sector 01 • Moon", img: "1.png", fb: "https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?w=800", fov: "2.4° × 2.4°",
-         epochs: [
-           { label: "May 2025 DR1", desc: "Initial lunar orbital survey and crater spectral baseline.", dist: "384,400 km", time: "3 days", centre: "RA 12h 40m", filter: "none" },
-           { label: "Nov 2025 DR2", desc: "South pole ice-deposit infrared scan during solar minimum.", dist: "382,100 km", time: "3 days", centre: "RA 12h 44m", filter: "contrast(1.15) brightness(1.05)" },
-           { label: "May 2026 QR2", desc: "Far-side radio quiet zone telemetry pass.", dist: "386,900 km", time: "3.2 days", centre: "RA 12h 49m", filter: "hue-rotate(35deg)" },
-           { label: "QR3 Nov 2026", desc: "Final high-resolution landing corridor mapping.", dist: "384,000 km", time: "3 days", centre: "RA 12h 52m", filter: "saturate(1.3)" }
-         ]
+      {
+        id: "01",
+        title: "Sector 01 • Luna",
+        img: "1.png",
+        fb: "https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?w=700",
+        fov: "2.4° × 2.4°",
+        steps: [
+          { date: "May 2025 DR1", desc: "Initial lunar orbital pass mapping regolith mineral signatures.", dist: "384,400 km", time: "3 days", centre: "RA 12h 40m, Dec +02°", filter: "none" },
+          { date: "Nov 2025 DR2", desc: "South pole ice-crater infrared spectroscopy sweep.", dist: "382,100 km", time: "3 days", centre: "RA 12h 44m, Dec -88°", filter: "contrast(1.1) brightness(1.05)" },
+          { date: "May 2026 QR2", desc: "High-resolution Mare Tranquillitatis thermal profile.", dist: "385,900 km", time: "3 days", centre: "RA 12h 51m, Dec +08°", filter: "hue-rotate(35deg)" },
+          { date: "QR3 Nov 2026", desc: "Final deep-core relay calibration over far-side highlands.", dist: "384,000 km", time: "3 days", centre: "RA 13h 02m, Dec -14°", filter: "hue-rotate(190deg)" }
+        ]
       },
-      { id: "02", title: "Sector 02 • Mars", img: "2.png", fb: "https://images.unsplash.com/photo-1614728894747-a83421e2b9c9?w=800", fov: "3.1° × 3.1°",
-         epochs: [
-           { label: "May 2025 DR1", desc: "Olympus Mons atmospheric dust column profile.", dist: "225 mil. km", time: "9 months", centre: "RA 18h 15m", filter: "none" },
-           { label: "Nov 2025 DR2", desc: "Valles Marineris thermal inertia mapping pass.", dist: "210 mil. km", time: "8.5 months", centre: "RA 18h 22m", filter: "hue-rotate(25deg)" },
-           { label: "May 2026 QR2", desc: "Northern polar cap seasonal sublimation scan.", dist: "198 mil. km", time: "8 months", centre: "RA 18h 30m", filter: "contrast(1.2)" },
-           { label: "QR3 Nov 2026", desc: "Phobos & Deimos orbital rendezvous window.", dist: "185 mil. km", time: "7.5 months", centre: "RA 18h 38m", filter: "saturate(1.35)" }
-         ]
+      {
+        id: "02",
+        title: "Sector 02 • Mars",
+        img: "2.png",
+        fb: "https://images.unsplash.com/photo-1614728894747-a83421e2b9c9?w=700",
+        fov: "3.1° × 3.1°",
+        steps: [
+          { date: "May 2025 DR1", desc: "Olympus Mons caldera atmospheric dust survey.", dist: "225 mil. km", time: "9 months", centre: "RA 18h 15m, Dec +18°", filter: "none" },
+          { date: "Nov 2025 DR2", desc: "Valles Marineris canyon water-vapor spectral scan.", dist: "210 mil. km", time: "8.5 months", centre: "RA 18h 22m, Dec -13°", filter: "saturate(1.25)" },
+          { date: "May 2026 QR2", desc: "Polar dry-ice cap seasonal sublimation tracking.", dist: "240 mil. km", time: "9.5 months", centre: "RA 18h 30m, Dec +82°", filter: "hue-rotate(45deg)" },
+          { date: "QR3 Nov 2026", desc: "Jezero basin ancient delta subsurface radar pass.", dist: "218 mil. km", time: "9 months", centre: "RA 18h 41m, Dec +18°", filter: "hue-rotate(210deg)" }
+        ]
       },
-      { id: "03", title: "Sector 03 • Europa", img: "3.png", fb: "https://images.unsplash.com/photo-1614313913007-2b4ae8ce32d6?w=800", fov: "1.8° × 1.8°",
-         epochs: [
-           { label: "May 2025 DR1", desc: "Chaos terrain ice-shell fracture spectroscopy.", dist: "628 mil. km", time: "3 years", centre: "RA 04h 52m", filter: "none" },
-           { label: "Nov 2025 DR2", desc: "Subsurface ocean water-vapor plume detection.", dist: "635 mil. km", time: "3.1 years", centre: "RA 04h 56m", filter: "hue-rotate(150deg)" },
-           { label: "May 2026 QR2", desc: "Jovian magnetosphere radiation belt transit.", dist: "620 mil. km", time: "2.9 years", centre: "RA 05h 01m", filter: "contrast(1.15)" },
-           { label: "QR3 Nov 2026", desc: "Cryovolcanic ridge thermal anomaly confirmation.", dist: "615 mil. km", time: "2.9 years", centre: "RA 05h 05m", filter: "hue-rotate(200deg)" }
-         ]
+      {
+        id: "03",
+        title: "Sector 03 • Europa",
+        img: "3.png",
+        fb: "https://images.unsplash.com/photo-1614313913007-2b4ae8ce32d6?w=700",
+        fov: "1.8° × 1.8°",
+        steps: [
+          { date: "May 2025 DR1", desc: "Chaos terrain ice-crust fracture mapping.", dist: "628 mil. km", time: "3 years", centre: "RA 04h 52m, Dec +22°", filter: "none" },
+          { date: "Nov 2025 DR2", desc: "Southern hemisphere cryo-plume detection window.", dist: "615 mil. km", time: "2.9 years", centre: "RA 04h 58m, Dec -65°", filter: "contrast(1.15)" },
+          { date: "May 2026 QR2", desc: "Subsurface ocean salinity and tidal flex telemetry.", dist: "640 mil. km", time: "3.1 years", centre: "RA 05h 04m, Dec +11°", filter: "hue-rotate(130deg)" },
+          { date: "QR3 Nov 2026", desc: "Radiation belt boundary spectrometer sweep.", dist: "622 mil. km", time: "3 years", centre: "RA 05h 12m, Dec -09°", filter: "hue-rotate(240deg)" }
+        ]
       },
-      { id: "04", title: "Sector 04 • Titan", img: "4.png", fb: "https://images.unsplash.com/photo-1614732414444-096e5f1122d5?w=800", fov: "2.0° × 2.0°",
-         epochs: [
-           { label: "May 2025 DR1", desc: "Kraken Mare liquid hydrocarbon shoreline radar.", dist: "1.6 bil. km", time: "7 years", centre: "RA 21h 08m", filter: "none" },
-           { label: "Nov 2025 DR2", desc: "Dense nitrogen-methane haze vertical sounding.", dist: "1.58 bil. km", time: "6.9 years", centre: "RA 21h 12m", filter: "hue-rotate(45deg)" },
-           { label: "May 2026 QR2", desc: "Equatorial organic dune field composition scan.", dist: "1.55 bil. km", time: "6.8 years", centre: "RA 21h 18m", filter: "saturate(1.4)" },
-           { label: "QR3 Nov 2026", desc: "Saturnian ring-plane crossing optical calibration.", dist: "1.52 bil. km", time: "6.7 years", centre: "RA 21h 24m", filter: "contrast(1.2)" }
-         ]
+      {
+        id: "04",
+        title: "Sector 04 • Titan",
+        img: "4.png",
+        fb: "https://images.unsplash.com/photo-1614732414444-096e5f1122d5?w=700",
+        fov: "2.0° × 2.0°",
+        steps: [
+          { date: "May 2025 DR1", desc: "Kraken Mare liquid methane shoreline infrared imaging.", dist: "1.6 bil. km", time: "7 years", centre: "RA 21h 08m, Dec +68°", filter: "none" },
+          { date: "Nov 2025 DR2", desc: "Dense nitrogen haze organic aerosol profiling.", dist: "1.55 bil. km", time: "6.8 years", centre: "RA 21h 14m, Dec +15°", filter: "saturate(1.3)" },
+          { date: "May 2026 QR2", desc: "Equatorial sand dune radar altimetry pass.", dist: "1.64 bil. km", time: "7.2 years", centre: "RA 21h 20m, Dec -04°", filter: "hue-rotate(60deg)" },
+          { date: "QR3 Nov 2026", desc: "Ligeia Mare tidal depth acoustic-optical synthesis.", dist: "1.58 bil. km", time: "7 years", centre: "RA 21h 29m, Dec +78°", filter: "hue-rotate(200deg)" }
+        ]
       },
-      { id: "05", title: "Sector 05 • Orion Nebula", img: "5.png", fb: "https://images.unsplash.com/photo-1462331940025-496dfbfc7564?w=800", fov: "4.5° × 4.5°",
-         epochs: [
-           { label: "May 2025 DR1", desc: "Trapezium cluster ionizing ultraviolet front.", dist: "1,344 ly", time: "Warp Probe", centre: "RA 05h 35m", filter: "none" },
-           { label: "Nov 2025 DR2", desc: "Protoplanetary disk water-ice absorption survey.", dist: "1,344 ly", time: "Warp Probe", centre: "RA 05h 35m", filter: "hue-rotate(90deg)" },
-           { label: "May 2026 QR2", desc: "Molecular cloud shockwave filament mapping.", dist: "1,344 ly", time: "Warp Probe", centre: "RA 05h 35m", filter: "hue-rotate(180deg)" },
-           { label: "QR3 Nov 2026", desc: "Deep-infrared brown dwarf census completion.", dist: "1,344 ly", time: "Warp Probe", centre: "RA 05h 35m", filter: "saturate(1.35)" }
-         ]
+      {
+        id: "05",
+        title: "Sector 05 • Orion",
+        img: "5.png",
+        fb: "https://images.unsplash.com/photo-1462331940025-496dfbfc7564?w=700",
+        fov: "4.5° × 4.5°",
+        steps: [
+          { date: "May 2025 DR1", desc: "Trapezium cluster protostellar disk infrared census.", dist: "1,344 ly", time: "Deep Scan", centre: "RA 05h 35m, Dec -05°", filter: "none" },
+          { date: "Nov 2025 DR2", desc: "Ionized hydrogen shockwave front mapping.", dist: "1,344 ly", time: "Deep Scan", centre: "RA 05h 35m, Dec -05°", filter: "contrast(1.2)" },
+          { date: "May 2026 QR2", desc: "Water-ice grain abundance in molecular cloud core.", dist: "1,344 ly", time: "Deep Scan", centre: "RA 05h 36m, Dec -06°", filter: "hue-rotate(110deg)" },
+          { date: "QR3 Nov 2026", desc: "Full 102-band spectral cube of M42 central cavity.", dist: "1,344 ly", time: "Deep Scan", centre: "RA 05h 36m, Dec -05°", filter: "hue-rotate(260deg)" }
+        ]
       },
-      { id: "06", title: "Sector 06 • Low Orbit", img: "6.png", fb: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800", fov: "5.0° × 5.0°",
-         epochs: [
-           { label: "May 2025 DR1", desc: "Thermospheric aurora borealis night-side pass.", dist: "408 km", time: "6 hours", centre: "RA 00h 12m", filter: "none" },
-           { label: "Nov 2025 DR2", desc: "Equatorial airglow and lightning sprite capture.", dist: "412 km", time: "6 hours", centre: "RA 00h 18m", filter: "hue-rotate(60deg)" },
-           { label: "May 2026 QR2", desc: "Orbital station docking corridor verification.", dist: "405 km", time: "5.8 hours", centre: "RA 00h 24m", filter: "contrast(1.15)" },
-           { label: "QR3 Nov 2026", desc: "Solar-synchronous terminator twilight survey.", dist: "410 km", time: "6 hours", centre: "RA 00h 30m", filter: "hue-rotate(210deg)" }
-         ]
+      {
+        id: "06",
+        title: "Sector 06 • LEO Hub",
+        img: "6.png",
+        fb: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=700",
+        fov: "5.0° × 5.0°",
+        steps: [
+          { date: "May 2025 DR1", desc: "Sun-synchronous dawn-dusk orbital insertion check.", dist: "650 km", time: "6 hours", centre: "RA 00h 12m, Dec +41°", filter: "none" },
+          { date: "Nov 2025 DR2", desc: "High-latitude geomagnetic aurora emission capture.", dist: "650 km", time: "6 hours", centre: "RA 00h 18m, Dec +67°", filter: "saturate(1.25)" },
+          { date: "May 2026 QR2", desc: "Earth-limb airglow calibration baseline.", dist: "650 km", time: "6 hours", centre: "RA 00h 24m, Dec -12°", filter: "hue-rotate(90deg)" },
+          { date: "QR3 Nov 2026", desc: "All-sky mosaic downlink relay verification.", dist: "650 km", time: "6 hours", centre: "RA 00h 31m, Dec +28°", filter: "hue-rotate(185deg)" }
+        ]
       },
-      { id: "07", title: "Sector 07 • Andromeda", img: "7.png", fb: "https://images.unsplash.com/photo-1543722530-d2c3201371e7?w=800", fov: "3.8° × 3.8°",
-         epochs: [
-           { label: "May 2025 DR1", desc: "M31 spiral dust lane polycyclic aromatic scan.", dist: "2.5 mil. ly", time: "Deep Scan", centre: "RA 00h 42m", filter: "none" },
-           { label: "Nov 2025 DR2", desc: "Double-nucleus stellar velocity dispersion.", dist: "2.5 mil. ly", time: "Deep Scan", centre: "RA 00h 42m", filter: "hue-rotate(120deg)" },
-           { label: "May 2026 QR2", desc: "Halo globular cluster metallicity catalog.", dist: "2.5 mil. ly", time: "Deep Scan", centre: "RA 00h 42m", filter: "contrast(1.2)" },
-           { label: "QR3 Nov 2026", desc: "Satellite galaxy M110 tidal stream bridge.", dist: "2.5 mil. ly", time: "Deep Scan", centre: "RA 00h 42m", filter: "hue-rotate(240deg)" }
-         ]
+      {
+        id: "07",
+        title: "Sector 07 • Andromeda",
+        img: "7.png",
+        fb: "https://images.unsplash.com/photo-1543722530-d2c3201371e7?w=700",
+        fov: "3.8° × 3.8°",
+        steps: [
+          { date: "May 2025 DR1", desc: "M31 spiral dust lane PAH emission survey.", dist: "2.5 mil. ly", time: "Deep Scan", centre: "RA 00h 42m, Dec +41°", filter: "none" },
+          { date: "Nov 2025 DR2", desc: "Double-nucleus stellar velocity dispersion pass.", dist: "2.5 mil. ly", time: "Deep Scan", centre: "RA 00h 43m, Dec +41°", filter: "contrast(1.15)" },
+          { date: "May 2026 QR2", desc: "Outer halo globular cluster metallicity catalog.", dist: "2.5 mil. ly", time: "Deep Scan", centre: "RA 00h 44m, Dec +40°", filter: "hue-rotate(140deg)" },
+          { date: "QR3 Nov 2026", desc: "Satellite dwarf galaxy M110 tidal bridge scan.", dist: "2.5 mil. ly", time: "Deep Scan", centre: "RA 00h 40m, Dec +41°", filter: "hue-rotate(230deg)" }
+        ]
       },
-      { id: "08", title: "Sector 08 • Corona", img: "8.png", fb: "https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?w=800", fov: "2.2° × 2.2°",
-         epochs: [
-           { label: "May 2025 DR1", desc: "Solar magnetic reconnection loop telemetry.", dist: "149 mil. km", time: "4 months", centre: "RA 09h 19m", filter: "none" },
-           { label: "Nov 2025 DR2", desc: "Coronal mass ejection plasma velocity tracking.", dist: "148 mil. km", time: "4 months", centre: "RA 09h 25m", filter: "hue-rotate(30deg)" },
-           { label: "May 2026 QR2", desc: "Heliospheric current sheet polarity mapping.", dist: "150 mil. km", time: "4.1 months", centre: "RA 09h 31m", filter: "saturate(1.4)" },
-           { label: "QR3 Nov 2026", desc: "Perihelion thermal shield endurance benchmark.", dist: "147 mil. km", time: "3.9 months", centre: "RA 09h 38m", filter: "contrast(1.2)" }
-         ]
+      {
+        id: "08",
+        title: "Sector 08 • Corona",
+        img: "8.png",
+        fb: "https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?w=700",
+        fov: "2.2° × 2.2°",
+        steps: [
+          { date: "May 2025 DR1", desc: "Zodiacal dust cloud thermal emission subtraction.", dist: "149 mil. km", time: "4 months", centre: "RA 09h 19m, Dec +16°", filter: "none" },
+          { date: "Nov 2025 DR2", desc: "Solar elongation 90° thermal shield stress test.", dist: "149 mil. km", time: "4 months", centre: "RA 09h 25m, Dec +14°", filter: "saturate(1.2)" },
+          { date: "May 2026 QR2", desc: "Inner asteroid belt silicate spectral sweep.", dist: "152 mil. km", time: "4 months", centre: "RA 09h 31m, Dec +12°", filter: "hue-rotate(50deg)" },
+          { date: "QR3 Nov 2026", desc: "Ecliptic plane background light residual audit.", dist: "148 mil. km", time: "4 months", centre: "RA 09h 38m, Dec +10°", filter: "hue-rotate(215deg)" }
+        ]
       },
-      { id: "09", title: "Sector 09 • Galactic Core", img: "9.png", fb: "https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?w=800", fov: "1.5° × 1.5°",
-         epochs: [
-           { label: "May 2025 DR1", desc: "Sagittarius A* accretion flare infrared monitoring.", dist: "26,000 ly", time: "Long Range", centre: "RA 17h 45m", filter: "none" },
-           { label: "Nov 2025 DR2", desc: "Central molecular zone dense gas kinematics.", dist: "26,000 ly", time: "Long Range", centre: "RA 17h 45m", filter: "hue-rotate(80deg)" },
-           { label: "May 2026 QR2", desc: "S-star cluster relativistic orbit astrometry.", dist: "26,000 ly", time: "Long Range", centre: "RA 17h 45m", filter: "hue-rotate(170deg)" },
-           { label: "QR3 Nov 2026", desc: "All-sky biogenic ice spectral legacy release.", dist: "26,000 ly", time: "Long Range", centre: "RA 17h 45m", filter: "saturate(1.3)" }
-         ]
+      {
+        id: "09",
+        title: "Sector 09 • Galactic Core",
+        img: "9.png",
+        fb: "https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?w=700",
+        fov: "1.5° × 1.5°",
+        steps: [
+          { date: "May 2025 DR1", desc: "Sagittarius A* surrounding molecular ring survey.", dist: "26,000 ly", time: "Long Range", centre: "RA 17h 45m, Dec -29°", filter: "none" },
+          { date: "Nov 2025 DR2", desc: "Dense interstellar extinction ice-absorption map.", dist: "26,000 ly", time: "Long Range", centre: "RA 17h 46m, Dec -29°", filter: "contrast(1.18)" },
+          { date: "May 2026 QR2", desc: "Central parsec star-forming filament spectroscopy.", dist: "26,000 ly", time: "Long Range", centre: "RA 17h 45m, Dec -28°", filter: "hue-rotate(155deg)" },
+          { date: "QR3 Nov 2026", desc: "Deep-field cosmic inflation reionization benchmark.", dist: "26,000 ly", time: "Long Range", centre: "RA 17h 47m, Dec -29°", filter: "hue-rotate(270deg)" }
+        ]
       }
     ];
 
-    const ring = document.getElementById("ring"), modal = document.getElementById("modal"), mImg = document.getElementById("mImg");
-    const trackWrap = document.getElementById("trackWrap"), trackFill = document.getElementById("trackFill"), rocket = document.getElementById("rocket");
-    const tlNodes = document.getElementById("tlNodes"), tlActiveLabel = document.getElementById("tlActiveLabel");
-    let angle = 0, vel = 0, drag = false, startX = 0, moved = 0;
-    let activeDest = null, currentPct = 0, targetPct = 0, scrubbing = false;
+    /* 3. Build 3D Orbit Wheel (9 Compact Cards) */
+    const ring = document.getElementById("orbitRing");
+    const viewport = document.getElementById("viewport");
+    const radius = 350;
+    let angle = 0, vel = 0, isDragging = false, startX = 0, dragDist = 0;
 
-    destinations.forEach((d, i) => {
+    destinations.forEach((item, idx) => {
       const card = document.createElement("div");
-      card.className = "card";
-      card.style.transform = `rotateY(${i * 40}deg) translateZ(350px)`;
-      card.innerHTML = `<img src="${d.img}" onerror="this.src='${d.fb}'"><div class="card-info"><span>Sector ${d.id}</span><h3>${d.title.split('• ')[1]}</h3></div>`;
-      card.onclick = () => {
-        if (moved > 8) return;
-        openDestination(d);
-      };
+      card.className = "sky-card";
+      card.style.transform = `rotateY(${idx * 40}deg) translateZ(${radius}px)`;
+      card.innerHTML = `
+        <img src="${item.img}" onerror="this.src='${item.fb}'" alt="${item.title}" />
+        <div class="sky-card-info">
+          <span>Sector ${item.id}</span>
+          <h3>${item.title.split("•")[1].trim()}</h3>
+        </div>
+      `;
+      card.addEventListener("click", () => {
+        if (dragDist < 8) openDestinationModal(item);
+      });
       ring.appendChild(card);
     });
 
-    function openDestination(d) {
-      activeDest = d;
-      mImg.src = d.img; mImg.onerror = () => mImg.src = d.fb;
-      document.getElementById("mFov").textContent = `Field of view: ${d.fov}`;
-      document.getElementById("mTitle").textContent = d.title;
-      document.getElementById("customDate").value = "";
+    viewport.addEventListener("pointerdown", (e) => {
+      isDragging = true;
+      startX = e.clientX;
+      dragDist = 0;
+      vel = 0;
+    });
 
-      tlNodes.innerHTML = "";
-      d.epochs.forEach((ep, idx) => {
-        const btn = document.createElement("button");
-        btn.className = "node-btn" + (idx === 0 ? " active" : "");
-        btn.textContent = ep.label;
-        btn.onclick = () => selectEpoch(idx);
-        tlNodes.appendChild(btn);
+    window.addEventListener("pointermove", (e) => {
+      if (!isDragging) return;
+      const dx = e.clientX - startX;
+      dragDist += Math.abs(dx);
+      angle += dx * 0.28;
+      vel = dx * 0.28;
+      startX = e.clientX;
+    });
+
+    window.addEventListener("pointerup", () => {
+      isDragging = false;
+    });
+
+    document.getElementById("spinBtn").addEventListener("click", () => {
+      vel = (Math.random() > 0.5 ? 1 : -1) * (10 + Math.random() * 5);
+    });
+
+    document.getElementById("resetBtn").addEventListener("click", () => {
+      angle = 0;
+      vel = 0;
+    });
+
+    document.getElementById("trailCheck").addEventListener("change", (e) => {
+      document.getElementById("orbitTrail").style.display = e.target.checked ? "block" : "none";
+    });
+
+    document.getElementById("targetCheck").addEventListener("change", (e) => {
+      document.getElementById("targetReticle").style.display = e.target.checked ? "block" : "none";
+    });
+
+    (function animateWheel() {
+      if (!isDragging) {
+        angle += vel;
+        vel *= 0.94;
+        if (Math.abs(vel) < 0.05) angle -= 0.11;
+      }
+      ring.style.transform = `rotateY(${angle}deg)`;
+      requestAnimationFrame(animateWheel);
+    })();
+
+    /* 4. Pop-Out Modal + Smooth Rocket Timeline + Date & Coordinates Inputs */
+    const modalBackdrop = document.getElementById("modalBackdrop");
+    const modalImg = document.getElementById("modalImg");
+    const timelineTrack = document.getElementById("timelineTrack");
+    const timelineFill = document.getElementById("timelineFill");
+    const timelineRocket = document.getElementById("timelineRocket");
+    const timelineNodes = document.getElementById("timelineNodes");
+    const timelineLabels = document.getElementById("timelineLabels");
+
+    let activeItem = null;
+    let currentProgress = 0;
+    let targetProgress = 0;
+    let isScrubbing = false;
+
+    function openDestinationModal(item) {
+      activeItem = item;
+      modalImg.src = item.img;
+      modalImg.onerror = () => { modalImg.src = item.fb; };
+      document.getElementById("modalFov").textContent = `Field of view: ${item.fov}`;
+      document.getElementById("modalTitle").textContent = item.title;
+      document.getElementById("customDateInput").value = "";
+      document.getElementById("customCoordsInput").value = "";
+
+      // Build per-photo timeline nodes & labels
+      timelineNodes.innerHTML = "";
+      timelineLabels.innerHTML = "";
+      item.steps.forEach((step, idx) => {
+        const pct = (idx / (item.steps.length - 1)) * 100;
+
+        const dot = document.createElement("div");
+        dot.className = "t-node";
+        dot.addEventListener("click", (e) => {
+          e.stopPropagation();
+          targetProgress = pct;
+        });
+        timelineNodes.appendChild(dot);
+
+        const lbl = document.createElement("span");
+        lbl.textContent = step.date;
+        lbl.addEventListener("click", () => {
+          targetProgress = pct;
+        });
+        timelineLabels.appendChild(lbl);
       });
 
-      currentPct = 0;
-      selectEpoch(0);
-      modal.classList.add("open");
+      currentProgress = 0;
+      targetProgress = 0;
+      applyStepData(0);
+      modalBackdrop.classList.add("open");
     }
 
-    function selectEpoch(idx) {
-      if (!activeDest) return;
-      const ep = activeDest.epochs[idx];
-      targetPct = (idx / (activeDest.epochs.length - 1)) * 100;
-      document.getElementById("mDesc").textContent = ep.desc;
-      document.getElementById("mDist").textContent = ep.dist;
-      document.getElementById("mTime").textContent = ep.time;
-      document.getElementById("mCentre").textContent = ep.centre;
-      document.getElementById("mObs").textContent = ep.label;
-      tlActiveLabel.textContent = ep.label;
-      mImg.style.filter = ep.filter;
-      [...tlNodes.children].forEach((b, i) => b.classList.toggle("active", i === idx));
+    function applyStepData(stepIndex) {
+      if (!activeItem) return;
+      const step = activeItem.steps[stepIndex];
+      document.getElementById("modalDesc").textContent = step.desc;
+      document.getElementById("modalDist").textContent = step.dist;
+      document.getElementById("modalTime").textContent = step.time;
+      document.getElementById("modalCentre").textContent = step.centre;
+      document.getElementById("modalObs").textContent = step.date;
+      document.getElementById("timelineActiveLabel").textContent = step.date;
+      modalImg.style.filter = step.filter;
+
+      [...timelineNodes.children].forEach((n, i) => n.classList.toggle("active", i === stepIndex));
+      [...timelineLabels.children].forEach((l, i) => l.classList.toggle("active", i === stepIndex));
     }
 
     function updateScrub(clientX) {
-      if (!activeDest) return;
-      const rect = trackWrap.getBoundingClientRect();
+      const rect = timelineTrack.getBoundingClientRect();
       const pct = Math.max(0, Math.min(100, ((clientX - rect.left) / rect.width) * 100));
-      targetPct = pct;
-      const idx = Math.round((pct / 100) * (activeDest.epochs.length - 1));
-      selectEpoch(idx);
-      targetPct = pct;
+      targetProgress = pct;
     }
 
-    trackWrap.onpointerdown = e => { scrubbing = true; updateScrub(e.clientX); };
-    window.addEventListener("pointermove", e => { if (scrubbing) updateScrub(e.clientX); });
-    window.addEventListener("pointerup", () => scrubbing = false);
+    timelineTrack.addEventListener("pointerdown", (e) => {
+      isScrubbing = true;
+      updateScrub(e.clientX);
+    });
 
-    function applyCustomDate() {
-      const val = document.getElementById("customDate").value.trim();
-      if (!val) return;
-      document.getElementById("mObs").textContent = val;
-      tlActiveLabel.textContent = val;
-      mImg.style.filter = "hue-rotate(110deg) contrast(1.15)";
-    }
-    document.getElementById("showDateBtn").onclick = applyCustomDate;
-    document.getElementById("customDate").onkeydown = e => { if (e.key === "Enter") applyCustomDate(); };
+    window.addEventListener("pointermove", (e) => {
+      if (isScrubbing) updateScrub(e.clientX);
+    });
 
-    document.getElementById("vp").onpointerdown = e => { drag = true; startX = e.clientX; moved = 0; vel = 0; };
-    window.addEventListener("pointermove", e => { if (!drag) return; const dx = e.clientX - startX; moved += Math.abs(dx); angle += dx * 0.25; vel = dx * 0.25; startX = e.clientX; });
-    window.addEventListener("pointerup", () => drag = false);
-    document.getElementById("spin").onclick = () => vel = (Math.random() > 0.5 ? 1 : -1) * 14;
-    document.getElementById("reset").onclick = () => { angle = 0; vel = 0; };
-    document.getElementById("mark").onchange = e => document.getElementById("reticle").style.display = e.target.checked ? "block" : "none";
-    document.getElementById("trail").onchange = e => document.getElementById("trailLine").style.display = e.target.checked ? "block" : "none";
-    document.getElementById("close").onclick = () => modal.classList.remove("open");
-    modal.onclick = e => { if (e.target === modal) modal.classList.remove("open"); };
+    window.addEventListener("pointerup", () => {
+      if (!isScrubbing) return;
+      isScrubbing = false;
+      // Snap smoothly to nearest milestone
+      const nearestIdx = Math.round((targetProgress / 100) * 3);
+      targetProgress = (nearestIdx / 3) * 100;
+    });
 
-    (function loop() {
-      if (!drag) {
-        angle += vel; vel *= 0.94;
-        if (Math.abs(vel) < 0.05) angle -= 0.1;
+    let lastStepIdx = -1;
+    (function animateRocket() {
+      currentProgress += (targetProgress - currentProgress) * 0.14;
+      timelineFill.style.width = `${currentProgress}%`;
+      timelineRocket.style.left = `${currentProgress}%`;
+
+      if (activeItem && modalBackdrop.classList.contains("open")) {
+        const nearestIdx = Math.round((currentProgress / 100) * (activeItem.steps.length - 1));
+        if (nearestIdx !== lastStepIdx) {
+          lastStepIdx = nearestIdx;
+          applyStepData(nearestIdx);
+        }
       }
-      ring.style.transform = `rotateY(${angle}deg)`;
-
-      currentPct += (targetPct - currentPct) * 0.12;
-      trackFill.style.width = currentPct + "%";
-      rocket.style.left = currentPct + "%";
-
-      requestAnimationFrame(loop);
+      requestAnimationFrame(animateRocket);
     })();
+
+    /* Custom Date Input Handler */
+    function handleCustomDate() {
+      const val = document.getElementById("customDateInput").value.trim();
+      if (!val) return;
+      document.getElementById("modalObs").textContent = val;
+      document.getElementById("timelineActiveLabel").textContent = val;
+      modalImg.style.filter = "contrast(1.12) saturate(1.2)";
+    }
+    document.getElementById("applyDateBtn").addEventListener("click", handleCustomDate);
+    document.getElementById("customDateInput").addEventListener("keydown", (e) => {
+      if (e.key === "Enter") handleCustomDate();
+    });
+
+    /* Custom Sky Coordinates Input Handler */
+    function handleCustomCoords() {
+      const val = document.getElementById("customCoordsInput").value.trim();
+      if (!val) return;
+      document.getElementById("modalCentre").textContent = val;
+      document.getElementById("modalFov").textContent = `Target Lock • ${val}`;
+    }
+    document.getElementById("applyCoordsBtn").addEventListener("click", handleCustomCoords);
+    document.getElementById("customCoordsInput").addEventListener("keydown", (e) => {
+      if (e.key === "Enter") handleCustomCoords();
+    });
+
+    document.getElementById("closeModalBtn").addEventListener("click", () => {
+      modalBackdrop.classList.remove("open");
+      lastStepIdx = -1;
+    });
+
+    modalBackdrop.addEventListener("click", (e) => {
+      if (e.target === modalBackdrop) {
+        modalBackdrop.classList.remove("open");
+        lastStepIdx = -1;
+      }
+    });
   </script>
 </body>
 </html>
