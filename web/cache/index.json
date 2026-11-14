@@ -1,0 +1,27 @@
+{
+  "targets": [
+    {
+      "name": "WISE 0855",
+      "slug": "wise-0855",
+      "ra_deg": 133.795129,
+      "dec_deg": -7.245147,
+      "kind": "fast-moving brown dwarf",
+      "detectors": {
+        "d6": [
+          {
+            "png": "cache/wise-0855/d6/pass-1.png",
+            "json": "cache/wise-0855/d6/pass-1.json"
+          },
+          {
+            "png": "cache/wise-0855/d6/pass-2.png",
+            "json": "cache/wise-0855/d6/pass-2.json"
+          },
+          {
+            "png": "cache/wise-0855/d6/pass-3.png",
+            "json": "cache/wise-0855/d6/pass-3.json"
+          }
+        ]
+      }
+    }
+  ]
+}

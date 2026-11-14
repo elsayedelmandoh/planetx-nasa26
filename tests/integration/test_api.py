@@ -11,6 +11,12 @@ def test_health_returns_ok() -> None:
     assert response.json()["status"] == "ok"
 
 
+def test_health_lists_the_active_data_releases() -> None:
+    response = client.get("/health")
+
+    assert response.json()["data_releases"] == ["spherex_dr1", "spherex_qr3"]
+
+
 def test_targets_lists_the_5_benchmark_targets() -> None:
     response = client.get("/api/targets")
 

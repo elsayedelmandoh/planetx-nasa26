@@ -31,7 +31,7 @@ class Settings(BaseSettings):
     ENV: str = "development"
 
     # sky data values, set in configs/default.yaml
-    DATA_RELEASE: str = "qr2"
+    DATA_RELEASES: list[str] = ["spherex_dr1", "spherex_qr3"]
     FOV_PRESETS_ARCMIN: list[float] = [2, 5, 15, 30]
     DEFAULT_FOV_ARCMIN: float = 5
     TARGETS: list[dict] = []

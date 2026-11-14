@@ -102,3 +102,7 @@ why the project looks the way it does. one line per decision, oldest first.
   committed under web/cache/<target>/ -- data/processed/ stays gitignored, while web/ is already copied
   into the docker image and served at / by the static mount, so no new route or dockerfile line is
   needed -- web/ mixes code and generated assets.
+- 2026-11-14 -- supersedes the docker space entry: deploy is a free static hugging face space; ci
+  pushes only web/ (with the precomputed cache) at the space root -- docker spaces now return 402
+  and need hf pro -- no backend in production: the 5 cached benchmark targets work, live queries for
+  other coordinates do not, and the frontend must read targets and frames from static files.
