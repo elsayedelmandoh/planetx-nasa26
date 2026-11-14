@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>NASA Space Apps | Planet X</title>
+  <meta name="theme-color" content="#000000" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;600;700&family=Barlow+Condensed:wght@400;600;700&family=Bellefair&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-page="home">
+  <div id="film" role="dialog" aria-modal="true" aria-label="Introduction film" aria-describedby="fcap"><canvas id="fc"></canvas><div id="fct"></div><div id="fcap" aria-live="polite"></div><div id="ftag">Illustrated: generated graphics, not real SPHEREx pixels.</div><button id="fskip">Skip ✕</button><div id="fbar"><button id="fback" aria-label="Previous scene">←</button><button id="fpause" aria-label="Pause or resume">II</button><div id="fdots"></div><button id="fcc" aria-pressed="true" aria-label="Captions on or off">CC</button><button id="flang" aria-label="Switch language">عربي</button><button id="fsnd" aria-pressed="false" aria-label="Sound on or off">Sound</button><button id="fnext" class="go">Next →</button></div><div id="fprog"><i></i></div></div>
+  <script>(function(){var r=location.hash.replace(/^#/,'').split('?')[0]||'home';var ok=['home','explore','museum','team','signin'].indexOf(r)>=0?r:'home';document.body.dataset.page=ok;if(ok==='home'){var f=document.getElementById('film');if(f)f.className='on show'}})();</script>
+  <canvas id="spaceCanvas"></canvas>
+  <header>
+    <a href="#home" class="brand">
+      <div class="logo">✦</div>
+      <div class="brand-text">
+        <span>NASA Space Apps</span>
+        <strong>Planet X</strong>
+      </div>
+    </a>
+    <nav aria-label="Main">
+      <ul>
+        <li><a href="#intro" id="introBtn" role="button" aria-haspopup="dialog"><b>00</b><i class="play">▶</i> Intro</a></li>
+        <li><a href="#home"><b>01</b> Home</a></li>
+        <li><a href="#explore"><b>02</b> Explore</a></li>
+        <li><a href="#museum"><b>03</b> Museum Halls</a></li>
+        <li><a href="#team"><b>04</b> Team</a></li>
+        <li><a href="#signin"><b>05</b> Sign in</a></li>
+      </ul>
+    </nav>
+  </header>
+  <div id="views">
+<div class="view" id="view-home" data-view="home">
+  <main>
+    <section class="hero">
+      <div>
+        <div class="hero-tag rv" style="--d:0">Spot the movers in the</div>
+        <h1 class="rv" style="--d:1">Sky</h1>
+        <p class="rv" style="--d:2">
+          Since 2025, NASA’s SPHEREx mission has mapped the entire sky every six months in
+          102 bands of near-infrared light. Comets, asteroids, stars, brown dwarfs and even new
+          planets give themselves away by shifting position between images. Enter a patch of sky,
+          flip through the frames like a little video, and find what moves.
+        </p>
+        <div class="hero-hint rv" style="--d:3">
+          Click anywhere in space to spawn more star particles &bull; Active Particles: <strong id="particleCount">140</strong>
+        </div>
+      </div>
+      <div class="hero-cta-wrap rv" style="--d:3">
+        <a href="#explore" class="explore-btn">Explore</a>
+        <a href="#home" class="scroll-link" data-scroll="articles">↓ Read the Challenge Brief</a>
+      </div>
+    </section>
+
+    <!-- Articles Section -->
+    <section class="articles-section" id="articles">
+      <div class="section-head">
+        <div>
+          <h2 class="section-title"><span>01</span> Challenge Briefing</h2>
+          <p class="section-sub">Background, objectives and test targets for the Planet X and SPHEREx challenge.</p>
+        </div>
+        <div class="filter-tabs" id="filterTabs">
+          <button class="tab-btn active" data-cat="All">All Topics</button>
+          <button class="tab-btn" data-cat="Challenge">Challenge</button>
+          <button class="tab-btn" data-cat="SPHEREx">SPHEREx</button>
+          <button class="tab-btn" data-cat="Discovery">Discovery</button>
+        </div>
+      </div>
+
+      <div class="articles-grid" id="articlesGrid"></div>
+    </section>
+  </main>
+  </main>
+
+  <!-- Full Article Reader Modal -->
+  <div class="modal" id="articleModal">
+    <div class="reader-panel">
+      <button class="close-btn" id="closeReader">✕ Close</button>
+      <img class="reader-banner" id="readerImg" src="" alt="Article Cover">
+      <div class="reader-content">
+        <div class="reader-meta" id="readerMeta"></div>
+        <h2 id="readerTitle"></h2>
+        <div class="reader-text" id="readerBody"></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="view" id="view-explore" data-view="explore">
+  <main class="explore">
+    <h1 class="page-title"><span>02</span> Pick your destination</h1>
+    <p class="page-sub">Nine real SPHEREx gallery images with their published details, five challenge targets, and a viewer. Enter any RA/Dec, field of view (60″ to 6°) and date to open that patch of sky. Pixels are simulated; names, positions, dates and wavelengths are real.</p>
+    <div id="sx" class="sx-base">
+
+<div class="sxhead"><form id="f"><label>RA (deg or hh:mm:ss)<input id="ra" type="text" placeholder="133.7951"></label><label>Dec (deg or dd:mm:ss)<input id="dec" type="text" placeholder="-7.2451"></label>
+<label>Field of view<span class="row" style="gap:4px"><input id="fv0" type="text" value="240" style="width:70px"><select id="fu"><option value="1">″ arcsec</option><option value="60">′ arcmin</option><option value="3600">° deg</option></select></span></label><label>Date (optional)<input type="date" id="dt0" min="2025-05-01" max="2026-11-13"></label><button class="go">Search</button></form>
+<div id="err" role="alert"></div><div class="row" id="chips"></div></div>
+<div class="stage" id="st" tabindex="0" aria-label="Ring of nine SPHEREx images. Arrow keys rotate, Enter opens."><i class="mk"></i><div class="ring" id="ring"></div></div>
+<div class="bar"><div id="sel"></div><button class="spin" id="sp">SPIN ORBIT</button></div>
+<details><summary>Validation: the five challenge targets (computed from published positions and proper motions)</summary><div id="val"></div></details>
+
+    </div>
+    <p class="explore-foot">Want the science first? <a href="#museum">Walk through the Museum Halls</a>.</p>
+  </main>
+
+<div id="md" class="sx-base" role="dialog" aria-modal="true" aria-labelledby="mt" hidden><div class="dlg">
+<div class="dh"><div><h2 id="mt"></h2><small id="mm"></small></div><button id="x">✕ Close</button></div>
+<div id="pg" hidden><i id="pf"></i><span id="pt"></span></div>
+<div class="tabs" id="tabs"></div>
+<div class="body"><div><canvas class="s" id="big" width="560" height="560" aria-label="Sky viewer: drag to pan, scroll to zoom"></canvas>
+<div id="cmpw" hidden><canvas class="s" id="ca" width="300" height="300"></canvas><canvas class="s" id="cb" width="300" height="300"></canvas><canvas class="s full" id="cr" width="300" height="300" hidden></canvas></div></div>
+<div class="side">
+<div class="pn" id="p-info" hidden></div>
+<div class="pn" id="p-view"><dl><dt>Centre</dt><dd id="co"></dd><dt>Field of view</dt><dd id="fv"></dd><dt>Observation</dt><dd id="ob"></dd></dl>
+<label>Field of view / zoom<input id="fov" type="range" min="60" max="600" step="10"></label>
+<div class="row" style="justify-content:flex-start"><button id="pl">Play</button><button id="zi">Zoom in</button><button id="zo">Zoom out</button><button id="rs">Reset view</button></div>
+<label>Speed<input id="spd" type="range" min="1" max="12" value="4"></label>
+<label>See this sky on a date<span><input type="date" id="dt" min="2025-05-01" max="2026-11-13"> <button id="go2">Show</button></span></label>
+<div class="ck"><label class="i"><input type="checkbox" id="tr" checked>Trail</label><label class="i"><input type="checkbox" id="mkc" checked>Mark target</label><label class="i"><input type="checkbox" id="cat">Centre on catalog position</label><label class="i"><input type="checkbox" id="gaia">Gaia</label><label class="i"><input type="checkbox" id="wise">WISE</label><label class="i"><input type="checkbox" id="dets">Detections</label></div>
+<small>Aladin Lite goes in the context map slot of the real site.</small><button id="sh">Copy share link</button></div>
+<div class="pn" id="p-cmp" hidden><div class="row" style="justify-content:flex-start"><label>Epoch A<select id="ea"></select></label><label>Epoch B<select id="eb"></select></label></div>
+<div class="ck"><label class="i"><input type="radio" name="md" value="side" checked>Side by side</label><label class="i"><input type="radio" name="md" value="blink">Blink</label><label class="i"><input type="radio" name="md" value="diff">A − B</label><label class="i"><input type="radio" name="md" value="sum">A + B</label></div>
+<label class="i"><input type="checkbox" id="chb">Use a different channel for B (shows the wavelength trap)</label><div id="cmpq"></div><small>Both frames are drawn on one TAN/WCS grid centred on the same RA/Dec.</small></div>
+<div class="pn" id="p-dis" hidden><p id="dtx" style="margin:0"><b>Explore:</b> click any spot in the image to ask “what is here?”. Somewhere in this field one moving source matches no catalog. Find it, then name it.</p><div id="dno" class="warn" hidden></div><div id="pick" aria-live="polite">Click the image to start.</div><small id="dh">The hint unlocks after your first click: try to find it yourself first.</small><button id="run" class="go">Show all detections (hint)</button><div id="dtab"></div><div class="row" style="justify-content:flex-start"><button id="sv">Save candidate</button><button id="ex">Export report</button></div><textarea id="rep" readonly hidden></textarea><div id="saved"></div>
+<small>How it works: align frames on one grid, subtract, find residual pairs, link them into a track, then match against Gaia and WISE. Anything left unmatched is a candidate.</small></div>
+<div class="pn" id="p-spec" hidden><div class="row" style="justify-content:flex-start"><label>Detector<select id="sd"></select></label><label>Channel (1–17)<select id="sc"></select></label></div>
+<div class="ck"><label class="i"><input type="checkbox" id="co4">Co-add detectors and epochs (better S/N)</label><label class="i"><input type="checkbox" id="ovb">Overlay epoch B</label></div><canvas class="s" id="spc" width="420" height="260" style="aspect-ratio:auto"></canvas><small id="spn"></small></div>
+<div class="pn" id="p-q" hidden><dl id="qm"></dl><label class="i"><input type="checkbox" id="mask">Show bad-pixel mask on the image</label><div id="qf"></div></div>
+</div></div>
+<div class="tl"><div id="trk" role="slider" tabindex="0" aria-label="Observation date" aria-valuemin="1" aria-valuemax="24"><div id="fill"></div>
+<svg id="rk" viewBox="0 0 24 24" aria-hidden="true"><g transform="rotate(90 12 12)"><path d="M12 1.5c3.2 3 4.2 7.2 4.2 11.5l-2.2 3.2h-4l-2.2-3.2c0-4.3 1-8.5 4.2-11.5z" fill="#fff" stroke="#7b8ba5" stroke-width=".6"/><circle cx="12" cy="9" r="1.9" fill="#1e90ff"/><path d="M7.8 12.5l-3.3 4.8 3.7-1.2zM16.2 12.5l3.3 4.8-3.7-1.2z" fill="#ff5d73"/><path d="M10 16.5h4l-2 5.8z" fill="#D0D6F9"/></g></svg></div>
+<div class="lab"><span>May 2025</span><span>DR1 | QR3</span><span>Nov 2026</span></div></div>
+</div></div>
+
+</div>
+<div class="view" id="view-museum" data-view="museum">
+  <main>
+    <h1 class="page-title"><span>03</span> Museum halls</h1>
+    <p class="page-sub">Four short exhibitions explain the science behind this project. Each one is interactive and ends in the real tool that uses it.</p>
+    <div class="hall-grid" id="hgrid">
+      <button class="hall-card" type="button" aria-haspopup="dialog">
+        <span class="hall-art"><svg viewBox="0 0 320 150" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect x="40" y="0" width="60" height="150" fill="#fff" opacity=".08"/><rect x="108" y="0" width="170" height="150" fill="#D0D6F9" opacity=".1"/><path d="M14 132C70 130 96 40 132 34 170 30 200 92 306 126" stroke="#D0D6F9" fill="none" stroke-width="2" stroke-linecap="round"/><line x1="132" y1="26" x2="132" y2="136" stroke="#fff" stroke-dasharray="4 4" opacity=".7"/></svg></span>
+        <span class="hall-body"><span class="hall-eyebrow">Hall 01</span><h3>Infrared Universe</h3><p>Why does SPHEREx look in the infrared?</p><span class="hall-go"><span>Enter the hall</span></span></span>
+      </button>
+      <button class="hall-card" type="button" aria-haspopup="dialog">
+        <span class="hall-art"><svg viewBox="0 0 320 150" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><path d="M12 48C60 52 78 54 96 64 104 108 112 108 120 66 150 70 170 72 186 76 190 112 196 112 200 78 232 84 252 88 268 92 272 122 280 122 284 96 296 98 306 100" stroke="#D0D6F9" fill="none" stroke-width="2" stroke-linecap="round"/><g stroke="#D0D6F9" opacity=".3"><line x1="108" y1="20" x2="108" y2="130"/><line x1="193" y1="20" x2="193" y2="130"/><line x1="278" y1="20" x2="278" y2="130"/></g></svg></span>
+        <span class="hall-body"><span class="hall-eyebrow">Hall 02</span><h3>Dust and Ices</h3><p>How can light reveal frozen water?</p><span class="hall-go"><span>Enter the hall</span></span></span>
+      </button>
+      <button class="hall-card" type="button" aria-haspopup="dialog">
+        <span class="hall-art"><svg viewBox="0 0 320 150" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><g stroke="#fff" opacity=".18"><line x1="16" y1="36" x2="16" y2="54"/><line x1="26" y1="36" x2="26" y2="54"/><line x1="36" y1="36" x2="36" y2="54"/><line x1="46" y1="36" x2="46" y2="54"/><line x1="56" y1="36" x2="56" y2="54"/><line x1="66" y1="36" x2="66" y2="54"/><line x1="76" y1="36" x2="76" y2="54"/><line x1="86" y1="36" x2="86" y2="54"/><line x1="96" y1="36" x2="96" y2="54"/><line x1="106" y1="36" x2="106" y2="54"/><line x1="116" y1="36" x2="116" y2="54"/><line x1="126" y1="36" x2="126" y2="54"/><line x1="136" y1="36" x2="136" y2="54"/><line x1="146" y1="36" x2="146" y2="54"/><line x1="156" y1="36" x2="156" y2="54"/><line x1="166" y1="36" x2="166" y2="54"/><line x1="176" y1="36" x2="176" y2="54"/><line x1="186" y1="36" x2="186" y2="54"/><line x1="196" y1="36" x2="196" y2="54"/><line x1="206" y1="36" x2="206" y2="54"/><line x1="216" y1="36" x2="216" y2="54"/><line x1="226" y1="36" x2="226" y2="54"/><line x1="236" y1="36" x2="236" y2="54"/><line x1="246" y1="36" x2="246" y2="54"/><line x1="256" y1="36" x2="256" y2="54"/><line x1="266" y1="36" x2="266" y2="54"/><line x1="276" y1="36" x2="276" y2="54"/><line x1="286" y1="36" x2="286" y2="54"/><line x1="296" y1="36" x2="296" y2="54"/><line x1="306" y1="36" x2="306" y2="54"/><line x1="316" y1="36" x2="316" y2="54"/><line x1="16" y1="100" x2="16" y2="118"/><line x1="26" y1="100" x2="26" y2="118"/><line x1="36" y1="100" x2="36" y2="118"/><line x1="46" y1="100" x2="46" y2="118"/><line x1="56" y1="100" x2="56" y2="118"/><line x1="66" y1="100" x2="66" y2="118"/><line x1="76" y1="100" x2="76" y2="118"/><line x1="86" y1="100" x2="86" y2="118"/><line x1="96" y1="100" x2="96" y2="118"/><line x1="106" y1="100" x2="106" y2="118"/><line x1="116" y1="100" x2="116" y2="118"/><line x1="126" y1="100" x2="126" y2="118"/><line x1="136" y1="100" x2="136" y2="118"/><line x1="146" y1="100" x2="146" y2="118"/><line x1="156" y1="100" x2="156" y2="118"/><line x1="166" y1="100" x2="166" y2="118"/><line x1="176" y1="100" x2="176" y2="118"/><line x1="186" y1="100" x2="186" y2="118"/><line x1="196" y1="100" x2="196" y2="118"/><line x1="206" y1="100" x2="206" y2="118"/><line x1="216" y1="100" x2="216" y2="118"/><line x1="226" y1="100" x2="226" y2="118"/><line x1="236" y1="100" x2="236" y2="118"/><line x1="246" y1="100" x2="246" y2="118"/><line x1="256" y1="100" x2="256" y2="118"/><line x1="266" y1="100" x2="266" y2="118"/><line x1="276" y1="100" x2="276" y2="118"/><line x1="286" y1="100" x2="286" y2="118"/><line x1="296" y1="100" x2="296" y2="118"/><line x1="306" y1="100" x2="306" y2="118"/><line x1="316" y1="100" x2="316" y2="118"/></g><path d="M16 45H92" stroke="#D0D6F9" fill="none" stroke-width="2" stroke-linecap="round" opacity=".5"/><circle cx="92" cy="45" r="5" fill="#D0D6F9"/><path d="M16 109H236" stroke="#D0D6F9" fill="none" stroke-width="2" stroke-linecap="round" opacity=".5"/><circle cx="236" cy="109" r="5" fill="#fff"/></svg></span>
+        <span class="hall-body"><span class="hall-eyebrow">Hall 03</span><h3>Moving Stars</h3><p>How far does a star drift?</p><span class="hall-go"><span>Enter the hall</span></span></span>
+      </button>
+      <button class="hall-card" type="button" aria-haspopup="dialog">
+        <span class="hall-art"><svg viewBox="0 0 320 150" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><path d="M40 75H280" stroke="#D0D6F9" stroke-width="2" opacity=".5"/><circle cx="40" cy="75" r="12" fill="#0e1221" stroke="#D0D6F9" stroke-width="2"/><circle cx="100" cy="75" r="12" fill="#0e1221" stroke="#D0D6F9" stroke-width="2"/><circle cx="160" cy="75" r="12" fill="#0e1221" stroke="#D0D6F9" stroke-width="2"/><circle cx="220" cy="75" r="12" fill="#0e1221" stroke="#D0D6F9" stroke-width="2"/><circle cx="280" cy="75" r="12" fill="#fff" stroke="#D0D6F9" stroke-width="2"/></svg></span>
+        <span class="hall-body"><span class="hall-eyebrow">Hall 04</span><h3>Discovery</h3><p>How does a candidate become a result?</p><span class="hall-go"><span>Enter the hall</span></span></span>
+      </button>
+    </div>
+  </main>
+
+  <div id="hall" role="dialog" aria-modal="true" aria-labelledby="hht" aria-describedby="htx">
+    <div class="hd">
+      <div class="hd-top"><small class="e" id="hhe"></small><button id="hx" type="button">✕ Close</button></div>
+      <h3 id="hht"></h3>
+      <canvas id="hcv" role="img" aria-label="Interactive exhibit"></canvas>
+      <div class="cn" id="hctl"></div>
+      <div id="hrd" aria-live="polite"></div>
+      <p id="htx"></p>
+      <div class="cn"><button class="go" id="hgo" type="button"></button></div>
+      <p class="hn" id="hnote"></p>
+    </div>
+  </div>
+</div>
+<div class="view" id="view-team" data-view="team">
+  <main>
+    <h1 class="page-title"><span>04</span> Meet our team</h1>
+    <p class="page-sub">Direct mission contacts, roles, and team leads.</p>
+    <div class="team-grid" id="teamGrid"></div>
+  </main>
+</div>
+<div class="view" id="view-signin" data-view="signin">
+  <main class="auth-main">
+    <h1 class="page-title"><span>05</span> Sign in</h1>
+    <p class="page-sub">Keep your sky candidates and favourite fields with you.</p>
+    <div class="auth-wrap">
+      <div class="auth-copy">
+        <h2>Your sky, saved</h2>
+        <p>Sign in to keep the candidates you find in the Explore viewer, return to the same patch of sky, and carry your share links with you.</p>
+      </div>
+      <div class="auth-card" id="authCard">
+        <div class="auth-tabs" role="tablist" aria-label="Account">
+          <button type="button" class="pill active" id="tabIn" role="tab" aria-selected="true">Sign in</button>
+          <button type="button" class="pill" id="tabUp" role="tab" aria-selected="false">Create account</button>
+        </div>
+        <form class="auth-form" id="authForm" novalidate>
+          <div class="collapse" id="nameWrap"><div><div class="fld"><label for="aName">Name</label><input id="aName" type="text" autocomplete="name" placeholder="Your name"></div></div></div>
+          <div class="fld"><label for="aMail">Email</label><input id="aMail" type="email" autocomplete="email" placeholder="you@example.com" required></div>
+          <div class="fld"><label for="aPass">Password</label><div class="pw-row"><input id="aPass" type="password" autocomplete="current-password" placeholder="At least 8 characters" required><button type="button" class="pw-toggle" id="pwT" aria-label="Show password" aria-pressed="false">Show</button></div></div>
+          <div class="auth-row"><label><input type="checkbox" id="aRem" checked> Keep me signed in</label></div>
+          <div class="auth-err" id="authErr" role="alert"></div>
+          <button class="pill solid auth-submit" type="submit" id="authBtn">Sign in</button>
+        </form>
+        <p class="auth-note">This is a front-end demo. There is no server yet, so your details stay in this browser and your password is never stored.</p>
+        <div class="auth-done" id="authDone" aria-live="polite">
+          <div class="avatar" id="avatar">✦</div>
+          <h3 id="doneName">Welcome</h3>
+          <p id="doneMail"></p>
+          <div class="auth-actions"><a class="pill solid" href="#explore">Explore the sky</a><button type="button" class="pill" id="outBtn">Sign out</button></div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
