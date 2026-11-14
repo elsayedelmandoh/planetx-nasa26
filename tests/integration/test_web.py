@@ -1,3 +1,5 @@
+import re
+
 from fastapi.testclient import TestClient
 from src.api.app import app
 
@@ -37,3 +39,13 @@ def test_cache_index_json_served_and_matches_contract() -> None:
     frames = target["detectors"]["d6"]
     assert [f["png"] for f in frames] == [f"cache/wise-0855/d6/pass-{n}.png" for n in (1, 2, 3)]
     assert [f["json"] for f in frames] == [f"cache/wise-0855/d6/pass-{n}.json" for n in (1, 2, 3)]
+
+
+def test_home_and_team_served_and_clean() -> None:
+    for page in ("home.html", "team.html"):
+        response = client.get(f"/{page}")
+
+        assert response.status_code == 200
+        assert not re.search(r"[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,}", response.text)
+        assert "—" not in response.text
+        assert 'href="index.html"' in response.text
