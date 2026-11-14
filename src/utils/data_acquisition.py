@@ -19,8 +19,8 @@ from src.core.settings import settings
 from src.utils.data_processing import propagate, render_passes
 
 SIA_URL = "https://irsa.ipac.caltech.edu/SIA"
-TIMEOUT_S = 120
-TRIES = 5
+TIMEOUT_S = (10, 120)  # fail connects fast, allow slow reads: busy irsa refuses connections
+TRIES = 3
 
 
 def parse_sia(content: bytes, detector: str) -> list[dict]:
