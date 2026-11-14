@@ -71,7 +71,9 @@ def gaia_radius_deg(fov_arcmin: float) -> float:
     return 0.75 * fov_arcmin * 1.5 / 60
 
 
-def load_gaia_stars(slug: str, ra: float, dec: float, fov_arcmin: float) -> list[dict]:
+def load_gaia_stars(
+    slug: str, ra: float, dec: float, fov_arcmin: float, offline: bool = False
+) -> list[dict]:
     """gaia stars for a target, cached at data/raw/<slug>/gaia.json."""
     cache = settings.DATA_DIR / "raw" / slug / "gaia.json"
     if cache.exists():
@@ -79,6 +81,9 @@ def load_gaia_stars(slug: str, ra: float, dec: float, fov_arcmin: float) -> list
             return json.loads(cache.read_text())
         except json.JSONDecodeError:
             print(f"warning: unreadable gaia cache {cache}, refetching")
+    if offline:
+        print("warning: --offline and no readable gaia cache, continuing with no cross-match")
+        return []
     stars = gaia_stars(ra, dec, gaia_radius_deg(fov_arcmin))
     cache.parent.mkdir(parents=True, exist_ok=True)
     cache.write_text(json.dumps(stars, indent=2) + "\n")
@@ -103,7 +108,63 @@ def query_sia_visits(ra: float, dec: float, detector: str, releases: list[str]) 
         params = {"COLLECTION": coll, "POS": f"CIRCLE {ra} {dec} 0.01", "MAXREC": 2000}
         resp = requests.get(SIA_URL, params=params, timeout=TIMEOUT_S)
         resp.raise_for_status()
-        visits += parse_sia(resp.content, detector)
+        visits += [{**v, "release": coll} for v in parse_sia(resp.content, detector)]
+    return visits
+
+
+def sia_cache_path(slug: str, detector: str) -> Path:
+    return settings.DATA_DIR / "raw" / slug / detector / "visits.json"
+
+
+def read_sia_cache(path: Path, key: str) -> list[dict] | None:
+    if not path.exists():
+        return None
+    try:
+        return json.loads(path.read_text()).get(key)
+    except (json.JSONDecodeError, AttributeError):
+        return None
+
+
+def get_sia_visits(
+    ra: float,
+    dec: float,
+    detector: str,
+    releases: list[str],
+    slug: str,
+    offline: bool,
+    fallback: list[dict] | None = None,
+) -> list[dict]:
+    """sia visits with on-disk fallback: cached per (target, detector, center) in visits.json."""
+    key = center_slug(ra, dec)
+    path = sia_cache_path(slug, detector)
+    cached = read_sia_cache(path, key)
+    if offline:
+        if cached is None:
+            if fallback is not None:
+                print(f"--offline: no cached visit list for center {key}, using j2000 visit list")
+                return fallback
+            raise SystemExit(f"--offline: no cached visit list at {path} for center {key}")
+        print(f"irsa unreachable: using cached visit list ({len(cached)} visits)")
+        return cached
+    try:
+        visits = query_sia_visits(ra, dec, detector, releases)
+    except requests.RequestException as err:
+        if cached is not None:
+            print(f"irsa unreachable: using cached visit list ({len(cached)} visits)")
+            return cached
+        if fallback is not None:
+            print(f"irsa unreachable and no cached visit list for center {key}, using j2000 list")
+            return fallback
+        raise SystemExit(f"irsa unreachable and no cached visit list at {path}: {err}") from None
+    cache = {}
+    if path.exists():
+        try:
+            cache = json.loads(path.read_text())
+        except json.JSONDecodeError:
+            cache = {}
+    cache[key] = [{"mjd": v["mjd"], "url": v["url"], "release": v.get("release")} for v in visits]
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(cache, indent=2) + "\n")
     return visits
 
 
@@ -138,8 +199,13 @@ def cap_passes(passes: list[list[dict]], max_visits: int) -> list[list[dict]]:
     return capped
 
 
-def download_visits(visits: list[dict], ra: float, dec: float, size_deg: float) -> None:
+def download_visits(
+    visits: list[dict], ra: float, dec: float, size_deg: float, offline: bool = False
+) -> None:
     """fetch cutouts in parallel; a failed visit is skipped, not fatal."""
+    if offline:
+        print("--offline: skipping cutout downloads, using on-disk files only")
+        return
 
     def fetch(v):
         try:
@@ -228,7 +294,9 @@ def cutout_size_deg(fov_arcmin: float) -> float:
     return 1.5 * fov_arcmin / 60
 
 
-def run(target: str, detector: str, fov_arcmin: float | None = None) -> list[dict]:
+def run(
+    target: str, detector: str, fov_arcmin: float | None = None, offline: bool = False
+) -> list[dict]:
     """whole step for one target and detector. rerun-safe: cutouts already on disk are reused."""
     by_name = {t["name"].lower(): t for t in settings.TARGETS}
     if target.lower() not in by_name:
@@ -239,13 +307,17 @@ def run(target: str, detector: str, fov_arcmin: float | None = None) -> list[dic
 
     # the j2000 cone only estimates the mean visit epoch (SPHEREx scans whole sky);
     # the real visit list, cutouts and common wcs center use the propagated position.
-    rough = query_sia_visits(t["ra_deg"], t["dec_deg"], detector, settings.DATA_RELEASES)
+    rough = get_sia_visits(
+        t["ra_deg"], t["dec_deg"], detector, settings.DATA_RELEASES, slug, offline
+    )
     if not rough:
         raise SystemExit(f"no {detector} visits for {t['name']} in {settings.DATA_RELEASES}")
     mean_mjd = sum(v["mjd"] for v in rough) / len(rough)
     year = Time(mean_mjd, format="mjd").jyear
     ra_c, dec_c = propagate(t, year)
-    visits = query_sia_visits(ra_c, dec_c, detector, settings.DATA_RELEASES) or rough
+    visits = get_sia_visits(
+        ra_c, dec_c, detector, settings.DATA_RELEASES, slug, offline, fallback=rough
+    ) or rough
     mean_mjd = sum(v["mjd"] for v in visits) / len(visits)
     size_deg = cutout_size_deg(fov)
     ctr = center_slug(ra_c, dec_c, size_deg)
@@ -256,13 +328,13 @@ def run(target: str, detector: str, fov_arcmin: float | None = None) -> list[dic
     visits = [v for p in capped for v in p]
     for v in visits:
         v["path"] = raw_dir / (f"{ctr}_" + v["url"].rsplit("/", 1)[-1])
-    download_visits(visits, ra_c, dec_c, size_deg)
+    download_visits(visits, ra_c, dec_c, size_deg, offline)
     got = [v for v in visits if v["path"].exists()]
     if not got:
         raise SystemExit(f"no {detector} cutouts for {t['name']}, irsa busy: rerun later")
     print(f"{len(got)}/{len(visits)} visits on disk")
     print(f"frames centered on the propagated position at mean mjd {mean_mjd:.1f}")
-    gaia = load_gaia_stars(slug, ra_c, dec_c, fov)
+    gaia = load_gaia_stars(slug, ra_c, dec_c, fov, offline)
     out_dir = settings.WEB_DIR / "cache" / slug / detector
     return render_passes(
         got, ra_c, dec_c, fov, out_dir, frame_epoch_mjd=mean_mjd, target=t, gaia_stars=gaia
@@ -272,13 +344,13 @@ def run(target: str, detector: str, fov_arcmin: float | None = None) -> list[dic
 DETECTORS = [f"d{i}" for i in range(1, 7)]
 
 
-def run_all() -> int:
+def run_all(offline: bool = False) -> int:
     """loop all targets x detectors, keep going on failure, print a summary."""
     results = []
     for t in settings.TARGETS:
         for det in DETECTORS:
             try:
-                run(t["name"], det)
+                run(t["name"], det, offline=offline)
                 results.append((t["name"], det, "ok"))
             except (SystemExit, Exception) as err:
                 print(f"error: {t['name']} {det}: {err}")
@@ -296,14 +368,17 @@ if __name__ == "__main__":
     ap.add_argument("--target")
     ap.add_argument("--detector")
     ap.add_argument("--all", action="store_true", help="run all targets x d1..d6")
+    ap.add_argument(
+        "--offline", action="store_true", help="use cached visit lists, never hit the network"
+    )
     args = ap.parse_args()
     if args.all:
-        fails = run_all()
+        fails = run_all(offline=args.offline)
         write_index()
         sys.exit(1 if fails else 0)
     if not args.target or not args.detector:
         ap.error("--target and --detector are required unless --all is given")
-    for n, m in enumerate(run(args.target, args.detector), start=1):
+    for n, m in enumerate(run(args.target, args.detector, offline=args.offline), start=1):
         r = m["date_range"]
         print(f"pass-{n}: {m['visit_count']} visits, {r['start']} to {r['end']}")
     write_index()
