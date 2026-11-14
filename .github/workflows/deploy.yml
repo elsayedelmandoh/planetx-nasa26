@@ -24,7 +24,7 @@ jobs:
           HF_SPACE: ${{ vars.HF_SPACE }}
         run: |
           mkdir site && cp -r web/. site/
-          printf -- '---\ntitle: planetx-nasa26\nsdk: static\napp_file: index.html\n---\n\nspherex blink tool. source: https://github.com/%s\n' "$GITHUB_REPOSITORY" > site/README.md
+          printf -- '---\ntitle: planetx-nasa26\nsdk: static\napp_file: home.html\n---\n\nspherex blink tool. source: https://github.com/%s\n' "$GITHUB_REPOSITORY" > site/README.md
           cd site
           git init -q -b main
           git config user.name "github-actions"
