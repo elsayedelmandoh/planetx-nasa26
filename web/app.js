@@ -21,7 +21,7 @@
   addEventListener('resize',size);size();
   addEventListener('pointermove',function(e){mouse.x=e.clientX;mouse.y=e.clientY},{passive:true});
   document.documentElement.addEventListener('pointerleave',function(){mouse.x=mouse.y=-9999});
-  var BLOCK='a,button,input,select,textarea,label,summary,details,form,nav,header,.stage,#md,#film,#hall,.member-card,.article-card,.hall-card,.reader-panel,.auth-card,.modal';
+  var BLOCK='a,button,input,select,textarea,label,summary,details,form,nav,header,.stage,#md,#film,#hall,.member-card,.article-card,.hall-card,.reader-panel,.modal';
   addEventListener('click',function(e){
     if(e.target.closest&&e.target.closest(BLOCK))return;
     for(var i=0;i<18;i++){if(stars.length>=MAX)stars.shift();stars.push(star(e.clientX+(Math.random()-.5)*70,e.clientY+(Math.random()-.5)*70,true))}
@@ -207,7 +207,7 @@ const NP={d:8500,f:(p)=>{const S=['FETCH','ALIGN','SUBTRACT','LINK','MATCH','CAN
  txt('every step in this demo is simulated',W/2,y+w*.7+54,"400 15px 'Barlow',sans-serif",'rgba(208,214,249,.72)')}};
 SC.splice(2,0,NIR);CAP.splice(2,0,'Dust clouds hide stars from visible light, but infrared passes through. Cold objects, like brown dwarfs, shine mostly in the infrared. That is why SPHEREx looks there.');TTL.splice(2,0,'Why infrared');
 SC.splice(4,0,NQ);CAP.splice(4,0,'SPHEREx was built to ask three questions: how the universe began, how galaxies grew, and how much water ice waits in the clouds where stars and planets form.');TTL.splice(4,0,'Three questions');
-SC.splice(8,0,NP);CAP.splice(8,0,'Fetch a small cutout, align it, subtract, link the pairs into a track, then check Gaia and WISE. What nobody has named is a candidate. In this demo every step is simulated.');TTL.splice(8,0,'The pipeline');
+SC.splice(8,0,NP);CAP.splice(8,0,'Fetch a small cutout, align it, subtract, link the pairs into a track, then check Gaia and WISE. What nobody has named is a simulated training exercise: candidate. In this demo every step is simulated.');TTL.splice(8,0,'The pipeline');
 const CAPA=['في عام 2025 بدأ مرصد سفيريكس التابع لناسا برسم خريطة للسماء كلها كل ستة أشهر، بـ 102 لونًا من الأشعة تحت الحمراء. أكثر من مليار جرم.',
 'حيلة قديمة لا تزال تكشف ما لم يُسمَّ بعد: صوّر السماء مرتين وبدّل بين الصورتين. كل ما يقفز قريب منا. هكذا اكتُشف بلوتو.',
 'سحب الغبار تحجب النجوم عن الضوء المرئي، لكن الأشعة تحت الحمراء تعبر خلالها. والأجرام الباردة، كالأقزام البنية، تتوهج في الغالب بهذه الأشعة. لذلك يتجه سفيريكس إليها.',
@@ -442,7 +442,7 @@ function mk(s){const f={...s},r=rng(hash(s.ra||3,s.dec||5)+s.n.length);f.span=s.
  f.dem=f.ra==null;if(f.dem){f.ra=0;f.dec=0}
  f.crf=Math.cos(f.dec*Math.PI/180)||1;f.cra=f.ra+f.pm[0]*(TR-f.ref)/3600/f.crf;f.cde=f.dec+f.pm[1]*(TR-f.ref)/3600;
  f.hot=Array.from({length:6},()=>[(r()-.5)*1.8,(r()-.5)*1.8]);f.obj=[{id:'T',st:f.g?'Known (Gaia)':'Not in Gaia',pm:[-f.pm[0],f.pm[1]],x0:0,y0:0,b:f.b},
- {id:'K',st:'Known (Gaia)',pm:[1.2,-.9],x0:-70,y0:45,b:.5},{id:'U',st:'Unmatched candidate',pm:[7,-4],x0:55,y0:-60,b:.45}];if(f.dem||s.noU)f.obj=f.obj.filter(b=>b.id!=='U');return f}
+ {id:'K',st:'Known (Gaia)',pm:[1.2,-.9],x0:-70,y0:45,b:.5},{id:'U',st:'simulated training exercise: unmatched candidate',pm:[7,-4],x0:55,y0:-60,b:.45}];if(f.dem||s.noU)f.obj=f.obj.filter(b=>b.id!=='U');return f}
 const IMF=IM.map(mk),TGF=TG.map(mk);
 function sky(c,F,k,o){const ep=OBS[k],W=c.width,x=c.getContext('2d'),q=W/o.fov,X=v=>W/2+(v-o.ox)*q,Y=v=>W/2-(v-o.oy)*q,s=Math.min(2.2,Math.max(.5,q)),sf=1+.12*(o.det-3)+.02*(o.ch-9);
  x.fillStyle='#04060d';x.fillRect(0,0,W,W);
@@ -455,7 +455,7 @@ function sky(c,F,k,o){const ep=OBS[k],W=c.width,x=c.getContext('2d'),q=W/o.fov,X
  F.obj.forEach(b=>{if(!o.full&&b.id!=='T'&&!(o.dets))return;const p=P(b,ep),px=X(p[0]),py=Y(p[1]);
   if(o.trail&&(b.id==='T'||o.dets&&b.id==='U'))OBS.slice(0,k).forEach(e=>{const t=P(b,e);dot(X(t[0]),Y(t[1]),3*s,`rgba(${o.dets?cl[b.id]:cl.T},.45)`)});
   dot(px,py,(4+8*Math.min(1.3,br(b)))*s,`rgba(${o.dets?cl[b.id]:cl.T},1)`);
-  if(o.mark&&b.id==='T'||o.dets){x.strokeStyle=`rgb(${cl[b.id]})`;x.lineWidth=1.5;x.setLineDash([4,4]);x.beginPath();x.arc(px,py,12*s+6,0,6.3);x.stroke();x.setLineDash([]);if(o.dets){x.fillStyle=`rgb(${cl[b.id]})`;x.font='12px Barlow,sans-serif';x.fillText(b.id==='T'?'target':b.id==='K'?'known':'candidate',px+14*s+4,py-8)}}
+  if(o.mark&&b.id==='T'||o.dets){x.strokeStyle=`rgb(${cl[b.id]})`;x.lineWidth=1.5;x.setLineDash([4,4]);x.beginPath();x.arc(px,py,12*s+6,0,6.3);x.stroke();x.setLineDash([]);if(o.dets){x.fillStyle=`rgb(${cl[b.id]})`;x.font='12px Barlow,sans-serif';x.fillText(b.id==='T'?'target':b.id==='K'?'known':'simulated',px+14*s+4,py-8)}}
   if(o.gaia&&(b.id==='K'||b.id==='T'&&F.g)){x.strokeStyle='#4cc9f0';x.lineWidth=1.5;x.beginPath();x.arc(px,py,9*s+10,0,6.3);x.stroke()}
   if(o.wise&&b.id!=='U'){x.strokeStyle='#f29b5c';x.lineWidth=1.5;x.strokeRect(px-8*s-6,py-8*s-6,16*s+12,16*s+12)}});
  F.hot.forEach(h=>{const px=X(h[0]*140),py=Y(h[1]*140);x.fillStyle='rgba(255,255,255,.55)';x.fillRect(px-1,py-1,3,3);if(o.mask){x.strokeStyle='#c77dff';x.lineWidth=1.5;x.strokeRect(px-5,py-5,10,10)}});
@@ -487,18 +487,48 @@ const toD=y=>new Date(Date.UTC(Math.floor(y),0,1)+(y%1)*365.25*864e5),iso=y=>toD
 const fromIso=v=>{const d=new Date(v+'T00:00:00Z'),y=d.getUTCFullYear();return y+(d-Date.UTC(y,0,1))/(365.25*864e5)},nearK=y=>OBS.reduce((b,e,i)=>Math.abs(e-y)<Math.abs(OBS[b]-y)?i:b,0);
 const ob=()=>({ox:M.ox,oy:M.oy,fov:M.fov,det:M.det,ch:M.ch,trail:$('tr').checked,mark:$('mkc').checked,cat:$('cat').checked,gaia:$('gaia').checked,wise:$('wise').checked,dets:$('dets').checked,mask:$('mask').checked});
 const REALT={'Barnard’s Star':{ra:269.452075,dec:4.693364,det:'d2'},'Epsilon Indi B':{ra:331.044147,dec:-56.782844,det:'d6'},'WISE 0855':{ra:133.795129,dec:-7.245147,det:'d6'},'RW Aurigae':{ra:76.956375,dec:30.401389,det:'d2'},'R Draconis':{ra:248.167625,dec:66.755,det:'d3'}};
+/* real SPHEREx DR1 frames from cache/index.json */
+let RC=null,rcP=null;const normName=s=>String(s).toLowerCase().replace(/[’‘`]/g,"'").replace(/\s+/g,' ').trim(),CHAL=['wise 0855',"barnard's star",'epsilon indi b','rw aurigae','r draconis'];
+function loadReal(){if(!rcP)rcP=fetch('cache/index.json').then(r=>r.json()).then(j=>{RC=j;return j}).catch(()=>{RC={targets:[]};return RC});return rcP}
+function frList(t,kind){const d=(t&&t[kind])||{};for(const k of Object.keys(d))if(d[k]&&d[k].length)return{det:k,list:d[k]};return null}
+async function setupReal(F){
+ M.realState='loading';M.realSet=null;M.realMode='passes';$('realDiffWrap').hidden=true;
+ const j=await loadReal();if(!M||M.F!==F)return;
+ const t=CHAL.includes(normName(F.n))?(RC.targets||[]).find(x=>normName(x.name)===normName(F.n)):null;
+ const has=t&&frList(t,'detectors');
+ if(!has){M.realState=t?'processing':'none';
+  if(t)$('mm').textContent='simulated training exercise: illustrated sky, not real SPHEREx pixels. real frames for this target are still processing.';
+  render();return}
+ const det=has.det,passes=t.detectors[det],diffs=(t.differences&&t.differences[det])||[];
+ const jm=u=>fetch(u).then(r=>r.json()).catch(()=>({})),im=src=>new Promise(res=>{const i=new Image();i.onload=()=>res(i);i.onerror=()=>res(null);i.src=src});
+ const [P,D]=await Promise.all([Promise.all(passes.map(f=>Promise.all([im(f.png),jm(f.json)]))),Promise.all(diffs.map(f=>Promise.all([im(f.png),jm(f.json)])))]);
+ if(!M||M.F!==F)return;
+ M.realSet={det,passes:P.map(([img,meta])=>({img,meta})).filter(f=>f.img),diffs:D.map(([img,meta])=>({img,meta})).filter(f=>f.img)};
+ M.realState=M.realSet.passes.length?'ready':'processing';
+ if(M.realState==='ready'){$('mm').textContent=`Real SPHEREx DR1 data · detector ${det} · survey-pass coadds`;$('realDiffWrap').hidden=!M.realSet.diffs.length;$('realDiff').checked=false}
+ else $('mm').textContent='simulated training exercise: illustrated sky, not real SPHEREx pixels. real frames for this target are still processing.';
+ render()}
+function drawReal(){
+ const rs=M.realSet,list=M.realMode==='diff'?rs.diffs:rs.passes,c=$('big'),x=c.getContext('2d'),W=c.width;
+ x.fillStyle='#04060d';x.fillRect(0,0,W,W);
+ const i=list.length?M.k%list.length:0,f=list[i];
+ if(f&&f.img){const s=Math.min(W/f.img.naturalWidth,W/f.img.naturalHeight),w=f.img.naturalWidth*s,h=f.img.naturalHeight*s;x.drawImage(f.img,(W-w)/2,(W-h)/2,w,h)}
+ else{x.fillStyle='#D0D6F9';x.font='14px Barlow,sans-serif';x.fillText('loading real frame...',20,W/2)}
+ const meta=(f&&f.meta)||{},txt=M.realMode==='diff'?`real spherex dr1 data: difference, ${meta.epoch_label||''}`:`real spherex dr1 data: ${meta.epoch_label||''}, ${meta.visit_count||'?'} visits`;
+ x.fillStyle='rgba(8,9,18,.72)';x.fillRect(6,6,Math.min(W-12,Math.max(230,txt.length*6.6+16)),22);x.fillStyle='#e6f6ff';x.font='600 12px Barlow,sans-serif';x.fillText(txt,12,21)}
 function openM(F,src,init){M={F,src,k:12,ox:0,oy:0,fov:F.fv0||240,det:2,ch:7,tab:F.info?'info':'view',play:false,saved:[],...(init||{})};M.fov=Math.max(60,Math.min(F.fmax,M.fov));$('fov').max=F.fmax;$('fov').step=Math.max(10,Math.round(F.fmax/400));document.querySelectorAll('#tabs button').forEach(b=>b.hidden=b.dataset.t==='info'&&!F.info);$('dets').checked=false;$('mt').textContent=F.n;
  $('mm').textContent=F.sim?'Simulated field with a simulated mover (position not from a catalog)':F.dem?'Position not listed on the source page: demo field':(F.src||`${F.d} · FOV ${F.fv} · ${F.w}`);
  const rt=REALT[F.n],rl=$('realLink');
  if(rl)rl.href=rt?`index.html?ra=${rt.ra}&dec=${rt.dec}&fov=5&det=${rt.det}&mode=blink`:`index.html?ra=${F.ra!=null?F.ra:0}&dec=${F.dec!=null?F.dec:0}&fov=5`;
  $('md').hidden=false;$('pl').textContent='Play';$('x').focus();$('ea').value=4;$('eb').value=19;
- clearInterval(ft);const pg=$('pg');pg.hidden=false;let n=0;ft=setInterval(()=>{n++;const fail=n===9?2:0;$('pf').style.width=Math.min(100,n/NE*100)+'%';$('pt').textContent=fail?'2 cutouts failed, retrying…':`Fetching cutouts ${Math.min(n,NE)}/${NE}`;if(n>=NE){clearInterval(ft);pg.hidden=true}},45);render()}
+ clearInterval(ft);const pg=$('pg');pg.hidden=false;let n=0;ft=setInterval(()=>{n++;const fail=n===9?2:0;$('pf').style.width=Math.min(100,n/NE*100)+'%';$('pt').textContent=fail?'2 cutouts failed, retrying…':`Fetching cutouts ${Math.min(n,NE)}/${NE}`;if(n>=NE){clearInterval(ft);pg.hidden=true}},45);render();setupReal(F)}
 function closeM(){$('md').hidden=true;clearInterval(ft);clearInterval(bt);try{history.replaceState(null,'','#explore')}catch(e){}st.focus()}
 function render(){const F=M.F,e=OBS[M.k];if(M.tab==='info'&&!F.info)M.tab='view';const t=M.tab,can=!hasU(F)||M.tries>0;$('dets').disabled=!can;$('dets').parentElement.title=can?'':'Try to find the unmatched source first (Discover tab)';if(!can)$('dets').checked=false;if($('dets').checked&&hasU(F))M.shown=1;document.querySelectorAll('#tabs button').forEach(b=>b.classList.toggle('on',b.dataset.t===t));
  ['info','view','cmp','dis','spec','q'].forEach(k=>$('p-'+k).hidden=k!==t);$('big').hidden=t==='cmp';$('cmpw').hidden=t!=='cmp';$('sd').value=M.det;$('sc').value=M.ch;
  const cos=F.crf,cr=F.cra-M.ox/3600/cos,cd=F.cde+M.oy/3600;$('co').textContent=F.dem?'demo field':`RA ${cr.toFixed(4)}°  Dec ${cd.toFixed(4)}°`;$('fv').textContent=`${(M.fov/60).toFixed(1)}′ (${Math.round(M.fov)}″${M.fov>=3600?' = '+(M.fov/3600).toFixed(2)+'°':''})`;$('ob').textContent=`${pretty(e)} · ${rel(e)}`;$('fov').value=M.fov;$('dt').value=iso(e);
  const p=M.k/(NE-1);$('rk').style.left=p*100+'%';$('fill').style.width=p*100+'%';$('trk').setAttribute('aria-valuenow',M.k+1);
- if(t==='cmp')cmp();else{sky($('big'),F,M.k,{...ob(),full:t==='dis'?1:0});if(t==='dis'&&M.pk)cross()}
+ const drawBig=()=>{if(M.realState==='ready'&&M.realSet)drawReal();else sky($('big'),F,M.k,{...ob(),full:t==='dis'?1:0})};
+ if(t==='cmp')cmp();else{drawBig();if(t==='dis'&&M.pk)cross()}
  if(t==='info')info();if(t==='dis')dis();if(t==='spec')spec();if(t==='q')qual();wr()}
 
 function info(){const F=M.F,I=F.info,dl=I.dl,U=(a,x)=>`${SRC}system/avm_images/binaries/${dl.id}/${a}/${x||dl.fn}?${dl.ts}`,L=(p,t)=>`<a href="${SRC}${p}" target="_blank" rel="noopener">${t}</a>`;
@@ -521,11 +551,11 @@ function cmp(){const F=M.F,A=+$('ea').value,B=+$('eb').value,o=ob();o.fov=Math.m
  $('cmpq').innerHTML=ok(true,'Same detector D'+M.det)+ok(!$('chb').checked,$('chb').checked?'Different wavelength channels: differences may be spectral, not motion':'Same wavelength channel ch'+M.ch)+ok(rel(OBS[A])===rel(OBS[B]),rel(OBS[A])===rel(OBS[B])?'Same release ('+rel(OBS[A])+')':'Different releases: check calibration before trusting the difference')+ok(true,'Same TAN/WCS grid and zodi model subtracted')}
 function dets(){const F=M.F,e=OBS[M.k];return F.obj.map(b=>{const mv=Math.hypot(...b.pm)*(T1-T0),pa=Math.round((Math.atan2(-b.pm[0],b.pm[1])*180/Math.PI+360)%360),va=b.id==='T'&&F.kind==='v'?'±60% (variable)':b.id==='T'?'<5%':'<8%';
  const x=b.id==='T'?0:b.x0+(e-TR)*b.pm[0],y=b.id==='T'?0:b.y0+(e-TR)*b.pm[1];return{id:b.id,ra:(F.cra-x/3600/F.crf).toFixed(4),de:(F.cde+y/3600).toFixed(4),mv:mv.toFixed(1),px:(mv/PXS).toFixed(1),pa,va,st:b.st,bright:(b.id==='T'?F.b:b.b).toFixed(2)}})}
-function dis(){const d=dets(),F=M.F,U=hasU(F),can=!U||M.tries>0,seen=!U||M.shown;$('dtx').hidden=!U;$('dno').hidden=U;$('dno').innerHTML=U?'':'<b>Nothing to find in this field.</b> It has no moving source that is missing from the catalogs (the all-sky maps are demo fields). You can still click anywhere to see what is at that spot.';$('dh').hidden=can;$('run').hidden=!can;$('sv').hidden=!U||!M.shown;$('ex').hidden=!seen;$('dtab').innerHTML=!M.ran?'':`<table><tr><th>ID</th><th>RA / Dec (now)</th><th>Motion over baseline</th><th>Brightness</th><th>Match</th></tr>${d.map(r=>`<tr><td>${r.id}</td><td>${r.ra}, ${r.de}</td><td>${r.mv}″ (${r.px} px), PA ${r.pa}°</td><td>${r.bright} · ${r.va}</td><td class="${r.st.startsWith('Unm')||r.st.startsWith('Not')?'warn':'ok'}">${r.st}</td></tr>`).join('')}</table>`;
- try{M.saved=JSON.parse(localStorage.getItem('spxc')||'[]')}catch(e){}$('saved').innerHTML=M.saved.length?`<b>Saved candidates</b><br>${M.saved.map(s=>`${esc(s.name||s.id)} · ${esc(s.n)} at ${s.ra}, ${s.de} (${esc(s.st)})`).join('<br>')}`:''}
+function dis(){const d=dets(),F=M.F,U=hasU(F),can=!U||M.tries>0,seen=!U||M.shown;$('dtx').hidden=!U;$('dno').hidden=U;$('dno').innerHTML=U?'':'<b>Nothing to find in this field.</b> It has no moving source that is missing from the catalogs (the all-sky maps are demo fields). You can still click anywhere to see what is at that spot.';$('dh').hidden=can;$('run').hidden=!can;$('sv').hidden=!U||!M.shown;$('ex').hidden=!seen;$('dtab').innerHTML=!M.ran?'':`<table><tr><th>ID</th><th>RA / Dec (now)</th><th>Motion over baseline</th><th>Brightness</th><th>Match</th></tr>${d.map(r=>`<tr><td>${r.id}</td><td>${r.ra}, ${r.de}</td><td>${r.mv}″ (${r.px} px), PA ${r.pa}°</td><td>${r.bright} · ${r.va}</td><td class="${/unmatched|not in/i.test(r.st)?'warn':'ok'}">${r.st}</td></tr>`).join('')}</table>`;
+ try{M.saved=JSON.parse(localStorage.getItem('spxc')||'[]')}catch(e){}$('saved').innerHTML=M.saved.length?`<b>simulated training exercise: saved candidates</b><br>${M.saved.map(s=>`${esc(s.name||s.id)} · ${esc(s.n)} at ${s.ra}, ${s.de} (${esc(s.st)})`).join('<br>')}`:''}
 $('run').onclick=()=>{$('dets').checked=true;M.ran=1;M.shown=1;render()};
 $('sv').onclick=()=>{const u=dets().find(r=>r.id==='U');const v={n:M.F.n,...u};M.saved.push(v);try{localStorage.setItem('spxc',JSON.stringify(M.saved))}catch(e){}dis()};
-$('ex').onclick=()=>{const d=dets(),t=$('rep');t.hidden=false;t.value=`SPHEREx candidate report (simulated)\nField: ${M.F.n}\nEpoch: ${pretty(OBS[M.k])} (${rel(OBS[M.k])})\n`+d.map(r=>`${r.id}: ${r.ra}, ${r.de}; moved ${r.mv}″; ${r.st}`).join('\n');t.select();try{navigator.clipboard.writeText(t.value)}catch(e){}};
+$('ex').onclick=()=>{const d=dets(),t=$('rep');t.hidden=false;t.value=`simulated training exercise: SPHEREx candidate report\nField: ${M.F.n}\nEpoch: ${pretty(OBS[M.k])} (${rel(OBS[M.k])})\n`+d.map(r=>`${r.id}: ${r.ra}, ${r.de}; moved ${r.mv}″; ${r.st}`).join('\n');t.select();try{navigator.clipboard.writeText(t.value)}catch(e){}};
 function spec(){const c=$('spc'),x=c.getContext('2d'),W=c.width,H=c.height,F=M.F,co=$('co4').checked,sig=co?.03:.08,X=l=>34+(W-46)*(l-.75)/4.25,Y=v=>H-26-(H-44)*v/1.25,r=rng(7);
  x.fillStyle='#0b0c14';x.fillRect(0,0,W,H);x.strokeStyle='#2b3050';x.fillStyle='#9aa0bf';x.font='11px Barlow,sans-serif';[1,2,3,4,5].forEach(l=>{x.beginPath();x.moveTo(X(l),8);x.lineTo(X(l),H-26);x.stroke();x.fillText(l+' µm',X(l)-10,H-10)});
  const draw=(k,cl)=>{const vr=F.kind==='v'?1+.6*Math.sin(6.283*(OBS[k]-T0)/(F.P||1)):1;for(let d=1;d<=6;d++)for(let c2=1;c2<=17;c2++){const l=LAM(d,c2),v=F.b*S(F.cls,l)*vr+(r()+r()+r()-1.5)*sig;x.fillStyle=cl||HUE[d-1];x.globalAlpha=d===M.det&&c2===M.ch?1:.8;x.beginPath();x.arc(X(l),Y(v),d===M.det&&c2===M.ch?5:2.5,0,6.3);x.fill()}};
@@ -536,6 +566,7 @@ function qual(){const e=OBS[M.k],k=M.k,l=LAM(M.det,M.ch),n=(M.k*37+M.det*11)%9;
  $('qm').innerHTML=[['Observation',`${Math.floor(e)}W${String(Math.min(52,Math.floor((e%1)*52)+1)).padStart(2,'0')}_2B_${String(100+k*37).padStart(4,'0')}_1`],['Detector',`D${M.det}`],['Wavelength',`${l.toFixed(2)} µm`],['Epoch',`${e.toFixed(3)} (MJD ${Math.round(51544+(e-2000)*365.25)})`],['Release',rel(e)],['Pixel scale',PXS+'″'],['Flagged pixels',(1.2+n*.4).toFixed(1)+'%'],['Fit quality (fit_ql)',(1+n*.04).toFixed(2)],['Background',(.4+n*.03).toFixed(2)+' MJy/sr (sim)'],['Zodi','model subtracted']].map(r=>`<dt>${r[0]}</dt><dd>${r[1]}</dd>`).join('');
  $('qf').innerHTML=`<small>Real flag names and bit values from IRSA’s spectrophotometry help:</small><table>${FL.map(f=>`<tr><td>${f[0]}</td><td>${f[1]}</td><td>${f[2]}</td></tr>`).join('')}</table>`}
 ['tr','mkc','cat','gaia','wise','dets','mask','co4','ovb','chb'].forEach(k=>$(k).onchange=()=>render());
+$('realDiff').onchange=()=>{if(M&&M.realSet){M.realMode=$('realDiff').checked?'diff':'passes';render()}};
 ['ea','eb','sd','sc'].forEach(k=>$(k).onchange=()=>{if(k==='sd')M.det=+$(k).value;if(k==='sc')M.ch=+$(k).value;render()});document.querySelectorAll('input[name=md]').forEach(r=>r.onchange=render);
 $('fov').oninput=e=>{M.fov=+e.target.value;render()};$('zi').onclick=()=>{M.fov=Math.max(60,M.fov/1.4);render()};$('zo').onclick=()=>{M.fov=Math.min(M.F.fmax,M.fov*1.4);render()};$('rs').onclick=()=>{M.ox=M.oy=0;M.fov=M.F.fv0||240;render()};
 $('pl').onclick=()=>{M.play=!M.play;$('pl').textContent=M.play?'Pause':'Play'};
@@ -563,18 +594,18 @@ function pick(e){const F=M.F,r=big.getBoundingClientRect(),W=big.width,q=W/M.fov
  else{const b=best.b,nm=M.named&&M.named[b.id];
   if(b.id==='T'&&!F.sim)h=`<b>Known: ${esc(F.n)}</b><br>${pos}<br><small>${esc(F.src||'')}</small>`;
   else if(b.id==='K')h=`<b>Known high-proper-motion star</b> (Gaia match, simulated)<br>${pos}`;
-  else if(nm)h=`<b>Your candidate: ${esc(nm)}</b><br>${pos}<br><small>Saved on this device only.</small>`;
-  else if(M.shown||$('dets').checked)h=`<b>Detected, but it matches nothing in Gaia or WISE</b><br>${pos}<br><small>The detections were already shown to you, so this is not counted as your own find. Use Save candidate if you want to keep it.</small>`;else{h=`<b>Detected, but it matches nothing in Gaia or WISE</b><br>${pos}`;setTimeout(()=>celebrate(F,b,ra,de),250)}}
+  else if(nm)h=`<b>simulated training exercise: your candidate: ${esc(nm)}</b><br>${pos}<br><small>Saved on this device only.</small>`;
+  else if(M.shown||$('dets').checked)h=`<b>simulated training exercise: detected, but it matches nothing in Gaia or WISE</b><br>${pos}<br><small>duplicates were already shown to you, so this is not counted as your own find. Use Save if you want to keep it.</small>`;else{h=`<b>Detected, but it matches nothing in Gaia or WISE</b><br>${pos}`;setTimeout(()=>celebrate(F,b,ra,de),250)}}
  $('pick').innerHTML=h;render()}
 let cel=null;
 function confetti(cv){if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;const W=cv.width=innerWidth,H=cv.height=innerHeight,x=cv.getContext('2d'),r=rng(Date.now()%9999),C=['#22e5ff','#ffd166','#ff78c8','#7ee081','#8fa8ff'],P=Array.from({length:140},()=>({x:W/2,y:H*.4,vx:(r()-.5)*14,vy:-r()*14-3,c:C[r()*5|0],s:4+r()*5,a:r()*6}));let f=0;
  (function tk(){x.clearRect(0,0,W,H);P.forEach(p=>{p.vy+=.35;p.x+=p.vx;p.y+=p.vy;p.a+=.2;x.save();x.translate(p.x,p.y);x.rotate(p.a);x.fillStyle=p.c;x.fillRect(-p.s/2,-p.s/2,p.s,p.s*.6);x.restore()});if(++f<150)requestAnimationFrame(tk);else x.clearRect(0,0,W,H)})()}
 function celebrate(F,b,ra,de){if(!cel){cel=document.createElement('div');cel.id='cele';cel.className='sx-base';cel.hidden=true;cel.setAttribute('role','dialog');cel.setAttribute('aria-modal','true');cel.setAttribute('aria-labelledby','ch3');
- cel.innerHTML='<canvas></canvas><div class="cc"><h3 id="ch3">🎉 Congratulations!</h3><p id="cmsg"></p><label>Name your candidate<input type="text" id="cnm" maxlength="40" style="width:100%"></label><div class="row"><button class="go" id="csv">Save name</button><button id="ckp">Keep exploring</button></div><small>A real discovery needs more observations and a report to the right body (for example the Minor Planet Center for asteroids and comets) before it gets an official name.</small></div>';
+ cel.innerHTML='<canvas></canvas><div class="cc"><h3 id="ch3">🎉 Congratulations!</h3><p id="cmsg"></p><label>simulated training exercise: name your candidate<input type="text" id="cnm" maxlength="40" style="width:100%"></label><div class="row"><button class="go" id="csv">Save name</button><button id="ckp">Keep exploring</button></div><small>A real discovery needs more observations and a report to the right body (for example the Minor Planet Center for asteroids and comets) before it gets an official name.</small></div>';
  document.getElementById('view-explore').append(cel);cel.onkeydown=e=>{if(e.key==='Escape'){e.stopPropagation();cel.hidden=true}};$('ckp').onclick=()=>{cel.hidden=true}}
- $('cmsg').textContent=`The source at RA ${ra.toFixed(4)}°, Dec ${de.toFixed(4)}° moves between observations and has no match in the (simulated) Gaia and WISE catalogs. That makes it a candidate, not yet a confirmed discovery.`;
+ $('cmsg').textContent=`The source at RA ${ra.toFixed(4)}°, Dec ${de.toFixed(4)}° moves between observations and has no match in the (simulated) Gaia and WISE catalogs. That makes it a simulated training exercise: candidate, not yet a confirmed discovery.`;
  $('cnm').value='SPX-'+(Math.abs(hash(ra,de))%9000+1000);cel.hidden=false;confetti(cel.firstChild);$('cnm').focus();$('cnm').select();
- $('csv').onclick=()=>{const nm=$('cnm').value.trim().slice(0,40);if(!nm){$('cnm').focus();return}M.named=M.named||{};M.named[b.id]=nm;M.saved.push({n:F.n,id:b.id,ra:ra.toFixed(4),de:de.toFixed(4),st:'Named candidate',name:nm});try{localStorage.setItem('spxc',JSON.stringify(M.saved))}catch(e){}cel.hidden=true;$('pick').innerHTML=`<b>Saved: ${esc(nm)}</b><br><small>Listed below. Stored on this device only.</small>`;dis()}}
+ $('csv').onclick=()=>{const nm=$('cnm').value.trim().slice(0,40);if(!nm){$('cnm').focus();return}M.named=M.named||{};M.named[b.id]=nm;M.saved.push({n:F.n,id:b.id,ra:ra.toFixed(4),de:de.toFixed(4),st:'simulated training exercise: named candidate',name:nm});try{localStorage.setItem('spxc',JSON.stringify(M.saved))}catch(e){}cel.hidden=true;$('pick').innerHTML=`<b>Saved: ${esc(nm)}</b><br><small>Listed below. Stored on this device only.</small>`;dis()}}
 /* search, url, validation */
 function pa(s,h){s=s.trim();if(/[:hms]/i.test(s)){const p=s.replace(/[hms°'"]/gi,' ').replace(/:/g,' ').trim().split(/\s+/).map(Number);if(p.some(isNaN))return NaN;const sg=/^-/.test(s)?-1:1;return sg*(Math.abs(p[0])+(p[1]||0)/60+(p[2]||0)/3600)*(h?15:1)}return s===''?NaN:+s}
 $('f').onsubmit=e=>{e.preventDefault();const r=pa($('ra').value,true),d=pa($('dec').value,false),fv=+$('fv0').value*+$('fu').value,er=$('err'),dv=$('dt0').value;er.textContent='';
@@ -690,7 +721,7 @@ const members = [
 /* ===== Router ===== */
 
 (function(){
-  var TITLES={home:'NASA Space Apps | Planet X - Home',explore:'NASA Space Apps | Planet X - Explore',museum:'NASA Space Apps | Planet X - Museum Halls',team:'NASA Space Apps | Planet X - Team',signin:'NASA Space Apps | Planet X - Sign in'};
+  var TITLES={home:'NASA Space Apps | Planet X - Home',explore:'NASA Space Apps | Planet X - Explore',museum:'NASA Space Apps | Planet X - Museum Halls',team:'NASA Space Apps | Planet X - Team'};
   var reduce=matchMedia('(prefers-reduced-motion: reduce)').matches,cur=null,tok=0,wrap=document.getElementById('views');
   function parse(){var r=location.hash.replace(/^#/,'').split('?')[0];return TITLES[r]?r:'home'}
   function closeOverlays(){

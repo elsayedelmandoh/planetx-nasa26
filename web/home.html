@@ -12,7 +12,7 @@
 </head>
 <body data-page="home">
   <div id="film" role="dialog" aria-modal="true" aria-label="Introduction film" aria-describedby="fcap"><canvas id="fc"></canvas><div id="fct"></div><div id="fcap" aria-live="polite"></div><div id="ftag">Illustrated: generated graphics, not real SPHEREx pixels.</div><button id="fskip">Skip ✕</button><div id="fbar"><button id="fback" aria-label="Previous scene">←</button><button id="fpause" aria-label="Pause or resume">II</button><div id="fdots"></div><button id="fcc" aria-pressed="true" aria-label="Captions on or off">CC</button><button id="flang" aria-label="Switch language">عربي</button><button id="fsnd" aria-pressed="false" aria-label="Sound on or off">Sound</button><button id="fnext" class="go">Next →</button></div><div id="fprog"><i></i></div></div>
-  <script>(function(){var r=location.hash.replace(/^#/,'').split('?')[0]||'home';var ok=['home','explore','museum','team','signin'].indexOf(r)>=0?r:'home';document.body.dataset.page=ok;if(ok==='home'){var f=document.getElementById('film');if(f)f.className='on show'}})();</script>
+  <script>(function(){var r=location.hash.replace(/^#/,'').split('?')[0]||'home';var ok=['home','explore','museum','team'].indexOf(r)>=0?r:'home';document.body.dataset.page=ok;if(ok==='home'){var f=document.getElementById('film');if(f)f.className='on show'}})();</script>
   <canvas id="spaceCanvas"></canvas>
   <header>
     <a href="#home" class="brand">
@@ -25,7 +25,6 @@
     <nav aria-label="Main">
       <ul>
         <li><a href="#intro" id="introBtn" role="button" aria-haspopup="dialog"><b>00</b><i class="play">▶</i> Intro</a></li>
-        <li><a href="#signin"><b>01</b> Sign in</a></li>
         <li><a href="#home"><b>02</b> Home</a></li>
         <li><a href="#explore"><b>03</b> Explore</a></li>
         <li><a href="#museum"><b>04</b> Museum Halls</a></li>
@@ -74,6 +73,24 @@
 
       <div class="articles-grid" id="articlesGrid"></div>
     </section>
+
+    <!-- How it works (real pipeline) -->
+    <section class="articles-section" id="how-it-works">
+      <div class="section-head">
+        <div>
+          <h2 class="section-title"><span>02</span> How it works (real pipeline)</h2>
+          <p class="section-sub">What actually happens to the SPHEREx data behind the real targets in this site.</p>
+        </div>
+      </div>
+      <ol class="pipeline-steps">
+        <li><b>Query.</b> Query the NASA/IPAC IRSA SIA service for SPHEREx DR1 and QR3 visits covering the target.</li>
+        <li><b>Download.</b> Download 7.5 arcmin cutouts centred on the target&rsquo;s proper-motion-propagated position (Gaia DR3).</li>
+        <li><b>Clean.</b> Mask bad pixels from the flags extension and reproject every visit onto one north-up grid.</li>
+        <li><b>Stack.</b> Median-stack each survey pass (about 20 visits) and subtract passes after removing each pass&rsquo;s background.</li>
+        <li><b>Show.</b> Show the passes as a blink and as difference images, with the expected motion arrow.</li>
+      </ol>
+      <p class="section-sub" style="margin-top:1rem">Source code: <a href="https://github.com/elsayedelmandoh/planetx-nasa26" target="_blank" rel="noopener">https://github.com/elsayedelmandoh/planetx-nasa26</a>. Note: the deployed site is static; all processing runs offline in python and the results are served as files.</p>
+    </section>
   </main>
   </main>
 
@@ -120,13 +137,13 @@
 <div class="row" style="justify-content:flex-start"><button id="pl">Play</button><button id="zi">Zoom in</button><button id="zo">Zoom out</button><button id="rs">Reset view</button></div>
 <label>Speed<input id="spd" type="range" min="1" max="12" value="4"></label>
 <label>See this sky on a date<span><input type="date" id="dt" min="2025-05-01" max="2026-11-13"> <button id="go2">Show</button></span></label>
-<div class="ck"><label class="i"><input type="checkbox" id="tr" checked>Trail</label><label class="i"><input type="checkbox" id="mkc" checked>Mark target</label><label class="i"><input type="checkbox" id="cat">Centre on catalog position</label><label class="i"><input type="checkbox" id="gaia">Gaia</label><label class="i"><input type="checkbox" id="wise">WISE</label><label class="i"><input type="checkbox" id="dets">Detections</label></div>
+<div class="ck"><label class="i"><input type="checkbox" id="tr" checked>Trail</label><label class="i"><input type="checkbox" id="mkc" checked>Mark target</label><label class="i"><input type="checkbox" id="cat">Centre on catalog position</label><label class="i"><input type="checkbox" id="gaia">Gaia</label><label class="i"><input type="checkbox" id="wise">WISE</label><label class="i"><input type="checkbox" id="dets">simulated training exercise: detections</label><label class="i" id="realDiffWrap" hidden><input type="checkbox" id="realDiff">Real differences</label></div>
 <small>Aladin Lite goes in the context map slot of the real site.</small><button id="sh">Copy share link</button><a class="go real-link" id="realLink" href="index.html">open real spherex data</a></div>
 <div class="pn" id="p-cmp" hidden><div class="row" style="justify-content:flex-start"><label>Epoch A<select id="ea"></select></label><label>Epoch B<select id="eb"></select></label></div>
 <div class="ck"><label class="i"><input type="radio" name="md" value="side" checked>Side by side</label><label class="i"><input type="radio" name="md" value="blink">Blink</label><label class="i"><input type="radio" name="md" value="diff">A − B</label><label class="i"><input type="radio" name="md" value="sum">A + B</label></div>
 <label class="i"><input type="checkbox" id="chb">Use a different channel for B (shows the wavelength trap)</label><div id="cmpq"></div><small>Both frames are drawn on one TAN/WCS grid centred on the same RA/Dec.</small></div>
-<div class="pn" id="p-dis" hidden><p id="dtx" style="margin:0"><b>Explore:</b> click any spot in the image to ask “what is here?”. Somewhere in this field one moving source matches no catalog. Find it, then name it.</p><div id="dno" class="warn" hidden></div><div id="pick" aria-live="polite">Click the image to start.</div><small id="dh">The hint unlocks after your first click: try to find it yourself first.</small><button id="run" class="go">Show all detections (hint)</button><div id="dtab"></div><div class="row" style="justify-content:flex-start"><button id="sv">Save candidate</button><button id="ex">Export report</button></div><textarea id="rep" readonly hidden></textarea><div id="saved"></div>
-<small>How it works: align frames on one grid, subtract, find residual pairs, link them into a track, then match against Gaia and WISE. Anything left unmatched is a candidate.</small></div>
+<div class="pn" id="p-dis" hidden><p id="dtx" style="margin:0"><b>Explore:</b> click any spot in the image to ask “what is here?”. Somewhere in this field one moving source matches no catalog. Find it, then name it.</p><div id="dno" class="warn" hidden></div><div id="pick" aria-live="polite">Click the image to start.</div><small id="dh">The hint unlocks after your first click: try to find it yourself first.</small><button id="run" class="go">simulated training exercise: show all detections (hint)</button><div id="dtab"></div><div class="row" style="justify-content:flex-start"><button id="sv">simulated training exercise: save candidate</button><button id="ex">Export report</button></div><textarea id="rep" readonly hidden></textarea><div id="saved"></div>
+<small>How it works: align frames on one grid, subtract, find residual pairs, link them into a track, then match against Gaia and WISE. Anything left unmatched is a simulated training exercise: candidate.</small></div>
 <div class="pn" id="p-spec" hidden><div class="row" style="justify-content:flex-start"><label>Detector<select id="sd"></select></label><label>Channel (1–17)<select id="sc"></select></label></div>
 <div class="ck"><label class="i"><input type="checkbox" id="co4">Co-add detectors and epochs (better S/N)</label><label class="i"><input type="checkbox" id="ovb">Overlay epoch B</label></div><canvas class="s" id="spc" width="420" height="260" style="aspect-ratio:auto"></canvas><small id="spn"></small></div>
 <div class="pn" id="p-q" hidden><dl id="qm"></dl><label class="i"><input type="checkbox" id="mask">Show bad-pixel mask on the image</label><div id="qf"></div></div>
@@ -179,31 +196,6 @@
     <h1 class="page-title"><span>05</span> Meet our team</h1>
     <p class="page-sub">Direct mission contacts, roles, and team leads.</p>
     <div class="team-grid" id="teamGrid"></div>
-  </main>
-</div>
-<div class="view" id="view-signin" data-view="signin">
-  <main class="auth-main">
-    <h1 class="page-title"><span>01</span> Sign in</h1>
-    <p class="page-sub">Keep your sky candidates and favourite fields with you.</p>
-    <div class="auth-wrap">
-      <div class="auth-copy">
-        <h2>Your sky, saved</h2>
-        <p>Sign in to keep the candidates you find in the Explore viewer, return to the same patch of sky, and carry your share links with you.</p>
-      </div>
-      <div class="auth-card" id="authCard">
-        <div class="auth-tabs" role="tablist" aria-label="Account">
-          <button type="button" class="pill active" id="tabIn" role="tab" aria-selected="true">Sign in</button>
-          <button type="button" class="pill" id="tabUp" role="tab" aria-selected="false">Create account</button>
-        </div>
-        <p class="auth-note">This is a front-end demo. There is no server yet, so your details stay in this browser and your password is never stored.</p>
-        <div class="auth-done" id="authDone" aria-live="polite">
-          <div class="avatar" id="avatar">✦</div>
-          <h3 id="doneName">Welcome</h3>
-          <p id="doneMail"></p>
-          <div class="auth-actions"><a class="pill solid" href="#explore">Explore the sky</a><button type="button" class="pill" id="outBtn">Sign out</button></div>
-        </div>
-      </div>
-    </div>
   </main>
 </div>
   </div>

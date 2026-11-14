@@ -91,3 +91,13 @@ def test_home_app_styles_served_clean_and_linked() -> None:
 
     # guard against gutting the teammate's app.js
     assert len(js.text.splitlines()) > 600
+
+
+def test_front_page_uses_real_data_and_has_no_sign_in() -> None:
+    app_js = client.get("/app.js").text
+    home = client.get("/home.html").text
+
+    assert len(app_js.splitlines()) > 600
+    assert "cache/index.json" in app_js
+    assert "sign in" not in home.lower()
+    assert "how it works" in home.lower()
