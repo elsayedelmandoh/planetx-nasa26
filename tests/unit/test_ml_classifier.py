@@ -93,3 +93,25 @@ def test_score_candidates_adds_ml_score(tmp_path):
     doc = json.loads(mpath.read_text())
     for d in doc["detections"]:
         assert 0.0 <= d["ml_score"] <= 1.0
+
+
+def test_make_training_set_adds_static_residuals_as_negatives(tmp_path, monkeypatch):
+    from src.core.settings import settings
+    monkeypatch.setattr(settings, "WEB_REL", tmp_path / "web")
+    p = tmp_path / "processed" / "slug" / "d6"
+    p.mkdir(parents=True)
+    np.save(p / "diff-1-2.npy", make_diff(7))
+    markers = {
+        "detections": [
+            {"x": 20.0, "y": 20.0, "label": "static star residual",
+             "peak_sigma": 6.0, "sign": "dipole"},
+        ],
+        "sigma": 1.0,
+        "method": "rule-based",
+    }
+    md = tmp_path / "web" / "cache" / "slug" / "d6"
+    md.mkdir(parents=True)
+    (md / "diff-1-2.markers.json").write_text(json.dumps(markers))
+    X, y = ml.make_training_set([p / "diff-1-2.npy"], n_inject=0, seed=0)
+    assert list(y) == [0]
+    assert X.shape[0] == 1

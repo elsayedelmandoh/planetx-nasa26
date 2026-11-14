@@ -131,6 +131,11 @@ def make_training_set(diff_paths, n_inject: int = 20, seed: int = 0):
         # detector candidates are unlabelled (some may be real movers), so negatives avoid them
         markers = _markers_for(Path(path))
         cands = json.loads(markers.read_text()).get("detections", []) if markers else []
+        # static-star residuals are certainly not movers: real negatives
+        for d in cands:
+            if d.get("label") == "static star residual":
+                X.append(patch_features(diff, float(d["x"]), float(d["y"])))
+                y.append(0)
         far = [
             (x, y0) for x, y0 in locs
             if all((x - c["x"]) ** 2 + (y0 - c["y"]) ** 2 > 9 for c in cands)
@@ -172,7 +177,8 @@ def train(diff_paths, out_path: Path | None = None, metrics_path: Path | None = 
         "recall": round(float(recall), 4),
         "false_positive_rate": round(float(fpr), 4),
         "roc_auc": round(float(roc_auc_score(y_te, proba)), 4),
-        "trained_on": "synthetic movers injected into real spherex dr1 difference images",
+        "trained_on": "synthetic movers injected into real spherex dr1 difference images; "
+                      "negatives include real static-star residuals (gaia dr3)",
         "note": "scores rank candidates; they are not discoveries",
     }
     out_path.parent.mkdir(parents=True, exist_ok=True)

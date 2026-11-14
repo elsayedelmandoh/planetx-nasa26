@@ -21,8 +21,68 @@ from src.core.settings import settings
 from src.utils.data_processing import group_into_passes, propagate, render_passes
 
 SIA_URL = "https://irsa.ipac.caltech.edu/SIA"
+GAIA_TAP_URL = "https://gea.esac.esa.int/tap-server/tap/sync"
+GAIA_EPOCH = 2016.0  # gaia dr3 positions are epoch 2016.0
+GAIA_G_MAX = 19.0
 TIMEOUT_S = (10, 120)  # fail connects fast, allow slow reads: busy irsa refuses connections
 TRIES = 3
+
+
+def gaia_stars(ra: float, dec: float, radius_deg: float) -> list[dict]:
+    """gaia dr3 sources brighter than g < 19 in a cone, epoch 2016.0. [] when unreachable."""
+    import csv
+
+    query = (
+        "SELECT ra, dec, pmra, pmdec, phot_g_mean_mag FROM gaiadr3.gaia_source "
+        f"WHERE 1=CONTAINS(POINT({ra},{dec}), CIRCLE({ra},{dec},{radius_deg})) "
+        f"AND phot_g_mean_mag < {GAIA_G_MAX}"
+    )
+    params = {"REQUEST": "doQuery", "LANG": "ADQL", "FORMAT": "csv", "QUERY": query}
+    for attempt in range(1, TRIES + 1):
+        try:
+            resp = requests.get(GAIA_TAP_URL, params=params, timeout=TIMEOUT_S)
+            if resp.ok:
+                break
+        except requests.RequestException as err:
+            print(f"gaia tap attempt {attempt} failed: {err}")
+        if attempt < TRIES:
+            time.sleep(5 * attempt)
+    else:
+        print("warning: gaia archive unreachable, continuing with no gaia cross-match")
+        return []
+    stars = []
+    for row in csv.DictReader(io.StringIO(resp.text)):
+        try:
+            pmra = float(row["pmra"]) if row["pmra"].strip() else float("nan")
+            pmdec = float(row["pmdec"]) if row["pmdec"].strip() else float("nan")
+            stars.append({
+                "ra": float(row["ra"]), "dec": float(row["dec"]),
+                "pmra": pmra if pmra == pmra else 0.0,  # nan pm -> 0
+                "pmdec": pmdec if pmdec == pmdec else 0.0,
+                "g": float(row["phot_g_mean_mag"]),
+            })
+        except (TypeError, ValueError, KeyError):
+            continue
+    return stars
+
+
+def gaia_radius_deg(fov_arcmin: float) -> float:
+    """cross-match cone radius: 0.75 of the cutout request radius."""
+    return 0.75 * fov_arcmin * 1.5 / 60
+
+
+def load_gaia_stars(slug: str, ra: float, dec: float, fov_arcmin: float) -> list[dict]:
+    """gaia stars for a target, cached at data/raw/<slug>/gaia.json."""
+    cache = settings.DATA_DIR / "raw" / slug / "gaia.json"
+    if cache.exists():
+        try:
+            return json.loads(cache.read_text())
+        except json.JSONDecodeError:
+            print(f"warning: unreadable gaia cache {cache}, refetching")
+    stars = gaia_stars(ra, dec, gaia_radius_deg(fov_arcmin))
+    cache.parent.mkdir(parents=True, exist_ok=True)
+    cache.write_text(json.dumps(stars, indent=2) + "\n")
+    return stars
 
 
 def parse_sia(content: bytes, detector: str) -> list[dict]:
@@ -202,8 +262,11 @@ def run(target: str, detector: str, fov_arcmin: float | None = None) -> list[dic
         raise SystemExit(f"no {detector} cutouts for {t['name']}, irsa busy: rerun later")
     print(f"{len(got)}/{len(visits)} visits on disk")
     print(f"frames centered on the propagated position at mean mjd {mean_mjd:.1f}")
+    gaia = load_gaia_stars(slug, ra_c, dec_c, fov)
     out_dir = settings.WEB_DIR / "cache" / slug / detector
-    return render_passes(got, ra_c, dec_c, fov, out_dir, frame_epoch_mjd=mean_mjd, target=t)
+    return render_passes(
+        got, ra_c, dec_c, fov, out_dir, frame_epoch_mjd=mean_mjd, target=t, gaia_stars=gaia
+    )
 
 
 DETECTORS = [f"d{i}" for i in range(1, 7)]

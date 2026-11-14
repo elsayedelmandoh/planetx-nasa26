@@ -60,7 +60,8 @@
     <label><input type="radio" name="mode" value="difference"> difference</label>
   </div>
   <canvas id="player" width="600" height="600" aria-label="sky image player"></canvas>
-  <p id="detection-legend">legend: <span style="color:#39d353">known high-proper-motion object</span> &middot; <span style="color:#ffa657">variable source</span> &middot; <span style="color:#ff5cf4">unmatched moving candidate</span> &middot; <span style="color:#8b949e">unmatched residual</span></p>
+  <p id="detection-legend">legend: <span style="color:#39d353">known high-proper-motion object</span> &middot; <span style="color:#ffa657">variable source</span> &middot; <span style="color:#ff5cf4">unmatched moving candidate</span> &middot; <span style="color:#8b949e">unmatched residual</span> &middot; <span style="color:#6e7681">static star residual</span></p>
+  <label for="show-static"><input type="checkbox" id="show-static"> show static star residuals</label>
   <p id="no-cache" role="status" aria-live="polite" hidden>no cached frames for this position yet; live queries are not available on this static site</p>
   <p id="diff-note" role="status" aria-live="polite" hidden>no difference frames for this detector yet</p>
   <p id="caption" aria-live="polite"></p>
@@ -173,6 +174,7 @@
     const markerLegend = document.getElementById("marker-legend");
     const mlNote = document.getElementById("ml-note");
     const showMotion = document.getElementById("show-motion");
+    const showStatic = document.getElementById("show-static");
     const noCache = document.getElementById("no-cache");
     const diffNote = document.getElementById("diff-note");
     const ARC_MIN_DEG = 1 / 60;
@@ -182,6 +184,7 @@
       "variable source": "#ffa657",
       "unmatched moving candidate": "#ff5cf4",
       "unmatched residual": "#8b949e",
+      "static star residual": "#6e7681",
     };
     let targets = [];
     let frames = [];
@@ -275,6 +278,15 @@
             ctx.font = "bold 13px system-ui, sans-serif";
             for (const d of markers.detections || []) {
               const [cx, cy] = toCanvas([d.x, d.y]);
+              const isStatic = d.label === "static star residual";
+              if (isStatic && !showStatic.checked) {
+                // crowded fields stay readable: small dim dot, no text label
+                ctx.fillStyle = "rgba(110,118,129,0.6)";
+                ctx.beginPath();
+                ctx.arc(cx, cy, Math.max(2, canvas.width / 300), 0, 2 * Math.PI);
+                ctx.fill();
+                continue;
+              }
               const color = LABEL_COLORS[d.label] || LABEL_COLORS["unmatched residual"];
               const radius = canvas.width / 70;
               ctx.strokeStyle = color;
@@ -409,6 +421,7 @@
     }
 
     showMotion.addEventListener("change", drawFrame);
+    showStatic.addEventListener("change", drawFrame);
     playButton.addEventListener("click", () => setPlaying(!playing));
     speedInput.addEventListener("input", () => {
       speedValue.textContent = `${speedInput.value} fps`;

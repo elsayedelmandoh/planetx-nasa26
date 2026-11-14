@@ -125,18 +125,55 @@ def write_png(img: np.ndarray, path: Path) -> int:
     return int(holes.sum())
 
 
-def detect(diff: np.ndarray, sigma_k: float = 5, expected_px: list | None = None) -> dict:
+GAIA_EPOCH = 2016.0
+
+
+def gaia_px(gaia_stars: list[dict], wcs: WCS, mjd_a: float, mjd_b: float) -> list[dict]:
+    """pixel positions of gaia stars at two pass epochs in the common wcs.
+
+    returns [{"x", "y", "shift"}] with x/y the midpoint and shift the expected
+    proper-motion displacement in px between the passes.
+    """
+    out = []
+    ep_a, ep_b = (Time(m, format="mjd").jyear for m in (mjd_a, mjd_b))
+    for s in gaia_stars:
+        star = {
+            "ra_deg": s["ra"], "dec_deg": s["dec"],
+            "astrometry": {
+                "ra_deg": s["ra"], "dec_deg": s["dec"],
+                "pmra_mas_yr": s["pmra"], "pmdec_mas_yr": s["pmdec"],
+                "epoch": GAIA_EPOCH,
+            },
+        }
+        pa = wcs.world_to_pixel(SkyCoord(*propagate(star, ep_a), unit=u.deg))
+        pb = wcs.world_to_pixel(SkyCoord(*propagate(star, ep_b), unit=u.deg))
+        ax, ay, bx, by = float(pa[0]), float(pa[1]), float(pb[0]), float(pb[1])
+        out.append({"x": (ax + bx) / 2, "y": (ay + by) / 2,
+                    "shift": float(np.hypot(bx - ax, by - ay))})
+    return out
+
+
+def detect(
+    diff: np.ndarray,
+    sigma_k: float = 5,
+    expected_px: list | None = None,
+    gaia_px: list | None = None,
+) -> dict:
     """rule-based detection on a background-subtracted difference (native pixels).
 
     robust sigma from the mad, connected regions past +/-k*sigma, then:
     a negative+positive pair within 3 px is a dipole (moving source), a dipole
     near the expected target positions is a known high-proper-motion object,
-    a lone residual at the target is a variable source. isolated single-sign
-    regions away from the target smaller than 2 px are treated as noise.
+    a lone residual at the target is a variable source. dipoles and single-sign
+    residuals within 1.5 px of a gaia dr3 star are labelled from its expected
+    shift: < 0.5 px is a static star residual, >= 0.5 px a known
+    high-proper-motion object. isolated single-sign regions away from the
+    target smaller than 2 px are treated as noise.
     """
     from scipy import ndimage
 
     expected = [tuple(p) for p in (expected_px or [])]
+    gaia = list(gaia_px or [])
     finite = diff[np.isfinite(diff)]
     sigma = 1.4826 * np.median(np.abs(finite - np.median(finite))) if finite.size else 0.0
     regions = []
@@ -153,6 +190,14 @@ def detect(diff: np.ndarray, sigma_k: float = 5, expected_px: list | None = None
 
     def near(x, y, dist):
         return any((x - ex) ** 2 + (y - ey) ** 2 <= dist * dist for ex, ey in expected)
+
+    def near_gaia(x, y, dist=1.5):
+        best, best_d = None, None
+        for g in gaia:
+            d = (x - g["x"]) ** 2 + (y - g["y"]) ** 2
+            if d <= dist * dist and (best_d is None or d < best_d):
+                best, best_d = g, d
+        return best
 
     detections = []
     used = set()  # indices into regions consumed by a dipole pair
@@ -172,18 +217,29 @@ def detect(diff: np.ndarray, sigma_k: float = 5, expected_px: list | None = None
         used.add(best)
         mx = (regions[i]["x"] + regions[best]["x"]) / 2
         my = (regions[i]["y"] + regions[best]["y"]) / 2
-        label = (
-            "known high-proper-motion object" if near(mx, my, 2.0)
-            else "unmatched moving candidate"
-        )
-        detections.append({"x": mx, "y": my, "label": label,
-                           "peak_sigma": max(regions[i]["peak_sigma"], regions[best]["peak_sigma"]),
-                           "sign": "dipole"})
+        det = {"x": mx, "y": my,
+               "peak_sigma": max(regions[i]["peak_sigma"], regions[best]["peak_sigma"]),
+               "sign": "dipole"}
+        if near(mx, my, 2.0):
+            det["label"] = "known high-proper-motion object"
+        else:
+            g = near_gaia(mx, my)
+            if g is not None:
+                if g["shift"] < 0.5:
+                    det["label"] = "static star residual"
+                else:
+                    det["label"] = "known high-proper-motion object"
+                    det["gaia"] = True
+            else:
+                det["label"] = "unmatched moving candidate"
+        detections.append(det)
     for i, r in enumerate(regions):
         if i in used:
             continue
         if near(r["x"], r["y"], 2.0):
             label = "variable source"
+        elif near_gaia(r["x"], r["y"]) is not None:
+            label = "static star residual"
         elif r["size"] < 2:
             continue  # isolated noise away from the target
         else:
@@ -191,7 +247,9 @@ def detect(diff: np.ndarray, sigma_k: float = 5, expected_px: list | None = None
         detections.append({"x": r["x"], "y": r["y"], "label": label,
                            "peak_sigma": r["peak_sigma"], "sign": r["sign"]})
     return {"detections": detections, "sigma": float(sigma),
-            "method": "rule-based: 5-sigma threshold, dipole pairing, proper-motion match"}
+            "n_gaia_stars": len(gaia),
+            "method": "rule-based: 5-sigma threshold, dipole pairing, proper-motion match, "
+                      "gaia dr3 cross-match"}
 
 
 def difference_image(coadd_a: np.ndarray, coadd_b: np.ndarray) -> np.ndarray:
@@ -229,6 +287,7 @@ def render_passes(
     out_dir: Path,
     frame_epoch_mjd: float | None = None,
     target: dict | None = None,
+    gaia_stars: list[dict] | None = None,
 ) -> list[dict]:
     """group visits into passes, coadd each, write pass-<n>.png + .json into out_dir."""
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -281,7 +340,10 @@ def render_passes(
         npy_dir.mkdir(parents=True, exist_ok=True)
         np.save(npy_dir / f"diff-{a + 1}-{b + 1}.npy", diff.astype(np.float32))
         expected = [m["target_px"] for m in (metas[a], metas[b]) if m.get("target_px")]
-        markers = detect(diff, sigma_k=5, expected_px=expected)
+        mjd_a = sum(v["mjd"] for v in groups[a]) / len(groups[a])
+        mjd_b = sum(v["mjd"] for v in groups[b]) / len(groups[b])
+        gpx = gaia_px(gaia_stars or [], wcs, mjd_a, mjd_b) if gaia_stars else []
+        markers = detect(diff, sigma_k=5, expected_px=expected, gaia_px=gpx)
         markers_name = f"diff-{a + 1}-{b + 1}.markers.json"
         (out_dir / markers_name).write_text(json.dumps(markers, indent=2) + "\n")
         write_diff_png(diff, out_dir / f"diff-{a + 1}-{b + 1}.png")
