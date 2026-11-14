@@ -5,8 +5,11 @@ run: python -m src.utils.data_acquisition --target "WISE 0855" --detector d6"""
 
 import argparse
 import io
+import json
 import re
+import sys
 import time
+from pathlib import Path
 
 import requests
 from astropy.io.votable import parse_single_table
@@ -58,6 +61,54 @@ def download_cutout(url: str, ra: float, dec: float, fov_arcmin: float, dest) ->
     )
 
 
+def slugify(name: str) -> str:
+    return re.sub(r"[^a-z0-9]+", "-", name.lower()).strip("-")
+
+
+def build_index(web_dir: Path) -> dict:
+    """scan web_dir/cache/<slug>/<detector>/pass-*.json -> the index.json contract."""
+    cache = web_dir / "cache"
+    targets = []
+    for t in settings.TARGETS:  # config order
+        slug = slugify(t["name"])
+        detectors = {}
+        for d in range(1, 7):
+            det = f"d{d}"
+            det_dir = cache / slug / det
+            if not det_dir.is_dir():
+                continue
+            passes = []
+            for js in sorted(det_dir.glob("pass-*.json"), key=lambda p: int(p.stem.split("-")[1])):
+                png = js.with_suffix(".png")
+                if not png.exists():
+                    continue
+                rel = f"cache/{slug}/{det}"
+                passes.append({"png": f"{rel}/{png.name}", "json": f"{rel}/{js.name}"})
+            if passes:
+                detectors[det] = passes
+        if detectors:
+            targets.append(
+                {
+                    "name": t["name"],
+                    "slug": slug,
+                    "ra_deg": t["ra_deg"],
+                    "dec_deg": t["dec_deg"],
+                    "kind": t["kind"],
+                    "detectors": detectors,
+                }
+            )
+    return {"targets": targets}
+
+
+def write_index(web_dir: Path | None = None) -> Path:
+    web_dir = web_dir or settings.WEB_DIR
+    dest = web_dir / "cache" / "index.json"
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    dest.write_text(json.dumps(build_index(web_dir), indent=2) + "\n")
+    print(f"wrote {dest}")
+    return dest
+
+
 def run(target: str, detector: str, fov_arcmin: float | None = None) -> list[dict]:
     """whole step for one target and detector. rerun-safe: cutouts already on disk are reused."""
     by_name = {t["name"].lower(): t for t in settings.TARGETS}
@@ -66,7 +117,7 @@ def run(target: str, detector: str, fov_arcmin: float | None = None) -> list[dic
     t = by_name[target.lower()]
     ra, dec = t["ra_deg"], t["dec_deg"]
     fov = fov_arcmin or settings.DEFAULT_FOV_ARCMIN
-    slug = re.sub(r"[^a-z0-9]+", "-", t["name"].lower()).strip("-")
+    slug = slugify(t["name"])
 
     visits = query_sia_visits(ra, dec, detector, settings.DATA_RELEASES)
     if not visits:
@@ -88,11 +139,44 @@ def run(target: str, detector: str, fov_arcmin: float | None = None) -> list[dic
     return render_passes(got, ra, dec, fov, out_dir)
 
 
+DETECTORS = [f"d{i}" for i in range(1, 7)]
+
+
+def run_all() -> int:
+    """loop all targets x detectors, keep going on failure, print a summary."""
+    results = []
+    for t in settings.TARGETS:
+        for det in DETECTORS:
+            try:
+                run(t["name"], det)
+                results.append((t["name"], det, "ok"))
+            except SystemExit as err:
+                print(f"error: {t['name']} {det}: {err}")
+                results.append((t["name"], det, "fail"))
+            except Exception as err:
+                print(f"error: {t['name']} {det}: {err}")
+                results.append((t["name"], det, "fail"))
+    fails = sum(1 for _, _, s in results if s == "fail")
+    print("\nsummary:")
+    for name, det, status in results:
+        print(f"{name:16} {det}  {status}")
+    print(f"{len(results) - fails}/{len(results)} ok, {fails} failed")
+    return fails
+
+
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
-    ap.add_argument("--target", required=True)
-    ap.add_argument("--detector", required=True)
+    ap.add_argument("--target")
+    ap.add_argument("--detector")
+    ap.add_argument("--all", action="store_true", help="run all targets x d1..d6")
     args = ap.parse_args()
+    if args.all:
+        fails = run_all()
+        write_index()
+        sys.exit(1 if fails else 0)
+    if not args.target or not args.detector:
+        ap.error("--target and --detector are required unless --all is given")
     for n, m in enumerate(run(args.target, args.detector), start=1):
         r = m["date_range"]
         print(f"pass-{n}: {m['visit_count']} visits, {r['start']} to {r['end']}")
+    write_index()
