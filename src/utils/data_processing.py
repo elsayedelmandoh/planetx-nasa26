@@ -142,6 +142,7 @@ def render_passes(
     fov_arcmin: float,
     out_dir: Path,
     frame_epoch_mjd: float | None = None,
+    target: dict | None = None,
 ) -> list[dict]:
     """group visits into passes, coadd each, write pass-<n>.png + .json into out_dir."""
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -173,6 +174,14 @@ def render_passes(
         if frame_epoch_mjd is not None:
             meta["frame_center"]["mjd"] = frame_epoch_mjd
             meta["frame_center"]["epoch"] = Time(frame_epoch_mjd, format="mjd").strftime("%Y-%m-%d")
+        if target and target.get("astrometry"):
+            mid_mjd = sum(v["mjd"] for v in group) / len(group)
+            epoch = Time(mid_mjd, format="mjd").jyear
+            tra, tdec = propagate(target, epoch)
+            px, py = wcs.world_to_pixel(SkyCoord(tra, tdec, unit=u.deg))
+            meta["target_px"] = [float(px), float(py)]
+            meta["target_epoch"] = float(epoch)
+            meta["astrometry_source"] = target["astrometry"].get("source", "")
         (out_dir / f"pass-{n}.json").write_text(json.dumps(meta, indent=2) + "\n")
         metas.append(meta)
     for a in range(len(groups) - 1):

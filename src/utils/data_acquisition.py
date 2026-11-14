@@ -171,7 +171,7 @@ def run(target: str, detector: str, fov_arcmin: float | None = None) -> list[dic
     print(f"{len(got)}/{len(visits)} visits on disk")
     print(f"frames centered on the propagated position at mean mjd {mean_mjd:.1f}")
     out_dir = settings.WEB_DIR / "cache" / slug / detector
-    return render_passes(got, ra_c, dec_c, fov, out_dir, frame_epoch_mjd=mean_mjd)
+    return render_passes(got, ra_c, dec_c, fov, out_dir, frame_epoch_mjd=mean_mjd, target=t)
 
 
 DETECTORS = [f"d{i}" for i in range(1, 7)]

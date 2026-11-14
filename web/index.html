@@ -12,6 +12,8 @@
     #player-controls { display: flex; flex-wrap: wrap; gap: .5rem .75rem; align-items: center; margin: .5rem 0; max-width: 600px; }
     #player-controls label { display: flex; align-items: center; gap: .35rem; }
     #caption { margin: .25rem 0; min-height: 1.4rem; }
+    #motion-legend { margin: .25rem 0; font-size: .85rem; color: #444; }
+    #motion-legend[hidden] { display: none; }
     #no-cache { color: #a40000; }
     #diff-note { color: #a40000; }
     footer { margin-top: 2rem; font-size: .85rem; color: #555; }
@@ -56,6 +58,7 @@
   <p id="no-cache" role="status" aria-live="polite" hidden>no cached frames for this position yet; live queries are not available on this static site</p>
   <p id="diff-note" role="status" aria-live="polite" hidden>no difference frames for this detector yet</p>
   <p id="caption" aria-live="polite"></p>
+  <p id="motion-legend" hidden>circle: expected position from proper motion (not a detection) &middot; arrow: motion from first to last pass</p>
 
   <div id="player-controls">
     <button id="play-toggle" type="button" aria-label="play or pause the frame loop" aria-pressed="false">play</button>
@@ -66,6 +69,7 @@
     <label for="scrub">frame
       <input id="scrub" type="range" min="0" max="0" step="1" value="0" aria-label="scrub through frames">
     </label>
+    <label for="show-motion"><input type="checkbox" id="show-motion" checked> show expected motion</label>
   </div>
 
   <footer>
@@ -157,6 +161,8 @@
     const speedValue = document.getElementById("speed-value");
     const scrubInput = document.getElementById("scrub");
     const caption = document.getElementById("caption");
+    const motionLegend = document.getElementById("motion-legend");
+    const showMotion = document.getElementById("show-motion");
     const noCache = document.getElementById("no-cache");
     const diffNote = document.getElementById("diff-note");
     const ARC_MIN_DEG = 1 / 60;
@@ -165,7 +171,33 @@
     let frameIndex = 0;
     let playing = false;
     let timer = null;
+    let motion = null; // {fromPx, toPx, arcsec, years, sourceLabel} from first/last pass metas
     const imageCache = new Map();
+    const metaCache = new Map();
+
+    function fetchMeta(src) {
+      if (!metaCache.has(src)) {
+        metaCache.set(src, fetch(src).then((r) => r.json()));
+      }
+      return metaCache.get(src);
+    }
+
+    // motion overlay from the first and last pass metas, or null when astrometry is missing
+    async function computeMotion(target) {
+      const list = target?.detectors?.[detInput.value] || [];
+      if (list.length < 2) return null;
+      const metas = await Promise.all(list.map((f) => fetchMeta(f.json).catch(() => null)));
+      const first = metas.find((m) => m && m.target_px);
+      const last = [...metas].reverse().find((m) => m && m.target_px);
+      if (!first || !last || first === last) return null;
+      const dx = last.target_px[0] - first.target_px[0];
+      const dy = last.target_px[1] - first.target_px[1];
+      const scale = first.native_pixel_scale_arcsec || 6.15;
+      const years = last.target_epoch - first.target_epoch;
+      const source = String(first.astrometry_source || "");
+      const sourceLabel = /gaia/i.test(source) ? "gaia dr3" : "literature, unverified";
+      return { fromPx: first.target_px, toPx: last.target_px, arcsec: Math.hypot(dx, dy) * scale, years, sourceLabel };
+    }
 
     function angularSeparationDeg(ra1, dec1, ra2, dec2) {
       const toRad = (d) => (d * Math.PI) / 180;
@@ -210,18 +242,55 @@
       if (!frame) { ctx.clearRect(0, 0, canvas.width, canvas.height); return; }
       try {
         const img = await loadFrame(frame.png);
-        const meta = frame.meta || (frame.meta = await fetch(frame.json).then((r) => r.json()));
+        const meta = frame.meta || (frame.meta = await fetchMeta(frame.json));
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.imageSmoothingEnabled = false;
         // pngs are pre-upsampled; scale to fit the canvas keeping square aspect
         const scale = Math.min(canvas.width / img.width, canvas.height / img.height);
         const w = img.width * scale, h = img.height * scale;
-        ctx.drawImage(img, (canvas.width - w) / 2, (canvas.height - h) / 2, w, h);
-        caption.textContent = meta.kind === "difference"
+        const ox = (canvas.width - w) / 2, oy = (canvas.height - h) / 2;
+        ctx.drawImage(img, ox, oy, w, h);
+        const upsample = meta.upsample_factor || 1;
+        const toCanvas = (px) => [ox + px[0] * upsample * scale, oy + px[1] * upsample * scale];
+        if (showMotion.checked) {
+          if (meta.target_px) {
+            const [cx, cy] = toCanvas(meta.target_px);
+            ctx.strokeStyle = "#ffdd33";
+            ctx.lineWidth = Math.max(1.5, canvas.width / 400);
+            ctx.beginPath();
+            ctx.arc(cx, cy, canvas.width / 60, 0, 2 * Math.PI);
+            ctx.stroke();
+          }
+          if (motion) {
+            const [x1, y1] = toCanvas(motion.fromPx);
+            const [x2, y2] = toCanvas(motion.toPx);
+            const angle = Math.atan2(y2 - y1, x2 - x1);
+            const head = canvas.width / 45;
+            ctx.strokeStyle = "#ffdd33";
+            ctx.fillStyle = "#ffdd33";
+            ctx.lineWidth = Math.max(1.5, canvas.width / 300);
+            ctx.beginPath();
+            ctx.moveTo(x1, y1);
+            ctx.lineTo(x2, y2);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(x2, y2);
+            ctx.lineTo(x2 - head * Math.cos(angle - 0.4), y2 - head * Math.sin(angle - 0.4));
+            ctx.lineTo(x2 - head * Math.cos(angle + 0.4), y2 - head * Math.sin(angle + 0.4));
+            ctx.closePath();
+            ctx.fill();
+          }
+        }
+        motionLegend.hidden = !(showMotion.checked && (motion || meta.target_px));
+        const base = meta.kind === "difference"
           ? meta.subtraction
           : `${meta.epoch_label} | ${meta.date_range.start} to ${meta.date_range.end} | ${meta.visit_count} visit${meta.visit_count === 1 ? "" : "s"}`;
+        caption.textContent = motion
+          ? `${base} | expected motion: ${motion.arcsec.toFixed(2)} arcsec over ${motion.years.toFixed(2)} yr (${motion.sourceLabel})`
+          : base;
       } catch {
         caption.textContent = "failed to load frame";
+        motionLegend.hidden = true;
       }
     }
 
@@ -254,6 +323,7 @@
         ? target?.differences?.[detInput.value]
         : target?.detectors?.[detInput.value];
       frames = source ? source.map((f) => ({ ...f })) : [];
+      motion = frames.length ? await computeMotion(target) : null;
       diffNote.hidden = mode !== "difference" || frames.length !== 0;
       noCache.hidden = mode === "difference" || frames.length !== 0;
       frameIndex = 0;
@@ -271,6 +341,7 @@
       setPlaying(true);
     }
 
+    showMotion.addEventListener("change", drawFrame);
     playButton.addEventListener("click", () => setPlaying(!playing));
     speedInput.addEventListener("input", () => {
       speedValue.textContent = `${speedInput.value} fps`;

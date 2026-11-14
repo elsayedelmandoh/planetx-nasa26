@@ -50,6 +50,16 @@ def test_root_contains_mode_control() -> None:
     assert 'value="difference"' in response.text
 
 
+def test_root_contains_expected_motion_checkbox_and_legend() -> None:
+    response = client.get("/")
+
+    assert response.status_code == 200
+    assert 'id="show-motion"' in response.text
+    assert "show expected motion" in response.text
+    assert 'id="motion-legend"' in response.text
+    assert "expected position from proper motion (not a detection)" in response.text
+
+
 def test_home_and_team_served_and_clean() -> None:
     for page in ("home.html", "team.html"):
         response = client.get(f"/{page}")
