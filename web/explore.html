@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NASA Space Apps Planet X | Explore</title>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow&family=Barlow+Condensed:wght@400;700&family=Bellefair&display=swap" rel="stylesheet">
+  <style>
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #000000; color: #ffffff; font-family: 'Barlow', sans-serif; min-height: 100vh; overflow-x: hidden; position: relative; }
+    
+    /* Twinkling Starfield Canvas */
+    #starfield { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+    .ambient-glow { position: fixed; inset: 0; background: radial-gradient(circle at 50% 25%, rgba(28, 37, 72, 0.35) 0%, rgba(0, 0, 0, 0) 65%); z-index: 0; pointer-events: none; }
+
+    /* Unified Heading Bar & Navigation List */
+    header { position: relative; z-index: 10; display: flex; justify-content: space-between; align-items: center; padding: 2rem 0 2rem 3.5rem; }
+    .brand { display: flex; align-items: center; gap: 1rem; text-decoration: none; color: #ffffff; }
+    .logo { width: 48px; height: 48px; background: #ffffff; color: #000000; border-radius: 50%; display: grid; place-items: center; font-weight: 700; font-size: 1.5rem; flex-shrink: 0; }
+    .brand-title { font-family: 'Barlow Condensed', sans-serif; font-size: 1.1rem; letter-spacing: 3px; text-transform: uppercase; color: #D0D6F9; }
+    .header-line { flex: 1; height: 1px; background: rgba(255, 255, 255, 0.2); margin: 0 -2rem 0 2.5rem; z-index: 11; }
+    nav { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); padding: 0 6rem 0 4rem; border-bottom: 1px solid rgba(255, 255, 255, 0.15); border-left: 1px solid rgba(255, 255, 255, 0.1); }
+    nav ul { display: flex; list-style: none; gap: 3rem; }
+    nav a { display: inline-block; padding: 2rem 0; color: #ffffff; text-decoration: none; font-family: 'Barlow Condensed', sans-serif; font-size: 1rem; letter-spacing: 2.7px; text-transform: uppercase; border-bottom: 3px solid transparent; transition: border-color 0.3s ease; }
+    nav a:hover { border-bottom-color: rgba(255, 255, 255, 0.5); }
+    nav a.active { border-bottom-color: #ffffff; }
+    nav a b { font-weight: 700; margin-right: 0.65rem; }
+
+    @media (max-width: 900px) {
+      header { padding: 1.5rem 0 1.5rem 1.5rem; }
+      .header-line, .brand-title { display: none; }
+      nav { padding: 0 2rem; }
+      nav ul { gap: 1.75rem; }
+    }
+
+    main { position: relative; z-index: 5; max-width: 1200px; margin: 0 auto; padding: 1.5rem 2rem 3rem; text-align: center; }
+    .page-title { text-align: left; font-family: 'Barlow Condensed', sans-serif; font-size: 1.75rem; letter-spacing: 4.72px; text-transform: uppercase; font-weight: 400; margin-bottom: 0.5rem; }
+    .page-title span { opacity: 0.3; font-weight: 700; margin-right: 0.9rem; }
+    .sub { color: #D0D6F9; margin-bottom: 1.5rem; font-size: 1rem; }
+    
+    /* 9 Smaller Photos in 3D Ring */
+    .viewport { width: 100%; height: 310px; perspective: 1200px; display: grid; place-items: center; cursor: grab; user-select: none; }
+    .viewport:active { cursor: grabbing; }
+    .ring { position: relative; width: 195px; height: 240px; transform-style: preserve-3d; }
+    .card { position: absolute; inset: 0; background: rgba(10, 12, 22, 0.94); border: 1px solid rgba(255, 255, 255, 0.22); border-radius: 10px; overflow: hidden; box-shadow: 0 12px 30px rgba(0, 0, 0, 0.8); cursor: pointer; transition: border-color 0.2s, box-shadow 0.2s; }
+    .card:hover { border-color: #ffffff; box-shadow: 0 0 22px rgba(208, 214, 249, 0.35); }
+    .card img { width: 100%; height: 74%; object-fit: cover; pointer-events: none; }
+    .card-info { height: 26%; padding: 0.45rem 0.75rem; text-align: left; border-top: 1px solid rgba(255, 255, 255, 0.12); }
+    .card-info span { font-family: 'Barlow Condensed', sans-serif; font-size: 0.72rem; letter-spacing: 2px; color: #D0D6F9; text-transform: uppercase; display: block; }
+    .card-info h3 { font-family: 'Bellefair', serif; font-size: 1.05rem; font-weight: 400; text-transform: uppercase; }
+
+    /* Lower Spin Controls */
+    .controls { display: inline-flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 1.2rem; background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(12px); padding: 0.8rem 1.8rem; border-radius: 50px; border: 1px solid rgba(255, 255, 255, 0.15); margin-top: 3.5rem; }
+    button { font-family: 'Barlow Condensed', sans-serif; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; border-radius: 30px; }
+    .btn-spin { background: #ffffff; color: #000000; border: none; padding: 0.6rem 1.5rem; font-weight: 700; }
+    .btn-reset { background: transparent; color: #D0D6F9; border: 1px solid rgba(255, 255, 255, 0.25); padding: 0.55rem 1.2rem; }
+    label { font-family: 'Barlow Condensed', sans-serif; letter-spacing: 1.5px; text-transform: uppercase; color: #D0D6F9; font-size: 0.9rem; cursor: pointer; display: flex; align-items: center; gap: 0.4rem; }
+
+    /* Pop-Out Modal with Per-Photo Smooth Rocket Timeline */
+    .modal { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.88); backdrop-filter: blur(10px); display: none; place-items: center; z-index: 99; padding: 1rem; }
+    .modal.open { display: grid; }
+    .panel { background: #0c0f1d; border: 1px solid rgba(255, 255, 255, 0.22); border-radius: 16px; max-width: 940px; width: 100%; display: grid; grid-template-columns: 1fr 1.2fr; overflow: hidden; position: relative; text-align: left; }
+    .close { position: absolute; top: 1rem; right: 1rem; background: rgba(255, 255, 255, 0.1); color: #ffffff; border: 1px solid rgba(255, 255, 255, 0.25); padding: 0.35rem 0.85rem; z-index: 10; }
+    .img-box { position: relative; background: #000000; min-height: 400px; overflow: hidden; }
+    .img-box img { width: 100%; height: 100%; object-fit: cover; transition: filter 0.3s; }
+    .reticle { position: absolute; top: 50%; left: 50%; width: 90px; height: 90px; transform: translate(-50%,-50%); border: 1px dashed rgba(255,255,255,0.8); border-radius: 50%; pointer-events: none; }
+    .trail-line { position: absolute; top: 50%; left: 0; width: 100%; height: 1px; background: linear-gradient(90deg, transparent, rgba(208,214,249,0.8), transparent); pointer-events: none; }
+    .details { padding: 2rem; display: flex; flex-direction: column; justify-content: space-between; }
+    .tag { font-family: 'Barlow Condensed', sans-serif; color: #D0D6F9; letter-spacing: 2px; text-transform: uppercase; font-size: 0.85rem; }
+    .details h2 { font-family: 'Bellefair', serif; font-size: 2.8rem; font-weight: 400; text-transform: uppercase; margin: 0.3rem 0 0.7rem; }
+    .desc { color: #D0D6F9; line-height: 1.6; padding-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.15); font-size: 0.95rem; }
+    .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 0.9rem; margin-top: 1rem; }
+    .stats span { display: block; font-family: 'Barlow Condensed', sans-serif; font-size: 0.78rem; letter-spacing: 2px; color: #D0D6F9; text-transform: uppercase; }
+    .stats strong { font-family: 'Bellefair', serif; font-size: 1.3rem; font-weight: 400; text-transform: uppercase; }
+
+    /* Write-in Date Bar */
+    .date-input-bar { margin-top: 1.1rem; padding-top: 0.9rem; border-top: 1px solid rgba(255,255,255,0.15); display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem; }
+    .date-input-bar input { background: #000000; color: #ffffff; border: 1px solid rgba(255,255,255,0.3); padding: 0.45rem 0.8rem; border-radius: 6px; font-family: 'Barlow Condensed', sans-serif; letter-spacing: 1.5px; text-transform: uppercase; flex: 1; min-width: 150px; }
+    .btn-show { background: #ffffff; color: #000000; border: none; padding: 0.45rem 1rem; font-weight: 700; border-radius: 6px; }
+
+    /* Per-Photo Smooth Rocket Timeline */
+    .timeline-box { margin-top: 1.2rem; padding-top: 0.9rem; border-top: 1px solid rgba(255,255,255,0.15); }
+    .timeline-header { display: flex; justify-content: space-between; font-family: 'Barlow Condensed', sans-serif; font-size: 0.82rem; letter-spacing: 2px; text-transform: uppercase; color: #D0D6F9; margin-bottom: 0.9rem; }
+    .track-wrap { position: relative; height: 28px; display: flex; align-items: center; cursor: pointer; user-select: none; }
+    .track-bg { width: 100%; height: 3px; background: rgba(255,255,255,0.18); border-radius: 3px; position: relative; }
+    .track-fill { height: 100%; width: 0%; background: linear-gradient(90deg, #6b8cff, #ffffff); border-radius: 3px; }
+    .rocket { position: absolute; left: 0%; top: 50%; transform: translate(-50%, -50%) rotate(45deg); font-size: 1.25rem; filter: drop-shadow(0 0 8px rgba(255,255,255,0.8)); pointer-events: none; }
+    .nodes { display: flex; justify-content: space-between; margin-top: 0.4rem; }
+    .node-btn { background: none; border: none; color: rgba(208,214,249,0.65); font-family: 'Barlow Condensed', sans-serif; font-size: 0.78rem; letter-spacing: 1.5px; text-transform: uppercase; padding: 0.2rem 0; border-radius: 0; }
+    .node-btn.active, .node-btn:hover { color: #ffffff; font-weight: 700; }
+
+    @media (max-width: 780px) { .panel { grid-template-columns: 1fr; } .img-box { min-height: 220px; } }
+  </style>
+</head>
+<body>
+
+  <canvas id="starfield"></canvas>
+  <div class="ambient-glow"></div>
+  <header>
+    <a href="home.html" class="brand">
+      <div class="logo">✦</div>
+      <span class="brand-title">NASA Space Apps • Planet X</span>
+    </a>
+    <div class="header-line"></div>
+    <nav>
+      <ul>
+        <li><a href="home.html" class=""><b>00</b> Home</a></li>
+        <li><a href="explore.html" class="active"><b>01</b> Explore</a></li>
+        <li><a href="team.html" class=""><b>02</b> Team</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <h1 class="page-title"><span>01</span> Pick your destination</h1>
+    <p class="sub">Drag or spin the ring, then click any of the 9 destinations to open its timeline and telemetry.</p>
+    <div class="viewport" id="vp"><div class="ring" id="ring"></div></div>
+    <div class="controls">
+      <button class="btn-spin" id="spin">Spin Orbit</button>
+      <label><input type="checkbox" id="trail" checked> Trail</label>
+      <label><input type="checkbox" id="mark" checked> Mark target</label>
+      <button class="btn-reset" id="reset">Reset view</button>
+    </div>
+  </main>
+
+  <div class="modal" id="modal">
+    <div class="panel">
+      <button class="close" id="close">✕ Close</button>
+      <div class="img-box">
+        <img id="mImg" src="" alt="Destination Preview">
+        <div class="reticle" id="reticle"></div>
+        <div class="trail-line" id="trailLine"></div>
+      </div>
+      <div class="details">
+        <div>
+          <div class="tag" id="mFov"></div>
+          <h2 id="mTitle"></h2>
+          <p class="desc" id="mDesc"></p>
+          <div class="stats">
+            <div><span>Avg. distance</span><strong id="mDist"></strong></div>
+            <div><span>Est. travel time</span><strong id="mTime"></strong></div>
+            <div><span>Centre</span><strong id="mCentre"></strong></div>
+            <div><span>Observation</span><strong id="mObs"></strong></div>
+          </div>
+          <div class="date-input-bar">
+            <label for="customDate">See this sky on another date</label>
+            <input type="text" id="customDate" placeholder="e.g. Oct 2026 QR3">
+            <button class="btn-show" id="showDateBtn">Show</button>
+          </div>
+        </div>
+        <div class="timeline-box">
+          <div class="timeline-header">
+            <span>Mission Timeline</span>
+            <span id="tlActiveLabel">May 2025 DR1</span>
+          </div>
+          <div class="track-wrap" id="trackWrap">
+            <div class="track-bg"><div class="track-fill" id="trackFill"></div></div>
+            <div class="rocket" id="rocket">🚀</div>
+          </div>
+          <div class="nodes" id="tlNodes"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+
+    const canvas = document.getElementById('starfield');
+    const ctx = canvas.getContext('2d');
+    let stars = [];
+    function initStars() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      stars = Array.from({ length: 160 }, () => ({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        r: Math.random() * 1.5 + 0.3,
+        a: Math.random(),
+        s: (Math.random() * 0.015 + 0.004) * (Math.random() > 0.5 ? 1 : -1)
+      }));
+    }
+    function drawStars() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      stars.forEach(st => {
+        st.a += st.s;
+        if (st.a <= 0.1 || st.a >= 1) st.s *= -1;
+        ctx.beginPath();
+        ctx.arc(st.x, st.y, st.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255, 255, 255, ${st.a})`;
+        ctx.fill();
+      });
+      requestAnimationFrame(drawStars);
+    }
+    window.addEventListener('resize', initStars);
+    initStars();
+    drawStars();
+
+    const destinations = [
+      { id: "01", title: "Sector 01 • Moon", img: "1.png", fb: "https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?w=800", fov: "2.4° × 2.4°",
+         epochs: [
+           { label: "May 2025 DR1", desc: "Initial lunar orbital survey and crater spectral baseline.", dist: "384,400 km", time: "3 days", centre: "RA 12h 40m", filter: "none" },
+           { label: "Nov 2025 DR2", desc: "South pole ice-deposit infrared scan during solar minimum.", dist: "382,100 km", time: "3 days", centre: "RA 12h 44m", filter: "contrast(1.15) brightness(1.05)" },
+           { label: "May 2026 QR2", desc: "Far-side radio quiet zone telemetry pass.", dist: "386,900 km", time: "3.2 days", centre: "RA 12h 49m", filter: "hue-rotate(35deg)" },
+           { label: "QR3 Nov 2026", desc: "Final high-resolution landing corridor mapping.", dist: "384,000 km", time: "3 days", centre: "RA 12h 52m", filter: "saturate(1.3)" }
+         ]
+      },
+      { id: "02", title: "Sector 02 • Mars", img: "2.png", fb: "https://images.unsplash.com/photo-1614728894747-a83421e2b9c9?w=800", fov: "3.1° × 3.1°",
+         epochs: [
+           { label: "May 2025 DR1", desc: "Olympus Mons atmospheric dust column profile.", dist: "225 mil. km", time: "9 months", centre: "RA 18h 15m", filter: "none" },
+           { label: "Nov 2025 DR2", desc: "Valles Marineris thermal inertia mapping pass.", dist: "210 mil. km", time: "8.5 months", centre: "RA 18h 22m", filter: "hue-rotate(25deg)" },
+           { label: "May 2026 QR2", desc: "Northern polar cap seasonal sublimation scan.", dist: "198 mil. km", time: "8 months", centre: "RA 18h 30m", filter: "contrast(1.2)" },
+           { label: "QR3 Nov 2026", desc: "Phobos & Deimos orbital rendezvous window.", dist: "185 mil. km", time: "7.5 months", centre: "RA 18h 38m", filter: "saturate(1.35)" }
+         ]
+      },
+      { id: "03", title: "Sector 03 • Europa", img: "3.png", fb: "https://images.unsplash.com/photo-1614313913007-2b4ae8ce32d6?w=800", fov: "1.8° × 1.8°",
+         epochs: [
+           { label: "May 2025 DR1", desc: "Chaos terrain ice-shell fracture spectroscopy.", dist: "628 mil. km", time: "3 years", centre: "RA 04h 52m", filter: "none" },
+           { label: "Nov 2025 DR2", desc: "Subsurface ocean water-vapor plume detection.", dist: "635 mil. km", time: "3.1 years", centre: "RA 04h 56m", filter: "hue-rotate(150deg)" },
+           { label: "May 2026 QR2", desc: "Jovian magnetosphere radiation belt transit.", dist: "620 mil. km", time: "2.9 years", centre: "RA 05h 01m", filter: "contrast(1.15)" },
+           { label: "QR3 Nov 2026", desc: "Cryovolcanic ridge thermal anomaly confirmation.", dist: "615 mil. km", time: "2.9 years", centre: "RA 05h 05m", filter: "hue-rotate(200deg)" }
+         ]
+      },
+      { id: "04", title: "Sector 04 • Titan", img: "4.png", fb: "https://images.unsplash.com/photo-1614732414444-096e5f1122d5?w=800", fov: "2.0° × 2.0°",
+         epochs: [
+           { label: "May 2025 DR1", desc: "Kraken Mare liquid hydrocarbon shoreline radar.", dist: "1.6 bil. km", time: "7 years", centre: "RA 21h 08m", filter: "none" },
+           { label: "Nov 2025 DR2", desc: "Dense nitrogen-methane haze vertical sounding.", dist: "1.58 bil. km", time: "6.9 years", centre: "RA 21h 12m", filter: "hue-rotate(45deg)" },
+           { label: "May 2026 QR2", desc: "Equatorial organic dune field composition scan.", dist: "1.55 bil. km", time: "6.8 years", centre: "RA 21h 18m", filter: "saturate(1.4)" },
+           { label: "QR3 Nov 2026", desc: "Saturnian ring-plane crossing optical calibration.", dist: "1.52 bil. km", time: "6.7 years", centre: "RA 21h 24m", filter: "contrast(1.2)" }
+         ]
+      },
+      { id: "05", title: "Sector 05 • Orion Nebula", img: "5.png", fb: "https://images.unsplash.com/photo-1462331940025-496dfbfc7564?w=800", fov: "4.5° × 4.5°",
+         epochs: [
+           { label: "May 2025 DR1", desc: "Trapezium cluster ionizing ultraviolet front.", dist: "1,344 ly", time: "Warp Probe", centre: "RA 05h 35m", filter: "none" },
+           { label: "Nov 2025 DR2", desc: "Protoplanetary disk water-ice absorption survey.", dist: "1,344 ly", time: "Warp Probe", centre: "RA 05h 35m", filter: "hue-rotate(90deg)" },
+           { label: "May 2026 QR2", desc: "Molecular cloud shockwave filament mapping.", dist: "1,344 ly", time: "Warp Probe", centre: "RA 05h 35m", filter: "hue-rotate(180deg)" },
+           { label: "QR3 Nov 2026", desc: "Deep-infrared brown dwarf census completion.", dist: "1,344 ly", time: "Warp Probe", centre: "RA 05h 35m", filter: "saturate(1.35)" }
+         ]
+      },
+      { id: "06", title: "Sector 06 • Low Orbit", img: "6.png", fb: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800", fov: "5.0° × 5.0°",
+         epochs: [
+           { label: "May 2025 DR1", desc: "Thermospheric aurora borealis night-side pass.", dist: "408 km", time: "6 hours", centre: "RA 00h 12m", filter: "none" },
+           { label: "Nov 2025 DR2", desc: "Equatorial airglow and lightning sprite capture.", dist: "412 km", time: "6 hours", centre: "RA 00h 18m", filter: "hue-rotate(60deg)" },
+           { label: "May 2026 QR2", desc: "Orbital station docking corridor verification.", dist: "405 km", time: "5.8 hours", centre: "RA 00h 24m", filter: "contrast(1.15)" },
+           { label: "QR3 Nov 2026", desc: "Solar-synchronous terminator twilight survey.", dist: "410 km", time: "6 hours", centre: "RA 00h 30m", filter: "hue-rotate(210deg)" }
+         ]
+      },
+      { id: "07", title: "Sector 07 • Andromeda", img: "7.png", fb: "https://images.unsplash.com/photo-1543722530-d2c3201371e7?w=800", fov: "3.8° × 3.8°",
+         epochs: [
+           { label: "May 2025 DR1", desc: "M31 spiral dust lane polycyclic aromatic scan.", dist: "2.5 mil. ly", time: "Deep Scan", centre: "RA 00h 42m", filter: "none" },
+           { label: "Nov 2025 DR2", desc: "Double-nucleus stellar velocity dispersion.", dist: "2.5 mil. ly", time: "Deep Scan", centre: "RA 00h 42m", filter: "hue-rotate(120deg)" },
+           { label: "May 2026 QR2", desc: "Halo globular cluster metallicity catalog.", dist: "2.5 mil. ly", time: "Deep Scan", centre: "RA 00h 42m", filter: "contrast(1.2)" },
+           { label: "QR3 Nov 2026", desc: "Satellite galaxy M110 tidal stream bridge.", dist: "2.5 mil. ly", time: "Deep Scan", centre: "RA 00h 42m", filter: "hue-rotate(240deg)" }
+         ]
+      },
+      { id: "08", title: "Sector 08 • Corona", img: "8.png", fb: "https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?w=800", fov: "2.2° × 2.2°",
+         epochs: [
+           { label: "May 2025 DR1", desc: "Solar magnetic reconnection loop telemetry.", dist: "149 mil. km", time: "4 months", centre: "RA 09h 19m", filter: "none" },
+           { label: "Nov 2025 DR2", desc: "Coronal mass ejection plasma velocity tracking.", dist: "148 mil. km", time: "4 months", centre: "RA 09h 25m", filter: "hue-rotate(30deg)" },
+           { label: "May 2026 QR2", desc: "Heliospheric current sheet polarity mapping.", dist: "150 mil. km", time: "4.1 months", centre: "RA 09h 31m", filter: "saturate(1.4)" },
+           { label: "QR3 Nov 2026", desc: "Perihelion thermal shield endurance benchmark.", dist: "147 mil. km", time: "3.9 months", centre: "RA 09h 38m", filter: "contrast(1.2)" }
+         ]
+      },
+      { id: "09", title: "Sector 09 • Galactic Core", img: "9.png", fb: "https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?w=800", fov: "1.5° × 1.5°",
+         epochs: [
+           { label: "May 2025 DR1", desc: "Sagittarius A* accretion flare infrared monitoring.", dist: "26,000 ly", time: "Long Range", centre: "RA 17h 45m", filter: "none" },
+           { label: "Nov 2025 DR2", desc: "Central molecular zone dense gas kinematics.", dist: "26,000 ly", time: "Long Range", centre: "RA 17h 45m", filter: "hue-rotate(80deg)" },
+           { label: "May 2026 QR2", desc: "S-star cluster relativistic orbit astrometry.", dist: "26,000 ly", time: "Long Range", centre: "RA 17h 45m", filter: "hue-rotate(170deg)" },
+           { label: "QR3 Nov 2026", desc: "All-sky biogenic ice spectral legacy release.", dist: "26,000 ly", time: "Long Range", centre: "RA 17h 45m", filter: "saturate(1.3)" }
+         ]
+      }
+    ];
+
+    const ring = document.getElementById("ring"), modal = document.getElementById("modal"), mImg = document.getElementById("mImg");
+    const trackWrap = document.getElementById("trackWrap"), trackFill = document.getElementById("trackFill"), rocket = document.getElementById("rocket");
+    const tlNodes = document.getElementById("tlNodes"), tlActiveLabel = document.getElementById("tlActiveLabel");
+    let angle = 0, vel = 0, drag = false, startX = 0, moved = 0;
+    let activeDest = null, currentPct = 0, targetPct = 0, scrubbing = false;
+
+    destinations.forEach((d, i) => {
+      const card = document.createElement("div");
+      card.className = "card";
+      card.style.transform = `rotateY(${i * 40}deg) translateZ(350px)`;
+      card.innerHTML = `<img src="${d.img}" onerror="this.src='${d.fb}'"><div class="card-info"><span>Sector ${d.id}</span><h3>${d.title.split('• ')[1]}</h3></div>`;
+      card.onclick = () => {
+        if (moved > 8) return;
+        openDestination(d);
+      };
+      ring.appendChild(card);
+    });
+
+    function openDestination(d) {
+      activeDest = d;
+      mImg.src = d.img; mImg.onerror = () => mImg.src = d.fb;
+      document.getElementById("mFov").textContent = `Field of view: ${d.fov}`;
+      document.getElementById("mTitle").textContent = d.title;
+      document.getElementById("customDate").value = "";
+
+      tlNodes.innerHTML = "";
+      d.epochs.forEach((ep, idx) => {
+        const btn = document.createElement("button");
+        btn.className = "node-btn" + (idx === 0 ? " active" : "");
+        btn.textContent = ep.label;
+        btn.onclick = () => selectEpoch(idx);
+        tlNodes.appendChild(btn);
+      });
+
+      currentPct = 0;
+      selectEpoch(0);
+      modal.classList.add("open");
+    }
+
+    function selectEpoch(idx) {
+      if (!activeDest) return;
+      const ep = activeDest.epochs[idx];
+      targetPct = (idx / (activeDest.epochs.length - 1)) * 100;
+      document.getElementById("mDesc").textContent = ep.desc;
+      document.getElementById("mDist").textContent = ep.dist;
+      document.getElementById("mTime").textContent = ep.time;
+      document.getElementById("mCentre").textContent = ep.centre;
+      document.getElementById("mObs").textContent = ep.label;
+      tlActiveLabel.textContent = ep.label;
+      mImg.style.filter = ep.filter;
+      [...tlNodes.children].forEach((b, i) => b.classList.toggle("active", i === idx));
+    }
+
+    function updateScrub(clientX) {
+      if (!activeDest) return;
+      const rect = trackWrap.getBoundingClientRect();
+      const pct = Math.max(0, Math.min(100, ((clientX - rect.left) / rect.width) * 100));
+      targetPct = pct;
+      const idx = Math.round((pct / 100) * (activeDest.epochs.length - 1));
+      selectEpoch(idx);
+      targetPct = pct;
+    }
+
+    trackWrap.onpointerdown = e => { scrubbing = true; updateScrub(e.clientX); };
+    window.addEventListener("pointermove", e => { if (scrubbing) updateScrub(e.clientX); });
+    window.addEventListener("pointerup", () => scrubbing = false);
+
+    function applyCustomDate() {
+      const val = document.getElementById("customDate").value.trim();
+      if (!val) return;
+      document.getElementById("mObs").textContent = val;
+      tlActiveLabel.textContent = val;
+      mImg.style.filter = "hue-rotate(110deg) contrast(1.15)";
+    }
+    document.getElementById("showDateBtn").onclick = applyCustomDate;
+    document.getElementById("customDate").onkeydown = e => { if (e.key === "Enter") applyCustomDate(); };
+
+    document.getElementById("vp").onpointerdown = e => { drag = true; startX = e.clientX; moved = 0; vel = 0; };
+    window.addEventListener("pointermove", e => { if (!drag) return; const dx = e.clientX - startX; moved += Math.abs(dx); angle += dx * 0.25; vel = dx * 0.25; startX = e.clientX; });
+    window.addEventListener("pointerup", () => drag = false);
+    document.getElementById("spin").onclick = () => vel = (Math.random() > 0.5 ? 1 : -1) * 14;
+    document.getElementById("reset").onclick = () => { angle = 0; vel = 0; };
+    document.getElementById("mark").onchange = e => document.getElementById("reticle").style.display = e.target.checked ? "block" : "none";
+    document.getElementById("trail").onchange = e => document.getElementById("trailLine").style.display = e.target.checked ? "block" : "none";
+    document.getElementById("close").onclick = () => modal.classList.remove("open");
+    modal.onclick = e => { if (e.target === modal) modal.classList.remove("open"); };
+
+    (function loop() {
+      if (!drag) {
+        angle += vel; vel *= 0.94;
+        if (Math.abs(vel) < 0.05) angle -= 0.1;
+      }
+      ring.style.transform = `rotateY(${angle}deg)`;
+
+      currentPct += (targetPct - currentPct) * 0.12;
+      trackFill.style.width = currentPct + "%";
+      rocket.style.left = currentPct + "%";
+
+      requestAnimationFrame(loop);
+    })();
+  </script>
+</body>
+</html>

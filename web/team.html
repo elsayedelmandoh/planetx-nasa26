@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NASA Space Apps Planet X | Team</title>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow&family=Barlow+Condensed:wght@400;700&family=Bellefair&display=swap" rel="stylesheet">
+  <style>
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #000000; color: #ffffff; font-family: 'Barlow', sans-serif; min-height: 100vh; overflow-x: hidden; position: relative; }
+    
+    /* Twinkling Starfield Canvas */
+    #starfield { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+    .ambient-glow { position: fixed; inset: 0; background: radial-gradient(circle at 50% 25%, rgba(28, 37, 72, 0.35) 0%, rgba(0, 0, 0, 0) 65%); z-index: 0; pointer-events: none; }
+
+    /* Unified Heading Bar & Navigation List */
+    header { position: relative; z-index: 10; display: flex; justify-content: space-between; align-items: center; padding: 2rem 0 2rem 3.5rem; }
+    .brand { display: flex; align-items: center; gap: 1rem; text-decoration: none; color: #ffffff; }
+    .logo { width: 48px; height: 48px; background: #ffffff; color: #000000; border-radius: 50%; display: grid; place-items: center; font-weight: 700; font-size: 1.5rem; flex-shrink: 0; }
+    .brand-title { font-family: 'Barlow Condensed', sans-serif; font-size: 1.1rem; letter-spacing: 3px; text-transform: uppercase; color: #D0D6F9; }
+    .header-line { flex: 1; height: 1px; background: rgba(255, 255, 255, 0.2); margin: 0 -2rem 0 2.5rem; z-index: 11; }
+    nav { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); padding: 0 6rem 0 4rem; border-bottom: 1px solid rgba(255, 255, 255, 0.15); border-left: 1px solid rgba(255, 255, 255, 0.1); }
+    nav ul { display: flex; list-style: none; gap: 3rem; }
+    nav a { display: inline-block; padding: 2rem 0; color: #ffffff; text-decoration: none; font-family: 'Barlow Condensed', sans-serif; font-size: 1rem; letter-spacing: 2.7px; text-transform: uppercase; border-bottom: 3px solid transparent; transition: border-color 0.3s ease; }
+    nav a:hover { border-bottom-color: rgba(255, 255, 255, 0.5); }
+    nav a.active { border-bottom-color: #ffffff; }
+    nav a b { font-weight: 700; margin-right: 0.65rem; }
+
+    @media (max-width: 900px) {
+      header { padding: 1.5rem 0 1.5rem 1.5rem; }
+      .header-line, .brand-title { display: none; }
+      nav { padding: 0 2rem; }
+      nav ul { gap: 1.75rem; }
+    }
+
+    main { position: relative; z-index: 5; max-width: 1180px; margin: 0 auto; padding: 1.5rem 2rem 4rem; }
+    .page-title { font-family: 'Barlow Condensed', sans-serif; font-size: 1.75rem; letter-spacing: 4.72px; text-transform: uppercase; font-weight: 400; margin-bottom: 0.5rem; }
+    .page-title span { opacity: 0.3; font-weight: 700; margin-right: 0.9rem; }
+    .sub { color: #D0D6F9; margin-bottom: 2.5rem; font-size: 1.05rem; }
+
+    /* Normal 6-Rectangle Grid (3x2) */
+    .team-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; }
+    .member-card { background: rgba(12, 15, 29, 0.85); border: 1px solid rgba(255, 255, 255, 0.18); border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; transition: border-color 0.25s ease, transform 0.25s ease; }
+    .member-card:hover { border-color: #ffffff; transform: translateY(-4px); }
+    .photo-box { width: 100%; height: 220px; background: #080a14; border-bottom: 1px solid rgba(255, 255, 255, 0.12); overflow: hidden; }
+    .photo-box img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .card-body { padding: 1.5rem; display: flex; flex-direction: column; gap: 0.5rem; flex: 1; }
+    .role { font-family: 'Barlow Condensed', sans-serif; font-size: 0.85rem; letter-spacing: 2.5px; text-transform: uppercase; color: #D0D6F9; }
+    .name { font-family: 'Bellefair', serif; font-size: 1.75rem; font-weight: 400; text-transform: uppercase; color: #ffffff; }
+    .email-row { margin-top: auto; padding-top: 1rem; border-top: 1px solid rgba(255, 255, 255, 0.12); display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; }
+    .email-link { color: #D0D6F9; text-decoration: none; font-size: 0.92rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .email-link:hover { color: #ffffff; text-decoration: underline; }
+    .copy-btn { background: rgba(255, 255, 255, 0.08); color: #ffffff; border: 1px solid rgba(255, 255, 255, 0.25); padding: 0.35rem 0.8rem; border-radius: 20px; font-family: 'Barlow Condensed', sans-serif; font-size: 0.8rem; letter-spacing: 1.5px; text-transform: uppercase; cursor: pointer; flex-shrink: 0; }
+    .copy-btn:hover { background: #ffffff; color: #000000; }
+
+    @media (max-width: 960px) { .team-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 620px) { .team-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+  <canvas id="starfield"></canvas>
+  <div class="ambient-glow"></div>
+  <header>
+    <a href="home.html" class="brand">
+      <div class="logo">✦</div>
+      <span class="brand-title">NASA Space Apps • Planet X</span>
+    </a>
+    <div class="header-line"></div>
+    <nav>
+      <ul>
+        <li><a href="home.html" class=""><b>00</b> Home</a></li>
+        <li><a href="explore.html" class=""><b>01</b> Explore</a></li>
+        <li><a href="team.html" class="active"><b>02</b> Team</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <h1 class="page-title"><span>02</span> Meet our team</h1>
+    <p class="sub">Direct mission contacts, roles, and team leads.</p>
+    <div class="team-grid" id="teamGrid"></div>
+  </main>
+  <script>
+
+    const canvas = document.getElementById('starfield');
+    const ctx = canvas.getContext('2d');
+    let stars = [];
+    function initStars() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      stars = Array.from({ length: 160 }, () => ({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        r: Math.random() * 1.5 + 0.3,
+        a: Math.random(),
+        s: (Math.random() * 0.015 + 0.004) * (Math.random() > 0.5 ? 1 : -1)
+      }));
+    }
+    function drawStars() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      stars.forEach(st => {
+        st.a += st.s;
+        if (st.a <= 0.1 || st.a >= 1) st.s *= -1;
+        ctx.beginPath();
+        ctx.arc(st.x, st.y, st.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255, 255, 255, ${st.a})`;
+        ctx.fill();
+      });
+      requestAnimationFrame(drawStars);
+    }
+    window.addEventListener('resize', initStars);
+    initStars();
+    drawStars();
+
+    const members = [
+      { role: "Mission Commander", name: "Member 01", email: "commander@planetx.space", img: "member1.png" },
+      { role: "Flight Engineer", name: "Member 02", email: "flight@planetx.space", img: "member2.png" },
+      { role: "Telemetry Lead", name: "Member 03", email: "telemetry@planetx.space", img: "member3.png" },
+      { role: "Astrophysics Specialist", name: "Member 04", email: "science@planetx.space", img: "member4.png" },
+      { role: "Systems Architect", name: "Member 05", email: "systems@planetx.space", img: "member5.png" },
+      { role: "Navigation Officer", name: "Member 06", email: "navigation@planetx.space", img: "member6.png" }
+    ];
+
+    const fallbackSvg = "data:image/svg+xml;utf8," + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="400" height="260" viewBox="0 0 400 260"><rect width="400" height="260" fill="#090c18"/><circle cx="200" cy="100" r="42" fill="#1d2542"/><path d="M120 230c0-44 36-75 80-75s80 31 80 75" fill="#1d2542"/></svg>');
+
+    const grid = document.getElementById("teamGrid");
+    members.forEach(m => {
+      const card = document.createElement("div");
+      card.className = "member-card";
+      card.innerHTML = `
+        <div class="photo-box"><img src="${m.img}" onerror="this.src='${fallbackSvg}'" alt="${m.name}"></div>
+        <div class="card-body">
+          <div class="role">${m.role}</div>
+          <h2 class="name">${m.name}</h2>
+          <div class="email-row">
+            <a class="email-link" href="mailto:${m.email}">${m.email}</a>
+            <button class="copy-btn" onclick="copyEmail(this, '${m.email}')">Copy</button>
+          </div>
+        </div>
+      `;
+      grid.appendChild(card);
+    });
+
+    function copyEmail(btn, email) {
+      navigator.clipboard.writeText(email);
+      const orig = btn.textContent;
+      btn.textContent = "Copied!";
+      setTimeout(() => btn.textContent = orig, 1500);
+    }
+  </script>
+</body>
+</html>
