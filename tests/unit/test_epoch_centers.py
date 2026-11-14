@@ -10,6 +10,11 @@ BARNARD = {"ra_deg": 269.452075, "dec_deg": 4.693364, "name": "Barnard's Star",
            "astrometry": {"ra_deg": 269.44850252543836, "dec_deg": 4.739420051112412,
                           "pmra_mas_yr": -801.5509783684709, "pmdec_mas_yr": 10362.394206546573,
                           "epoch": 2016.0, "source": "gaia dr3 4472832130942575872"}}
+# pmra = 0, pmdec = 6150 mas/yr = 6.15 arcsec/yr = 1 native px/yr in dec
+SYNTH = {"ra_deg": 133.795129, "dec_deg": -7.245147, "name": "synth",
+         "astrometry": {"ra_deg": 133.795129, "dec_deg": -7.245147,
+                        "pmra_mas_yr": 0.0, "pmdec_mas_yr": 6150.0,
+                        "epoch": 2016.0, "source": "test"}}
 
 
 def test_propagate_moves_north_at_the_gaia_rate() -> None:
@@ -53,3 +58,33 @@ def test_render_passes_writes_frame_center(tmp_path) -> None:
     assert meta["center_dec_deg"] == -7.245147
     assert meta["center_epoch"] == pytest.approx(2023.15, abs=0.01)
     assert metas[0]["frame_center"]["ra_deg"] == 133.795129
+
+
+def test_render_passes_target_px_moves_by_pm_over_time(tmp_path) -> None:
+    from astropy.time import Time
+
+    mjds = (60000.0, 62057.5)  # two passes ~5.65 yr apart
+    visits = [
+        {"mjd": m, "path": FIX / f"pass{n}.fits"} for n, m in enumerate(mjds, start=1)
+    ]
+
+    metas = render_passes(visits, 133.795129, -7.245147, 1, tmp_path, target=SYNTH)
+
+    dt_yr = Time(mjds[1], format="mjd").jyear - Time(mjds[0], format="mjd").jyear
+    dy = metas[1]["target_px"][1] - metas[0]["target_px"][1]  # dec increases upward in dec pixels
+    assert dy == pytest.approx(dt_yr * 1.0, abs=0.05)  # 6150 mas/yr / 6.15 arcsec per px
+    assert metas[0]["target_px"][0] == pytest.approx(metas[1]["target_px"][0], abs=0.05)
+    assert metas[0]["astrometry_source"] == "test"
+    for m in metas:
+        assert "target_epoch" in m and "target_px" in m
+
+
+def test_render_passes_without_astrometry_has_no_target_px(tmp_path) -> None:
+    visits = [{"mjd": 60000.0, "path": FIX / "pass1.fits"}]
+    target = {"ra_deg": 133.795129, "dec_deg": -7.245147, "name": "x"}
+
+    metas = render_passes(visits, 133.795129, -7.245147, 1, tmp_path, target=target)
+
+    assert "target_px" not in metas[0]
+    assert "target_epoch" not in metas[0]
+    assert "astrometry_source" not in metas[0]
