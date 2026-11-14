@@ -1,26 +1,25 @@
 # planetx-nasa26
 
-<!-- screenshots: drop res1.png / res2.png into docs/results/ and uncomment
 <p align="center">
-  <img src="docs/results/res1.png" alt="project name - pos results" width="45%">
-  &nbsp; &nbsp;
-  <img src="docs/results/res2.png" alt="project name - neg results" width="45%">
+  <img src="docs/deliverables/03-screenshots/01-home.png" alt="planetx-nasa26 landing page: spot the movers in the sky" width="48%">
+  &nbsp;
+  <img src="docs/deliverables/03-screenshots/03-difference-epsilon-indi-b.png" alt="background-subtracted difference image of epsilon indi b with the detected high-proper-motion object marked" width="48%">
 </p>
--->
+<p align="center">
+  <img src="docs/deliverables/03-screenshots/02-blink-wise-0855.png" alt="blink player showing a spherex survey-pass coadd of wise 0855" width="48%">
+  &nbsp;
+  <img src="docs/deliverables/03-screenshots/04-blink-barnards-star.png" alt="blink player showing a spherex survey-pass coadd of barnard's star" width="48%">
+</p>
+<p align="center">
+  <img src="docs/deliverables/03-screenshots/06-explore.png" alt="explore page with the five challenge targets and the spherex gallery" width="48%">
+  &nbsp;
+  <img src="docs/deliverables/03-screenshots/07-museum.png" alt="museum halls explaining the science behind the project" width="48%">
+</p>
 
-public web tool to blink spherex sky images over time, so anyone can spot moving and variable objects. built for the 2026 nasa space apps challenge "planet x and spherex".
+public web tool to blink spherex sky images over time, so anyone can spot moving and variable objects. built for the 2026 nasa space apps challenge "planet x and spherex". planet x is the motivation: this tool makes no discovery claims.
 
 live demo: https://elsayedelmandoh-planetx-nasa26.static.hf.space
 space page: https://huggingface.co/spaces/elsayedelmandoh/planetx-nasa26
-
-precompute: `uv run python -m src.utils.data_acquisition --all` (then `uv run python -m src.evals.runner --gate`)
-
-how to adapt this template
-
-1. replace the project name, problem statement, and goal.
-2. define the dataset and constraints before implementation.
-3. move repeatable logic out of notebooks and into `src/`.
-4. keep tests small, deterministic, and focused on the critical path.
 
 ## table of contents
 
@@ -44,20 +43,49 @@ how to adapt this template
 
 **goal.** a public web tool where anyone types a right ascension and declination, picks a field of view, and watches that patch of sky blink through the spherex epochs, so a moving or variable object is obvious in seconds instead of hours.
 
-**solution / aha moment.** the backend cuts the requested patch out of the spherex release with astropy and astroquery, stacks the epochs into a small time series, and the frontend plays them as a loop. the aha moment is the shift itself: a dot that was not there a second ago, and the tool naming it as a mover.
+**solution / aha moment.** an offline python pipeline pulls real spherex dr1 and qr3 level 2 visits from nasa/ipac irsa (sia v2) and cuts 7.5 arcmin cutouts centred on each target's proper-motion-propagated position (gaia dr3). it masks bad pixels from the flags extension, reprojects to one north-up grid, and median-stacks each survey pass. it then makes background-subtracted difference images between passes and runs a rule-based detector with a gaia dr3 cross-match plus an ml real-bogus classifier. pngs and json land in `web/cache/`, and a static site (youssef's landing design plus the blink tool) plays them. the aha moment is the shift itself: a dot that was not there a second ago, and the tool saying what it is.
 
-**results.** the repo today holds the settings loader, the coordinate parser, the api shell, the frontend shell, and the offline test suite. the cutout endpoint, the live irsa pull, and the blink playback are the next slice, and the eval gate is still a stub.
+**results.** read from `web/cache/index.json`, the pass json files and `web/cache/ml_metrics.json`:
+
+| item | value |
+|---|---:|
+| benchmark targets | 5 |
+| target-detector combinations | 13 |
+| survey-pass coadds | 40 (3 or more per target and detector, 4 for epsilon indi b) |
+| difference images | 27 |
+| spherex visits stacked | 698 (summed over the pass coadds, a visit in two detectors counts twice) |
+| classifier recall | 0.935 |
+| classifier false positive rate | 0.046 |
+| classifier roc auc | 0.992 |
+| classifier n_train / n_test | 864 / 216 |
+
+headline: epsilon indi b (detector 6) is detected as a known high-proper-motion object in every difference frame (`diff-1-2`, `diff-2-3`, `diff-3-4`, peaks at 48, 55 and 37 sigma). this is a recovery of a known object, not a discovery.
+
+honest limits:
+
+* static site: no live queries. only precomputed targets are browsable.
+* one detector per target for epsilon indi b, rw aurigae and r draconis. wise 0855 and barnard's star have more.
+* bright stars saturate. barnard's star core is shown as saturated, not measured.
+* wise 0855 motion between passes is below the detection threshold.
+* the classifier is trained on injected movers plus real static-star residuals, so its scores rank candidates and are not proof of anything.
 
 ## key features
 
 * **coordinate input:** ra and dec in decimal degrees or sexagesimal (`08h 55m 10.8s`), parsed with astropy. shipped.
-* **field of view presets:** 2, 5, 15, and 30 arcmin cuts, 5 arcmin by default. shipped.
-* **benchmark target presets:** the five required targets load from `configs/default.yaml` into buttons through `GET /api/targets`, so a judge can check a target in one click. shipped.
-* **blink player:** a canvas that cycles the epochs of the cutout, which is where movers pop. shell only.
-* **cutouts on demand:** planned next slice. pull the matching spherex epochs from irsa, cut them, and reproject them onto a common grid.
-* **stacking and difference imaging:** planned. add epochs together to raise signal to noise, or subtract one epoch from another to isolate what changed.
-* **102-band spectra:** planned. pull the band-pass spectrum of a selected source on the fly.
-* **linkable and embeddable views:** planned. `?ra=...&dec=...&fov=...` so any cutout is shareable.
+* **benchmark target presets:** the five required targets as one-click buttons. shipped.
+* **url params:** `?ra=...&dec=...&fov=...` plus `det` and `mode`, so any view is shareable. shipped.
+* **blink player:** cycles the survey-pass coadds, which is where movers pop. shipped.
+* **survey-pass coadds:** median stack of each pass after bad-pixel masking and reprojection. shipped.
+* **difference images:** background-subtracted, pass minus pass. shipped.
+* **expected-motion arrow:** drawn from gaia dr3 proper motion. shipped.
+* **rule-based detector + gaia cross-match:** 5-sigma threshold, dipole pairing, proper-motion match, gaia dr3 labels. shipped.
+* **ml score:** real-bogus classifier score per detection. shipped.
+* **saturated-core display:** saturated pixels render white. shipped.
+* **offline re-render:** rebuild frames from cached cutouts with `--offline`. shipped.
+* **live queries for any coordinate:** not shipped. the site is static.
+* **102-band spectra:** not shipped.
+* **flag overlay:** not shipped.
+* **aladin panel:** not shipped.
 
 ## setup
 
@@ -67,7 +95,7 @@ before running this project, ensure you have the following installed:
 
 * [git](https://git-scm.com/)
 * [uv](https://docs.astral.sh/uv/), or python 3.12 with pip
-* network access to irsa for live spherex pulls, offline work needs none
+* network access to irsa for precompute runs, serving and tests need none
 * optionally [anaconda](https://www.anaconda.com/) or miniconda if you prefer a conda environment
 
 ### 1. clone the repository
@@ -125,39 +153,51 @@ then open http://localhost:8000/
 | `make lint` | ruff check plus format check |
 | `make format` | ruff format plus ruff autofix |
 
-the api answers `GET /health` and `GET /api/targets`. the frontend is served from `web/` at `/`.
+the api answers `GET /health` and `GET /api/targets`. the frontend is served from `web/` at `/`. the live site is a static hugging face space that serves `web/` as is.
+
+precompute (needs irsa network access, `--offline` re-renders from cached cutouts):
+
+```bash
+uv run python -m src.utils.data_acquisition --target "<name>" --detector dN   # one target and detector
+uv run python -m src.utils.data_acquisition --all                              # every target
+uv run python -m src.utils.data_acquisition --all --offline                    # re-render only
+uv run python -m src.utils.ml_classifier train
+uv run python -m src.utils.ml_classifier score
+uv run python -m src.evals.runner --gate
+```
 
 ## repository map
 
 | path | holds |
 |---|---|
-| `web/` | the frontend: `index.html` (ra/dec input, fov, presets, blink player) |
+| `web/` | static site: `home.html` (landing), `index.html` (blink tool), `team.html`, `app.js`, `styles.css`, `cache/` (precomputed pngs, json, `index.json`, `ml_metrics.json`) |
 | `src/api/` | fastapi app and routes, serves `web/` at `/` |
 | `src/core/` | settings loader (`configs/*.yaml` + `.env`), logging |
-| `src/utils/` | coordinate parsing, data acquisition and processing helpers |
-| `src/evals/` | offline eval gate runner (stub for now) |
+| `src/utils/` | `data_acquisition.py` (irsa pull, cutouts, passes, cache), `data_processing.py` (masking, reprojection, stacking, difference, detector), `ml_classifier.py` (real-bogus train and score), coordinate parsing |
+| `src/evals/` | offline eval gate: checks the 5 targets each have 3 or more survey passes |
 | `configs/` | values: data release, fov presets, benchmark targets |
-| `data/` | `raw/` downloads (not shipped), `processed/` cached cutouts, `samples/` small fixtures |
+| `data/` | `raw/` downloads, `processed/` cached cutouts, `samples/` small fixtures |
 | `evals/` | benchmark notes and figures |
 | `notebooks/` | exploration: data acquisition, eda, data processing |
 | `tests/` | unit, integration. offline by default |
 | `docs/project-definition/` | problem, goal, architecture, api contract, decision log |
+| `docs/deliverables/` | presentation draft (`02-presentation/`), screenshots (`03-screenshots/`) |
 | `docs/.internal/` | agent plans and notes, not product docs |
-| `.github/workflows/` | ci (lint, test, eval gate) and image push |
+| `.github/workflows/` | `ci.yml` (lint, test, eval gate) and `deploy.yml` (static hugging face space deploy) |
 
 every folder holds an `00-quickstart.md` with the details for that folder.
 
 ## benchmark targets
 
-| target | ra (deg) | dec (deg) | kind |
-|---|---:|---:|---|
-| WISE 0855 | 133.795129 | -7.245147 | fast-moving brown dwarf |
-| Barnard's Star | 269.452075 | +4.693364 | high proper-motion red dwarf |
-| Epsilon Indi B | 331.044147 | -56.782844 | binary brown dwarfs |
-| RW Aurigae | 76.956375 | +30.401389 | variable star |
-| R Draconis | 248.167625 | +66.755000 | variable star |
+| target | ra (deg) | dec (deg) | kind | detector | survey passes |
+|---|---:|---:|---|---|---:|
+| WISE 0855 | 133.795129 | -7.245147 | fast-moving brown dwarf | d1, d2, d4, d5, d6 | 3 each |
+| Barnard's Star | 269.452075 | +4.693364 | high proper-motion red dwarf | d1 to d5 | 3 each |
+| Epsilon Indi B | 331.044147 | -56.782844 | binary brown dwarfs | d6 | 4 |
+| RW Aurigae | 76.956375 | +30.401389 | variable star | d2 | 3 |
+| R Draconis | 248.167625 | +66.755000 | variable star | d3 | 3 |
 
-values live in `configs/default.yaml` and load as preset buttons from `GET /api/targets`.
+coordinates live in `configs/default.yaml` and load as preset buttons from `GET /api/targets`. detectors and passes come from `web/cache/index.json`.
 
 ## data credit
 
