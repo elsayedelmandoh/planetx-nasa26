@@ -87,7 +87,8 @@ def build_index(web_dir: Path) -> dict:
                 rel = f"cache/{slug}/{det}"
                 passes.append({"png": f"{rel}/{png.name}", "json": f"{rel}/{js.name}"})
             differences = []
-            diffs = det_dir.glob("diff-*.json")
+            # markers files are diff-a-b.markers.json; they hang off their diff entry, not their own
+            diffs = (p for p in det_dir.glob("diff-*.json") if not p.name.endswith(".markers.json"))
             for js in sorted(diffs, key=lambda p: tuple(int(x) for x in p.stem.split("-")[1:])):
                 png = js.with_suffix(".png")
                 if not png.exists():
