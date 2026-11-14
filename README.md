@@ -10,6 +10,11 @@
 
 public web tool to blink spherex sky images over time, so anyone can spot moving and variable objects. built for the 2026 nasa space apps challenge "planet x and spherex".
 
+live demo: https://elsayedelmandoh-planetx-nasa26.static.hf.space
+space page: https://huggingface.co/spaces/elsayedelmandoh/planetx-nasa26
+
+precompute: `uv run python -m src.utils.data_acquisition --all` (then `uv run python -m src.evals.runner --gate`)
+
 how to adapt this template
 
 1. replace the project name, problem statement, and goal.

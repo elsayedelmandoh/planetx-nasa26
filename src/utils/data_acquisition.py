@@ -151,9 +151,7 @@ def run(target: str, detector: str, fov_arcmin: float | None = None) -> list[dic
     year = Time(mean_mjd, format="mjd").jyear
     ra_c, dec_c = propagate(t, year)
     visits = query_sia_visits(ra_c, dec_c, detector, settings.DATA_RELEASES) or rough
-    # recenter on the final visit list (the propagated cone can pick slightly different visits)
     mean_mjd = sum(v["mjd"] for v in visits) / len(visits)
-    ra_c, dec_c = propagate(t, Time(mean_mjd, format="mjd").jyear)
     size_deg = cutout_size_deg(fov)
     ctr = center_slug(ra_c, dec_c, size_deg)
     raw_dir = settings.DATA_DIR / "raw" / slug / detector
@@ -185,10 +183,7 @@ def run_all() -> int:
             try:
                 run(t["name"], det)
                 results.append((t["name"], det, "ok"))
-            except SystemExit as err:
-                print(f"error: {t['name']} {det}: {err}")
-                results.append((t["name"], det, "fail"))
-            except Exception as err:
+            except (SystemExit, Exception) as err:
                 print(f"error: {t['name']} {det}: {err}")
                 results.append((t["name"], det, "fail"))
     fails = sum(1 for _, _, s in results if s == "fail")
