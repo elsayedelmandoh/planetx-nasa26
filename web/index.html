@@ -8,7 +8,11 @@
     body { font-family: system-ui, sans-serif; margin: 0 auto; max-width: 900px; padding: 1rem; }
     form, #presets { display: flex; flex-wrap: wrap; gap: .5rem; margin-bottom: 1rem; }
     #coordinate-error { flex-basis: 100%; color: #a40000; margin: 0; min-height: 1.25rem; }
-    canvas { width: 100%; max-width: 600px; aspect-ratio: 1; background: #111; display: block; }
+    canvas { width: 100%; max-width: 600px; aspect-ratio: 1; background: #111; display: block; image-rendering: pixelated; }
+    #player-controls { display: flex; flex-wrap: wrap; gap: .5rem .75rem; align-items: center; margin: .5rem 0; max-width: 600px; }
+    #player-controls label { display: flex; align-items: center; gap: .35rem; }
+    #caption { margin: .25rem 0; min-height: 1.4rem; }
+    #no-cache { color: #a40000; }
     footer { margin-top: 2rem; font-size: .85rem; color: #555; }
   </style>
 </head>
@@ -26,14 +30,36 @@
         <option value="30">30'</option>
       </select>
     </label>
+    <label for="det">detector
+      <select id="det" name="det">
+        <option value="d1">d1</option>
+        <option value="d2">d2</option>
+        <option value="d3">d3</option>
+        <option value="d4">d4</option>
+        <option value="d5">d5</option>
+        <option value="d6" selected>d6</option>
+      </select>
+    </label>
     <button type="submit">show</button>
     <p id="coordinate-error" role="status" aria-live="polite"></p>
   </form>
 
   <div id="presets" role="group" aria-label="benchmark targets"></div>
 
-  <!-- blink player draws here (features task) -->
   <canvas id="player" width="600" height="600" aria-label="sky image player"></canvas>
+  <p id="no-cache" role="status" aria-live="polite" hidden>no cached frames for this position yet; live queries are not available on this static site</p>
+  <p id="caption" aria-live="polite"></p>
+
+  <div id="player-controls">
+    <button id="play-toggle" type="button" aria-label="play or pause the frame loop" aria-pressed="false">play</button>
+    <label for="speed">speed
+      <input id="speed" type="range" min="0.5" max="5" step="0.5" value="2" aria-label="playback speed in frames per second">
+      <span id="speed-value">2 fps</span>
+    </label>
+    <label for="scrub">frame
+      <input id="scrub" type="range" min="0" max="0" step="1" value="0" aria-label="scrub through frames">
+    </label>
+  </div>
 
   <footer>
     data: nasa / jpl-caltech / ipac via the nasa/ipac infrared science archive (irsa).<br>
@@ -46,9 +72,11 @@
     const raInput = document.getElementById("ra");
     const decInput = document.getElementById("dec");
     const fovInput = document.getElementById("fov");
+    const detInput = document.getElementById("det");
     const error = document.getElementById("coordinate-error");
     const params = new URLSearchParams(location.search);
     const fovChoices = new Set(["2", "5", "15", "30"]);
+    const detChoices = new Set(["d1", "d2", "d3", "d4", "d5", "d6"]);
 
     function parseCoordinate(raw, axis) {
       const text = raw.trim().toLowerCase();
@@ -94,6 +122,7 @@
         ra: raInput.value.trim(),
         dec: decInput.value.trim(),
         fov: fovInput.value,
+        det: detInput.value,
       });
       const url = new URL(location.href);
       url.search = query.toString();
@@ -103,24 +132,162 @@
     if (params.has("ra")) raInput.value = params.get("ra");
     if (params.has("dec")) decInput.value = params.get("dec");
     if (fovChoices.has(params.get("fov"))) fovInput.value = params.get("fov");
+    if (detChoices.has(params.get("det"))) detInput.value = params.get("det");
     if (params.has("ra") || params.has("dec")) setError(coordinateError());
 
-    raInput.addEventListener("change", writeUrl);
-    decInput.addEventListener("change", writeUrl);
-    fovInput.addEventListener("change", () => {
-      if (raInput.value.trim() && decInput.value.trim()) writeUrl();
+    // blink player state
+    const canvas = document.getElementById("player");
+    const ctx = canvas.getContext("2d");
+    const playButton = document.getElementById("play-toggle");
+    const speedInput = document.getElementById("speed");
+    const speedValue = document.getElementById("speed-value");
+    const scrubInput = document.getElementById("scrub");
+    const caption = document.getElementById("caption");
+    const noCache = document.getElementById("no-cache");
+    const ARC_MIN_DEG = 1 / 60;
+    let targets = [];
+    let frames = [];
+    let frameIndex = 0;
+    let playing = false;
+    let timer = null;
+    const imageCache = new Map();
+
+    function angularSeparationDeg(ra1, dec1, ra2, dec2) {
+      const toRad = (d) => (d * Math.PI) / 180;
+      const dRa = toRad(ra1 - ra2);
+      const dDec = toRad(dec1 - dec2);
+      const a = Math.sin(dDec / 2) ** 2 + Math.cos(toRad(dec1)) * Math.cos(toRad(dec2)) * Math.sin(dRa / 2) ** 2;
+      return (2 * Math.asin(Math.sqrt(a)) * 180) / Math.PI;
+    }
+
+    function matchingTarget() {
+      const ra = parseCoordinate(raInput.value, "ra");
+      const dec = parseCoordinate(decInput.value, "dec");
+      if (ra === null || dec === null) return null;
+      return targets.find((t) => angularSeparationDeg(ra, dec, t.ra_deg, t.dec_deg) <= ARC_MIN_DEG) || null;
+    }
+
+    function setDetOptions(target) {
+      const present = target ? new Set(Object.keys(target.detectors)) : new Set();
+      for (const option of detInput.options) {
+        option.disabled = !present.has(option.value);
+      }
+      if (!present.has(detInput.value)) {
+        detInput.value = [...present][0] || "d6";
+      }
+      detInput.disabled = present.size === 0;
+    }
+
+    function loadFrame(src) {
+      if (!imageCache.has(src)) {
+        imageCache.set(src, new Promise((resolve, reject) => {
+          const img = new Image();
+          img.onload = () => resolve(img);
+          img.onerror = reject;
+          img.src = src;
+        }));
+      }
+      return imageCache.get(src);
+    }
+
+    async function drawFrame() {
+      const frame = frames[frameIndex];
+      if (!frame) { ctx.clearRect(0, 0, canvas.width, canvas.height); return; }
+      try {
+        const img = await loadFrame(frame.png);
+        const meta = frame.meta || (frame.meta = await fetch(frame.json).then((r) => r.json()));
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.imageSmoothingEnabled = false;
+        // pngs are pre-upsampled; scale to fit the canvas keeping square aspect
+        const scale = Math.min(canvas.width / img.width, canvas.height / img.height);
+        const w = img.width * scale, h = img.height * scale;
+        ctx.drawImage(img, (canvas.width - w) / 2, (canvas.height - h) / 2, w, h);
+        caption.textContent = `${meta.epoch_label} | ${meta.date_range.start} to ${meta.date_range.end} | ${meta.visit_count} visit${meta.visit_count === 1 ? "" : "s"}`;
+      } catch {
+        caption.textContent = "failed to load frame";
+      }
+    }
+
+    function stopTimer() {
+      if (timer) { clearInterval(timer); timer = null; }
+    }
+
+    function startTimer() {
+      stopTimer();
+      timer = setInterval(() => {
+        if (!frames.length) return;
+        frameIndex = (frameIndex + 1) % frames.length;
+        scrubInput.value = String(frameIndex);
+        drawFrame();
+      }, 1000 / Number(speedInput.value));
+    }
+
+    function setPlaying(next) {
+      playing = next && frames.length > 0;
+      playButton.textContent = playing ? "pause" : "play";
+      playButton.setAttribute("aria-pressed", String(playing));
+      if (playing) startTimer(); else stopTimer();
+    }
+
+    async function refreshPlayer() {
+      const target = matchingTarget();
+      setDetOptions(target);
+      frames = target?.detectors?.[detInput.value] ? target.detectors[detInput.value].map((f) => ({ ...f })) : [];
+      frameIndex = 0;
+      scrubInput.max = String(Math.max(frames.length - 1, 0));
+      scrubInput.value = "0";
+      scrubInput.disabled = frames.length === 0;
+      playButton.disabled = frames.length === 0;
+      noCache.hidden = frames.length !== 0;
+      if (frames.length === 0) {
+        setPlaying(false);
+        caption.textContent = "";
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        return;
+      }
+      await drawFrame();
+      setPlaying(true);
+    }
+
+    playButton.addEventListener("click", () => setPlaying(!playing));
+    speedInput.addEventListener("input", () => {
+      speedValue.textContent = `${speedInput.value} fps`;
+      if (playing) startTimer();
     });
-    form.addEventListener("submit", (event) => {
-      event.preventDefault();
-      writeUrl();
+    scrubInput.addEventListener("input", () => {
+      frameIndex = Number(scrubInput.value);
+      setPlaying(false);
+      drawFrame();
+    });
+    detInput.addEventListener("change", () => { writeUrl(); refreshPlayer(); });
+
+    document.addEventListener("keydown", (event) => {
+      const tag = event.target?.tagName;
+      if (tag === "INPUT" || tag === "SELECT" || tag === "TEXTAREA") return;
+      if (event.code === "Space") {
+        event.preventDefault();
+        setPlaying(!playing);
+      } else if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
+        if (!frames.length) return;
+        event.preventDefault();
+        setPlaying(false);
+        frameIndex = (frameIndex + (event.key === "ArrowRight" ? 1 : frames.length - 1)) % frames.length;
+        scrubInput.value = String(frameIndex);
+        drawFrame();
+      }
     });
 
-    fetch("/api/targets")
+    raInput.addEventListener("change", refreshPlayer);
+    decInput.addEventListener("change", refreshPlayer);
+    fovInput.addEventListener("change", refreshPlayer);
+
+    fetch("cache/index.json")
       .then((response) => {
-        if (!response.ok) throw new Error("targets request failed");
+        if (!response.ok) throw new Error("index request failed");
         return response.json();
       })
-      .then((targets) => {
+      .then((doc) => {
+        targets = doc.targets || [];
         const box = document.getElementById("presets");
         targets.forEach((target) => {
           const button = document.createElement("button");
@@ -131,11 +298,29 @@
             raInput.value = Number(target.ra_deg).toFixed(6);
             decInput.value = Number(target.dec_deg).toFixed(6);
             writeUrl();
+            refreshPlayer();
           });
           box.appendChild(button);
         });
+        refreshPlayer();
       })
-      .catch(() => { document.getElementById("presets").textContent = "presets failed to load"; });
+      .catch(() => {
+        document.getElementById("presets").textContent = "presets failed to load";
+        noCache.hidden = false;
+      });
+
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      writeUrl();
+      refreshPlayer();
+    });
+
+    // keep the original change handlers for url state
+    raInput.addEventListener("change", writeUrl);
+    decInput.addEventListener("change", writeUrl);
+    fovInput.addEventListener("change", () => {
+      if (raInput.value.trim() && decInput.value.trim()) writeUrl();
+    });
 
     if (params.get("selftest") === "1") {
       console.assert(
