@@ -9,25 +9,51 @@ DATA_RELEASES: ["spherex_dr1", "spherex_qr3"]
 FOV_PRESETS_ARCMIN: [2, 5, 15, 30]
 DEFAULT_FOV_ARCMIN: 5
 
-# the 5 benchmark targets from the brief (docs/requirements/01-quickinfo.md section 4)
+# position epoch for TARGETS coords. proper motions below move the sources to the
+# epoch of each run's mean visit time, see src/utils/data_processing.py.
+POS_EPOCH: J2000.0
+
+# the 5 benchmark targets from the brief (docs/requirements/01-quickinfo.md section 4).
+# pm_ra_cosdec_masyr is mu_alpha* = mu_alpha * cos(dec). sources:
+#   WISE 0855: components from Kirkpatrick et al. 2021, ApJS 253, 7 (WISE 20 pc census),
+#     quoted as Luhman & Esplin 2016 in the brief (SIMBAD unreachable when added).
+#   Barnard's Star, Epsilon Indi B, RW Aurigae, R Draconis: Gaia DR3, epoch J2016.0
+#     (Epsilon Indi B: unresolved Ba/Bb, ruwe 4.3; pm matches its host within 70 mas/yr).
+#   RW Aurigae: variable with elevated ruwe; positional frame shift < 0.5 arcsec/dec,
+#     carried for completeness.
 TARGETS:
   - name: WISE 0855
     ra_deg: 133.795129
     dec_deg: -7.245147
     kind: fast-moving brown dwarf
+    pm_ra_cosdec_masyr: -8123.7
+    pm_dec_masyr: 673.2
+    pm_source: "Kirkpatrick et al. 2021, ApJS 253, 7 (SIMBAD unreachable)"
   - name: Barnard's Star
     ra_deg: 269.452075
     dec_deg: 4.693364
     kind: high proper-motion red dwarf
+    pm_ra_cosdec_masyr: -801.55
+    pm_dec_masyr: 10362.39
+    pm_source: "Gaia DR3, epoch J2016.0, source_id 4472832130942575872"
   - name: Epsilon Indi B
     ra_deg: 331.044147
     dec_deg: -56.782844
     kind: binary brown dwarfs
+    pm_ra_cosdec_masyr: 3981.98
+    pm_dec_masyr: -2466.83
+    pm_source: "Gaia DR3, epoch J2016.0, source_id 6412596012146801152 (G=18.0)"
   - name: RW Aurigae
     ra_deg: 76.956375
     dec_deg: 30.401389
     kind: variable star
+    pm_ra_cosdec_masyr: 2.64
+    pm_dec_masyr: -27.40
+    pm_source: "Gaia DR3, epoch J2016.0, source_id 156430822114424576 (G=12.2)"
   - name: R Draconis
     ra_deg: 248.167625
     dec_deg: 66.755000
     kind: variable star
+    pm_ra_cosdec_masyr: -20.64
+    pm_dec_masyr: 6.15
+    pm_source: "Gaia DR3, epoch J2016.0, source_id 1648328016354496384 (G=6.4)"

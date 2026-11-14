@@ -15,7 +15,7 @@ import requests
 from astropy.io.votable import parse_single_table
 
 from src.core.settings import settings
-from src.utils.data_processing import render_passes
+from src.utils.data_processing import POS_EPOCH_MJD, propagate_proper_motion, render_passes
 
 SIA_URL = "https://irsa.ipac.caltech.edu/SIA"
 TIMEOUT_S = 120
@@ -121,25 +121,47 @@ def write_index(web_dir: Path | None = None) -> Path:
     return dest
 
 
+def center_slug(ra: float, dec: float) -> str:
+    """center tag for cache file names: keeps old J2000-centered cutouts from being reused."""
+    return f"{ra:.4f}_{dec:.4f}".replace("-", "m")
+
+
+def target_now(t: dict, mean_mjd: float) -> tuple[float, float]:
+    """propagate the config (epoch J2000.0) position to the run's mean visit time."""
+    for key in ("pm_ra_cosdec_masyr", "pm_dec_masyr"):
+        if key not in t:
+            raise SystemExit(f"target {t.get('name')!r} missing {key} in configs/default.yaml")
+    years = (mean_mjd - POS_EPOCH_MJD) / 365.25
+    return propagate_proper_motion(
+        t["ra_deg"], t["dec_deg"], t["pm_ra_cosdec_masyr"], t["pm_dec_masyr"], years
+    )
+
+
 def run(target: str, detector: str, fov_arcmin: float | None = None) -> list[dict]:
     """whole step for one target and detector. rerun-safe: cutouts already on disk are reused."""
     by_name = {t["name"].lower(): t for t in settings.TARGETS}
     if target.lower() not in by_name:
         raise SystemExit(f"unknown target {target!r}, choose from {sorted(by_name)}")
     t = by_name[target.lower()]
-    ra, dec = t["ra_deg"], t["dec_deg"]
     fov = fov_arcmin or settings.DEFAULT_FOV_ARCMIN
     slug = slugify(t["name"])
 
-    visits = query_sia_visits(ra, dec, detector, settings.DATA_RELEASES)
+    # the cone search picks visits by sky coverage; SPHEREx scans whole sky, arcminute
+    # drift is irrelevant here. the propagated center moves the cutouts instead.
+    visits = query_sia_visits(t["ra_deg"], t["dec_deg"], detector, settings.DATA_RELEASES)
     if not visits:
         raise SystemExit(f"no {detector} visits for {t['name']} in {settings.DATA_RELEASES}")
+    mean_mjd = sum(v["mjd"] for v in visits) / len(visits)
+    ra_c, dec_c = target_now(t, mean_mjd)
+    # ask for 1.5x the fov so reprojected frames don't end in black corners
+    fov_ask = fov * 1.5
+    ctr = center_slug(ra_c, dec_c)
     raw_dir = settings.DATA_DIR / "raw" / slug / detector
     raw_dir.mkdir(parents=True, exist_ok=True)
     for v in visits:
-        v["path"] = raw_dir / (v["url"].rsplit("/", 1)[-1])
+        v["path"] = raw_dir / (f"{ctr}_" + v["url"].rsplit("/", 1)[-1])
         try:
-            download_cutout(v["url"], ra, dec, fov, v["path"])
+            download_cutout(v["url"], ra_c, dec_c, fov_ask, v["path"])
         except (RuntimeError, requests.RequestException) as err:
             # irsa is often busy; one lost visit must not kill the run, a rerun fetches it later
             print(f"skipped visit: {err}")
@@ -147,8 +169,9 @@ def run(target: str, detector: str, fov_arcmin: float | None = None) -> list[dic
     if not got:
         raise SystemExit(f"no {detector} cutouts for {t['name']}, irsa busy: rerun later")
     print(f"{len(got)}/{len(visits)} visits on disk")
+    print(f"frames centered on J2000+pm at mean mjd {mean_mjd:.1f}")
     out_dir = settings.WEB_DIR / "cache" / slug / detector
-    return render_passes(got, ra, dec, fov, out_dir)
+    return render_passes(got, ra_c, dec_c, fov, out_dir, frame_epoch_mjd=mean_mjd)
 
 
 DETECTORS = [f"d{i}" for i in range(1, 7)]

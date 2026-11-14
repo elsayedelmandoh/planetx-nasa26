@@ -3,6 +3,7 @@ input: ra/dec strings, visit dicts {"mjd", "path"} pointing at level 2 fits cuto
 output: web/cache/<target-slug>/<detector>/pass-<n>.png + .json."""
 
 import json
+import math
 from pathlib import Path
 
 import astropy.units as u
@@ -24,6 +25,28 @@ BAD_FLAG_NAMES = (
     "TRANSIENT", "SUR_ERROR", "NONFUNC", "MISSING_DATA", "HOT", "COLD",
     "PERSIST", "STREAK", "BLOOM", "SNOWBALL", "HALO",
 )  # fmt: skip
+
+# mean epoch of J2000.0 in mjd. TARGETS coords in configs are epoch J2000.0.
+POS_EPOCH_MJD = 51544.0
+
+
+def propagate_proper_motion(
+    ra_deg: float,
+    dec_deg: float,
+    pm_ra_cosdec_masyr: float,
+    pm_dec_masyr: float,
+    years: float,
+) -> tuple[float, float]:
+    """linear motion from the config position (epoch J2000.0) to `years` after it.
+
+    small-angle approximation; over 26 years the shift is a few arcminutes,
+    so the tangent-plane error is negligible at 6 arcsec pixels.
+    pm_ra_cosdec_masyr is mu_alpha* = mu_alpha * cos(dec), matching Gaia/SIMBAD convention.
+    """
+    dra = pm_ra_cosdec_masyr * years / 3600 / 1000 / math.cos(math.radians(dec_deg))
+    ddec = pm_dec_masyr * years / 3600 / 1000
+    return ra_deg + dra, dec_deg + ddec
+
 
 
 def parse_coords(ra: str, dec: str) -> tuple[float, float]:
@@ -119,7 +142,12 @@ def epoch_label(start: str, end: str) -> str:
 
 
 def render_passes(
-    visits: list[dict], ra: float, dec: float, fov_arcmin: float, out_dir: Path
+    visits: list[dict],
+    ra: float,
+    dec: float,
+    fov_arcmin: float,
+    out_dir: Path,
+    frame_epoch_mjd: float | None = None,
 ) -> list[dict]:
     """group visits into passes, coadd each, write pass-<n>.png + .json into out_dir."""
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -136,12 +164,16 @@ def render_passes(
             "epoch_label": epoch_label(start, end),
             "date_range": {"start": start, "end": end},
             "visit_count": len(group),
+            "frame_center": {"ra_deg": ra, "dec_deg": dec},
             "stretch": "zscale",
             "width": shape[1],
             "height": shape[0],
             "native_pixel_scale_arcsec": NATIVE_PIXEL_SCALE_ARCSEC,
             "upsample_factor": UPSAMPLE_FACTOR,
         }
+        if frame_epoch_mjd is not None:
+            meta["frame_center"]["mjd"] = frame_epoch_mjd
+            meta["frame_center"]["epoch"] = Time(frame_epoch_mjd, format="mjd").strftime("%Y-%m-%d")
         (out_dir / f"pass-{n}.json").write_text(json.dumps(meta, indent=2) + "\n")
         metas.append(meta)
     for a in range(len(groups) - 1):
