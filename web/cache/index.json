@@ -7,6 +7,62 @@
       "dec_deg": -7.245147,
       "kind": "fast-moving brown dwarf",
       "detectors": {
+        "d1": [
+          {
+            "png": "cache/wise-0855/d1/pass-1.png",
+            "json": "cache/wise-0855/d1/pass-1.json"
+          },
+          {
+            "png": "cache/wise-0855/d1/pass-2.png",
+            "json": "cache/wise-0855/d1/pass-2.json"
+          },
+          {
+            "png": "cache/wise-0855/d1/pass-3.png",
+            "json": "cache/wise-0855/d1/pass-3.json"
+          }
+        ],
+        "d2": [
+          {
+            "png": "cache/wise-0855/d2/pass-1.png",
+            "json": "cache/wise-0855/d2/pass-1.json"
+          },
+          {
+            "png": "cache/wise-0855/d2/pass-2.png",
+            "json": "cache/wise-0855/d2/pass-2.json"
+          },
+          {
+            "png": "cache/wise-0855/d2/pass-3.png",
+            "json": "cache/wise-0855/d2/pass-3.json"
+          }
+        ],
+        "d4": [
+          {
+            "png": "cache/wise-0855/d4/pass-1.png",
+            "json": "cache/wise-0855/d4/pass-1.json"
+          },
+          {
+            "png": "cache/wise-0855/d4/pass-2.png",
+            "json": "cache/wise-0855/d4/pass-2.json"
+          },
+          {
+            "png": "cache/wise-0855/d4/pass-3.png",
+            "json": "cache/wise-0855/d4/pass-3.json"
+          }
+        ],
+        "d5": [
+          {
+            "png": "cache/wise-0855/d5/pass-1.png",
+            "json": "cache/wise-0855/d5/pass-1.json"
+          },
+          {
+            "png": "cache/wise-0855/d5/pass-2.png",
+            "json": "cache/wise-0855/d5/pass-2.json"
+          },
+          {
+            "png": "cache/wise-0855/d5/pass-3.png",
+            "json": "cache/wise-0855/d5/pass-3.json"
+          }
+        ],
         "d6": [
           {
             "png": "cache/wise-0855/d6/pass-1.png",
@@ -23,14 +79,64 @@
         ]
       },
       "differences": {
+        "d1": [
+          {
+            "png": "cache/wise-0855/d1/diff-1-2.png",
+            "json": "cache/wise-0855/d1/diff-1-2.json",
+            "markers": "cache/wise-0855/d1/diff-1-2.markers.json"
+          },
+          {
+            "png": "cache/wise-0855/d1/diff-2-3.png",
+            "json": "cache/wise-0855/d1/diff-2-3.json",
+            "markers": "cache/wise-0855/d1/diff-2-3.markers.json"
+          }
+        ],
+        "d2": [
+          {
+            "png": "cache/wise-0855/d2/diff-1-2.png",
+            "json": "cache/wise-0855/d2/diff-1-2.json",
+            "markers": "cache/wise-0855/d2/diff-1-2.markers.json"
+          },
+          {
+            "png": "cache/wise-0855/d2/diff-2-3.png",
+            "json": "cache/wise-0855/d2/diff-2-3.json",
+            "markers": "cache/wise-0855/d2/diff-2-3.markers.json"
+          }
+        ],
+        "d4": [
+          {
+            "png": "cache/wise-0855/d4/diff-1-2.png",
+            "json": "cache/wise-0855/d4/diff-1-2.json",
+            "markers": "cache/wise-0855/d4/diff-1-2.markers.json"
+          },
+          {
+            "png": "cache/wise-0855/d4/diff-2-3.png",
+            "json": "cache/wise-0855/d4/diff-2-3.json",
+            "markers": "cache/wise-0855/d4/diff-2-3.markers.json"
+          }
+        ],
+        "d5": [
+          {
+            "png": "cache/wise-0855/d5/diff-1-2.png",
+            "json": "cache/wise-0855/d5/diff-1-2.json",
+            "markers": "cache/wise-0855/d5/diff-1-2.markers.json"
+          },
+          {
+            "png": "cache/wise-0855/d5/diff-2-3.png",
+            "json": "cache/wise-0855/d5/diff-2-3.json",
+            "markers": "cache/wise-0855/d5/diff-2-3.markers.json"
+          }
+        ],
         "d6": [
           {
             "png": "cache/wise-0855/d6/diff-1-2.png",
-            "json": "cache/wise-0855/d6/diff-1-2.json"
+            "json": "cache/wise-0855/d6/diff-1-2.json",
+            "markers": "cache/wise-0855/d6/diff-1-2.markers.json"
           },
           {
             "png": "cache/wise-0855/d6/diff-2-3.png",
-            "json": "cache/wise-0855/d6/diff-2-3.json"
+            "json": "cache/wise-0855/d6/diff-2-3.json",
+            "markers": "cache/wise-0855/d6/diff-2-3.markers.json"
           }
         ]
       }
@@ -42,6 +148,20 @@
       "dec_deg": 4.693364,
       "kind": "high proper-motion red dwarf",
       "detectors": {
+        "d1": [
+          {
+            "png": "cache/barnard-s-star/d1/pass-1.png",
+            "json": "cache/barnard-s-star/d1/pass-1.json"
+          },
+          {
+            "png": "cache/barnard-s-star/d1/pass-2.png",
+            "json": "cache/barnard-s-star/d1/pass-2.json"
+          },
+          {
+            "png": "cache/barnard-s-star/d1/pass-3.png",
+            "json": "cache/barnard-s-star/d1/pass-3.json"
+          }
+        ],
         "d2": [
           {
             "png": "cache/barnard-s-star/d2/pass-1.png",
@@ -55,17 +175,109 @@
             "png": "cache/barnard-s-star/d2/pass-3.png",
             "json": "cache/barnard-s-star/d2/pass-3.json"
           }
+        ],
+        "d3": [
+          {
+            "png": "cache/barnard-s-star/d3/pass-1.png",
+            "json": "cache/barnard-s-star/d3/pass-1.json"
+          },
+          {
+            "png": "cache/barnard-s-star/d3/pass-2.png",
+            "json": "cache/barnard-s-star/d3/pass-2.json"
+          },
+          {
+            "png": "cache/barnard-s-star/d3/pass-3.png",
+            "json": "cache/barnard-s-star/d3/pass-3.json"
+          }
+        ],
+        "d4": [
+          {
+            "png": "cache/barnard-s-star/d4/pass-1.png",
+            "json": "cache/barnard-s-star/d4/pass-1.json"
+          },
+          {
+            "png": "cache/barnard-s-star/d4/pass-2.png",
+            "json": "cache/barnard-s-star/d4/pass-2.json"
+          },
+          {
+            "png": "cache/barnard-s-star/d4/pass-3.png",
+            "json": "cache/barnard-s-star/d4/pass-3.json"
+          }
+        ],
+        "d5": [
+          {
+            "png": "cache/barnard-s-star/d5/pass-1.png",
+            "json": "cache/barnard-s-star/d5/pass-1.json"
+          },
+          {
+            "png": "cache/barnard-s-star/d5/pass-2.png",
+            "json": "cache/barnard-s-star/d5/pass-2.json"
+          },
+          {
+            "png": "cache/barnard-s-star/d5/pass-3.png",
+            "json": "cache/barnard-s-star/d5/pass-3.json"
+          }
         ]
       },
       "differences": {
+        "d1": [
+          {
+            "png": "cache/barnard-s-star/d1/diff-1-2.png",
+            "json": "cache/barnard-s-star/d1/diff-1-2.json",
+            "markers": "cache/barnard-s-star/d1/diff-1-2.markers.json"
+          },
+          {
+            "png": "cache/barnard-s-star/d1/diff-2-3.png",
+            "json": "cache/barnard-s-star/d1/diff-2-3.json",
+            "markers": "cache/barnard-s-star/d1/diff-2-3.markers.json"
+          }
+        ],
         "d2": [
           {
             "png": "cache/barnard-s-star/d2/diff-1-2.png",
-            "json": "cache/barnard-s-star/d2/diff-1-2.json"
+            "json": "cache/barnard-s-star/d2/diff-1-2.json",
+            "markers": "cache/barnard-s-star/d2/diff-1-2.markers.json"
           },
           {
             "png": "cache/barnard-s-star/d2/diff-2-3.png",
-            "json": "cache/barnard-s-star/d2/diff-2-3.json"
+            "json": "cache/barnard-s-star/d2/diff-2-3.json",
+            "markers": "cache/barnard-s-star/d2/diff-2-3.markers.json"
+          }
+        ],
+        "d3": [
+          {
+            "png": "cache/barnard-s-star/d3/diff-1-2.png",
+            "json": "cache/barnard-s-star/d3/diff-1-2.json",
+            "markers": "cache/barnard-s-star/d3/diff-1-2.markers.json"
+          },
+          {
+            "png": "cache/barnard-s-star/d3/diff-2-3.png",
+            "json": "cache/barnard-s-star/d3/diff-2-3.json",
+            "markers": "cache/barnard-s-star/d3/diff-2-3.markers.json"
+          }
+        ],
+        "d4": [
+          {
+            "png": "cache/barnard-s-star/d4/diff-1-2.png",
+            "json": "cache/barnard-s-star/d4/diff-1-2.json",
+            "markers": "cache/barnard-s-star/d4/diff-1-2.markers.json"
+          },
+          {
+            "png": "cache/barnard-s-star/d4/diff-2-3.png",
+            "json": "cache/barnard-s-star/d4/diff-2-3.json",
+            "markers": "cache/barnard-s-star/d4/diff-2-3.markers.json"
+          }
+        ],
+        "d5": [
+          {
+            "png": "cache/barnard-s-star/d5/diff-1-2.png",
+            "json": "cache/barnard-s-star/d5/diff-1-2.json",
+            "markers": "cache/barnard-s-star/d5/diff-1-2.markers.json"
+          },
+          {
+            "png": "cache/barnard-s-star/d5/diff-2-3.png",
+            "json": "cache/barnard-s-star/d5/diff-2-3.json",
+            "markers": "cache/barnard-s-star/d5/diff-2-3.markers.json"
           }
         ]
       }
@@ -112,6 +324,80 @@
             "png": "cache/epsilon-indi-b/d6/diff-3-4.png",
             "json": "cache/epsilon-indi-b/d6/diff-3-4.json",
             "markers": "cache/epsilon-indi-b/d6/diff-3-4.markers.json"
+          }
+        ]
+      }
+    },
+    {
+      "name": "RW Aurigae",
+      "slug": "rw-aurigae",
+      "ra_deg": 76.956375,
+      "dec_deg": 30.401389,
+      "kind": "variable star",
+      "detectors": {
+        "d2": [
+          {
+            "png": "cache/rw-aurigae/d2/pass-1.png",
+            "json": "cache/rw-aurigae/d2/pass-1.json"
+          },
+          {
+            "png": "cache/rw-aurigae/d2/pass-2.png",
+            "json": "cache/rw-aurigae/d2/pass-2.json"
+          },
+          {
+            "png": "cache/rw-aurigae/d2/pass-3.png",
+            "json": "cache/rw-aurigae/d2/pass-3.json"
+          }
+        ]
+      },
+      "differences": {
+        "d2": [
+          {
+            "png": "cache/rw-aurigae/d2/diff-1-2.png",
+            "json": "cache/rw-aurigae/d2/diff-1-2.json",
+            "markers": "cache/rw-aurigae/d2/diff-1-2.markers.json"
+          },
+          {
+            "png": "cache/rw-aurigae/d2/diff-2-3.png",
+            "json": "cache/rw-aurigae/d2/diff-2-3.json",
+            "markers": "cache/rw-aurigae/d2/diff-2-3.markers.json"
+          }
+        ]
+      }
+    },
+    {
+      "name": "R Draconis",
+      "slug": "r-draconis",
+      "ra_deg": 248.167625,
+      "dec_deg": 66.755,
+      "kind": "variable star",
+      "detectors": {
+        "d3": [
+          {
+            "png": "cache/r-draconis/d3/pass-1.png",
+            "json": "cache/r-draconis/d3/pass-1.json"
+          },
+          {
+            "png": "cache/r-draconis/d3/pass-2.png",
+            "json": "cache/r-draconis/d3/pass-2.json"
+          },
+          {
+            "png": "cache/r-draconis/d3/pass-3.png",
+            "json": "cache/r-draconis/d3/pass-3.json"
+          }
+        ]
+      },
+      "differences": {
+        "d3": [
+          {
+            "png": "cache/r-draconis/d3/diff-1-2.png",
+            "json": "cache/r-draconis/d3/diff-1-2.json",
+            "markers": "cache/r-draconis/d3/diff-1-2.markers.json"
+          },
+          {
+            "png": "cache/r-draconis/d3/diff-2-3.png",
+            "json": "cache/r-draconis/d3/diff-2-3.json",
+            "markers": "cache/r-draconis/d3/diff-2-3.markers.json"
           }
         ]
       }

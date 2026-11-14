@@ -1,13 +1,14 @@
 {
   "detections": [
     {
-      "x": 23.714285714285715,
-      "y": 23.607142857142858,
-      "label": "known high-proper-motion object",
-      "peak_sigma": 39.54584971538702,
-      "sign": "dipole"
+      "x": 23.88095238095238,
+      "y": 23.523809523809526,
+      "peak_sigma": 36.53397035249782,
+      "sign": "dipole",
+      "label": "known high-proper-motion object"
     }
   ],
-  "sigma": 0.028215298944711684,
-  "method": "rule-based: 5-sigma threshold, dipole pairing, proper-motion match"
+  "sigma": 0.028455841666460036,
+  "n_gaia_stars": 50000,
+  "method": "rule-based: 5-sigma threshold, dipole pairing, proper-motion match, gaia dr3 cross-match"
 }

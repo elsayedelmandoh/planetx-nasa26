@@ -1,0 +1,97 @@
+{
+  "detections": [
+    {
+      "x": 31.433333333333337,
+      "y": 6.666666666666666,
+      "label": "unmatched moving candidate",
+      "peak_sigma": 16.21814869691853,
+      "sign": "dipole"
+    },
+    {
+      "x": 17.0,
+      "y": 7.5,
+      "label": "unmatched moving candidate",
+      "peak_sigma": 18.024590157610028,
+      "sign": "dipole"
+    },
+    {
+      "x": 26.5,
+      "y": 8.25,
+      "label": "unmatched moving candidate",
+      "peak_sigma": 47.45965211605602,
+      "sign": "dipole"
+    },
+    {
+      "x": 44.0,
+      "y": 9.5,
+      "label": "unmatched moving candidate",
+      "peak_sigma": 10.42904568995852,
+      "sign": "dipole"
+    },
+    {
+      "x": 2.446428571428571,
+      "y": 15.214285714285715,
+      "label": "unmatched moving candidate",
+      "peak_sigma": 119.15528278817905,
+      "sign": "dipole"
+    },
+    {
+      "x": 26.5,
+      "y": 30.5,
+      "label": "unmatched moving candidate",
+      "peak_sigma": 15.180096781991278,
+      "sign": "dipole"
+    },
+    {
+      "x": 43.075,
+      "y": 35.1,
+      "label": "unmatched moving candidate",
+      "peak_sigma": 197.98472549641426,
+      "sign": "dipole"
+    },
+    {
+      "x": 47.36666666666667,
+      "y": 39.8,
+      "label": "unmatched moving candidate",
+      "peak_sigma": 110.0076262757246,
+      "sign": "dipole"
+    },
+    {
+      "x": 16.0,
+      "y": 43.5,
+      "label": "unmatched moving candidate",
+      "peak_sigma": 7.0392700466747025,
+      "sign": "dipole"
+    },
+    {
+      "x": 23.5,
+      "y": 45.75,
+      "label": "unmatched moving candidate",
+      "peak_sigma": 19.37912837828839,
+      "sign": "dipole"
+    },
+    {
+      "x": 25.5,
+      "y": 46.5,
+      "label": "unmatched moving candidate",
+      "peak_sigma": 7.220098382927251,
+      "sign": "dipole"
+    },
+    {
+      "x": 28.4,
+      "y": 8.8,
+      "label": "unmatched residual",
+      "peak_sigma": 70.83691478421785,
+      "sign": -1
+    },
+    {
+      "x": 25.0,
+      "y": 25.0,
+      "label": "variable source",
+      "peak_sigma": 13.928845336380546,
+      "sign": -1
+    }
+  ],
+  "sigma": 0.008144010391831397,
+  "method": "rule-based: 5-sigma threshold, dipole pairing, proper-motion match"
+}

@@ -1,0 +1,203 @@
+{
+  "detections": [
+    {
+      "x": 20.25,
+      "y": 1.0,
+      "peak_sigma": 7.796107388936156,
+      "sign": "dipole",
+      "label": "unmatched moving candidate"
+    },
+    {
+      "x": 4.0,
+      "y": 4.5,
+      "peak_sigma": 5.648976849593791,
+      "sign": "dipole",
+      "label": "unmatched moving candidate"
+    },
+    {
+      "x": 13.125,
+      "y": 8.916666666666668,
+      "peak_sigma": 782.3899282408947,
+      "sign": "dipole",
+      "label": "unmatched moving candidate"
+    },
+    {
+      "x": 24.5,
+      "y": 8.25,
+      "peak_sigma": 13.81849516904314,
+      "sign": "dipole",
+      "label": "unmatched moving candidate"
+    },
+    {
+      "x": 26.833333333333336,
+      "y": 11.0,
+      "peak_sigma": 12.583243651697204,
+      "sign": "dipole",
+      "label": "unmatched moving candidate"
+    },
+    {
+      "x": 10.25,
+      "y": 18.75,
+      "peak_sigma": 85.66519400267688,
+      "sign": "dipole",
+      "label": "unmatched moving candidate"
+    },
+    {
+      "x": 6.5,
+      "y": 19.5,
+      "peak_sigma": 7.568620878212052,
+      "sign": "dipole",
+      "label": "unmatched moving candidate"
+    },
+    {
+      "x": 10.083333333333332,
+      "y": 21.666666666666664,
+      "peak_sigma": 36.42933514449139,
+      "sign": "dipole",
+      "label": "unmatched moving candidate"
+    },
+    {
+      "x": 25.129032258064516,
+      "y": 24.241935483870968,
+      "peak_sigma": 1107.2152678174966,
+      "sign": "dipole",
+      "label": "known high-proper-motion object"
+    },
+    {
+      "x": 35.33333333333333,
+      "y": 29.0,
+      "peak_sigma": 70.23481677734858,
+      "sign": "dipole",
+      "label": "unmatched moving candidate"
+    },
+    {
+      "x": 37.5,
+      "y": 29.0,
+      "peak_sigma": 221.25915552291497,
+      "sign": "dipole",
+      "label": "unmatched moving candidate"
+    },
+    {
+      "x": 4.75,
+      "y": 30.5,
+      "peak_sigma": 41.67510337415933,
+      "sign": "dipole",
+      "label": "unmatched moving candidate"
+    },
+    {
+      "x": 19.5,
+      "y": 29.166666666666664,
+      "peak_sigma": 13.400234902648396,
+      "sign": "dipole",
+      "label": "unmatched moving candidate"
+    },
+    {
+      "x": 28.5,
+      "y": 32.5,
+      "peak_sigma": 8.574820159492248,
+      "sign": "dipole",
+      "label": "unmatched moving candidate"
+    },
+    {
+      "x": 45.5,
+      "y": 33.25,
+      "peak_sigma": 9.65449309163614,
+      "sign": "dipole",
+      "label": "unmatched moving candidate"
+    },
+    {
+      "x": 24.5,
+      "y": 34.5,
+      "peak_sigma": 34.209145408562556,
+      "sign": "dipole",
+      "label": "unmatched moving candidate"
+    },
+    {
+      "x": 47.0,
+      "y": 35.0,
+      "peak_sigma": 9.71559023629945,
+      "sign": "dipole",
+      "label": "unmatched moving candidate"
+    },
+    {
+      "x": 21.0,
+      "y": 35.5,
+      "peak_sigma": 12.946192201252222,
+      "sign": "dipole",
+      "label": "unmatched moving candidate"
+    },
+    {
+      "x": 4.5,
+      "y": 37.5,
+      "peak_sigma": 7.949826958788276,
+      "sign": "dipole",
+      "label": "unmatched moving candidate"
+    },
+    {
+      "x": 10.75,
+      "y": 38.5,
+      "peak_sigma": 8.138647042349634,
+      "sign": "dipole",
+      "label": "unmatched moving candidate"
+    },
+    {
+      "x": 1.5,
+      "y": 40.5,
+      "peak_sigma": 13.783579094590165,
+      "sign": "dipole",
+      "label": "unmatched moving candidate"
+    },
+    {
+      "x": 3.5,
+      "y": 41.5,
+      "peak_sigma": 10.24510515191705,
+      "sign": "dipole",
+      "label": "unmatched moving candidate"
+    },
+    {
+      "x": 17.125,
+      "y": 41.625,
+      "peak_sigma": 29.318166359739163,
+      "sign": "dipole",
+      "label": "unmatched moving candidate"
+    },
+    {
+      "x": 15.0,
+      "y": 46.0,
+      "peak_sigma": 6.434025800750234,
+      "sign": "dipole",
+      "label": "unmatched moving candidate"
+    },
+    {
+      "x": 31.5,
+      "y": 45.25,
+      "peak_sigma": 30.926480407697717,
+      "sign": "dipole",
+      "label": "unmatched moving candidate"
+    },
+    {
+      "x": 1.25,
+      "y": 46.5,
+      "peak_sigma": 8.32077301128251,
+      "sign": "dipole",
+      "label": "unmatched moving candidate"
+    },
+    {
+      "x": 22.75,
+      "y": 48.0,
+      "peak_sigma": 36.296678944325514,
+      "sign": "dipole",
+      "label": "unmatched moving candidate"
+    },
+    {
+      "x": 39.25,
+      "y": 29.0,
+      "label": "unmatched residual",
+      "peak_sigma": 83.7645733943686,
+      "sign": 1
+    }
+  ],
+  "sigma": 0.010251034730672836,
+  "n_gaia_stars": 50000,
+  "method": "rule-based: 5-sigma threshold, dipole pairing, proper-motion match, gaia dr3 cross-match"
+}

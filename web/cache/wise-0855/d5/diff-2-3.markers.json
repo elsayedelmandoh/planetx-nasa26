@@ -1,0 +1,27 @@
+{
+  "detections": [
+    {
+      "x": 25.0,
+      "y": 24.0,
+      "label": "variable source",
+      "peak_sigma": 5.755244696045514,
+      "sign": 1
+    },
+    {
+      "x": 2.5,
+      "y": 15.0,
+      "label": "unmatched residual",
+      "peak_sigma": 5.894816497926112,
+      "sign": -1
+    },
+    {
+      "x": 43.0,
+      "y": 35.0,
+      "label": "unmatched residual",
+      "peak_sigma": 10.91262565317769,
+      "sign": -1
+    }
+  ],
+  "sigma": 0.018603509590029717,
+  "method": "rule-based: 5-sigma threshold, dipole pairing, proper-motion match"
+}

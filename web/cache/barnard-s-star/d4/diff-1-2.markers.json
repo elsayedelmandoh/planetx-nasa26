@@ -1,0 +1,83 @@
+{
+  "detections": [
+    {
+      "x": 39.400000000000006,
+      "y": 2.2,
+      "label": "unmatched moving candidate",
+      "peak_sigma": 35.929875412421346,
+      "sign": "dipole"
+    },
+    {
+      "x": 38.0,
+      "y": 13.5,
+      "label": "unmatched moving candidate",
+      "peak_sigma": 42.57594032488173,
+      "sign": "dipole"
+    },
+    {
+      "x": 27.75,
+      "y": 35.5,
+      "label": "unmatched moving candidate",
+      "peak_sigma": 23.13928990228136,
+      "sign": "dipole"
+    },
+    {
+      "x": 5.5,
+      "y": 36.5,
+      "label": "unmatched moving candidate",
+      "peak_sigma": 67.55543860051546,
+      "sign": "dipole"
+    },
+    {
+      "x": 25.560606060606062,
+      "y": 40.00757575757576,
+      "label": "unmatched moving candidate",
+      "peak_sigma": 263.85222798478327,
+      "sign": "dipole"
+    },
+    {
+      "x": 36.575,
+      "y": 41.625,
+      "label": "unmatched moving candidate",
+      "peak_sigma": 44.96566347817505,
+      "sign": "dipole"
+    },
+    {
+      "x": 22.25,
+      "y": 45.75,
+      "label": "unmatched moving candidate",
+      "peak_sigma": 15.304131180227872,
+      "sign": "dipole"
+    },
+    {
+      "x": 17.666666666666668,
+      "y": 47.5,
+      "label": "unmatched moving candidate",
+      "peak_sigma": 13.801138632523916,
+      "sign": "dipole"
+    },
+    {
+      "x": 21.032258064516128,
+      "y": 28.411290322580644,
+      "label": "unmatched residual",
+      "peak_sigma": 2060.8298217747465,
+      "sign": 1
+    },
+    {
+      "x": 47.5,
+      "y": 46.0,
+      "label": "unmatched residual",
+      "peak_sigma": 7.958895696555338,
+      "sign": 1
+    },
+    {
+      "x": 25.91,
+      "y": 18.35,
+      "label": "unmatched residual",
+      "peak_sigma": 839.3578799198629,
+      "sign": -1
+    }
+  ],
+  "sigma": 0.01641796864271164,
+  "method": "rule-based: 5-sigma threshold, dipole pairing, proper-motion match"
+}

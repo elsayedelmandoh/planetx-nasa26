@@ -1,0 +1,6 @@
+{
+  "detections": [],
+  "sigma": 0.03515551319718361,
+  "n_gaia_stars": 50000,
+  "method": "rule-based: 5-sigma threshold, dipole pairing, proper-motion match, gaia dr3 cross-match"
+}

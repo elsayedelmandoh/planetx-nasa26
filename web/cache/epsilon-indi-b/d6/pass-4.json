@@ -4,7 +4,7 @@
     "start": "2026-09-22",
     "end": "2026-09-28"
   },
-  "visit_count": 32,
+  "visit_count": 25,
   "frame_center": {
     "ra_deg": 331.09680191530225,
     "dec_deg": -56.80071307491547,
@@ -15,14 +15,15 @@
   "center_dec_deg": -56.80071307491547,
   "center_epoch": 2026.081093423135,
   "stretch": "zscale",
+  "saturated_px": 0,
   "width": 49,
   "height": 49,
   "native_pixel_scale_arcsec": 6.15,
   "upsample_factor": 4,
   "target_px": [
-    23.572813198951195,
-    23.735533708645413
+    23.57287611799206,
+    23.73557266108365
   ],
-  "target_epoch": 2026.7331346357803,
+  "target_epoch": 2026.7330374777823,
   "astrometry_source": "gaia dr3 6412596012146801152"
 }

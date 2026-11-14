@@ -1,0 +1,76 @@
+{
+  "detections": [
+    {
+      "x": 1.9375,
+      "y": 15.4375,
+      "label": "unmatched moving candidate",
+      "peak_sigma": 97.75148285529316,
+      "sign": "dipole"
+    },
+    {
+      "x": 42.91666666666667,
+      "y": 34.30555555555556,
+      "label": "unmatched moving candidate",
+      "peak_sigma": 108.57459343719451,
+      "sign": "dipole"
+    },
+    {
+      "x": 24.5,
+      "y": 46.5,
+      "label": "unmatched moving candidate",
+      "peak_sigma": 7.8417739412368,
+      "sign": "dipole"
+    },
+    {
+      "x": 31.5,
+      "y": 6.5,
+      "label": "unmatched residual",
+      "peak_sigma": 16.520604566657486,
+      "sign": 1
+    },
+    {
+      "x": 27.5,
+      "y": 8.0,
+      "label": "unmatched residual",
+      "peak_sigma": 52.90543938973145,
+      "sign": 1
+    },
+    {
+      "x": 25.0,
+      "y": 25.0,
+      "label": "variable source",
+      "peak_sigma": 5.274461030154851,
+      "sign": 1
+    },
+    {
+      "x": 39.5,
+      "y": 30.0,
+      "label": "unmatched residual",
+      "peak_sigma": 7.778713025727827,
+      "sign": 1
+    },
+    {
+      "x": 0.0,
+      "y": 39.5,
+      "label": "unmatched residual",
+      "peak_sigma": 10.960236506114873,
+      "sign": 1
+    },
+    {
+      "x": 47.6,
+      "y": 39.8,
+      "label": "unmatched residual",
+      "peak_sigma": 30.607517324109306,
+      "sign": 1
+    },
+    {
+      "x": 41.333333333333336,
+      "y": 35.666666666666664,
+      "label": "unmatched residual",
+      "peak_sigma": 36.52519341361378,
+      "sign": -1
+    }
+  ],
+  "sigma": 0.00542303654551506,
+  "method": "rule-based: 5-sigma threshold, dipole pairing, proper-motion match"
+}

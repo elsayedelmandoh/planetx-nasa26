@@ -15,6 +15,7 @@
   "center_dec_deg": -56.80071307491547,
   "center_epoch": 2026.081093423135,
   "stretch": "zscale",
+  "saturated_px": 0,
   "width": 49,
   "height": 49,
   "native_pixel_scale_arcsec": 6.15,

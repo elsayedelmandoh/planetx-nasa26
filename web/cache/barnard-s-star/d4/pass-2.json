@@ -1,0 +1,29 @@
+{
+  "epoch_label": "2026-03",
+  "date_range": {
+    "start": "2026-03-11",
+    "end": "2026-03-11"
+  },
+  "visit_count": 15,
+  "frame_center": {
+    "ra_deg": 269.44623691004654,
+    "dec_deg": 4.768608379081871,
+    "mjd": 61089.091407525426,
+    "epoch": "2026-02-18"
+  },
+  "center_ra_deg": 269.44623691004654,
+  "center_dec_deg": 4.768608379081871,
+  "center_epoch": 2026.1316670979477,
+  "stretch": "zscale",
+  "saturated_px": 52,
+  "width": 49,
+  "height": 49,
+  "native_pixel_scale_arcsec": 6.15,
+  "upsample_factor": 4,
+  "target_px": [
+    24.006489426295673,
+    24.083891267054987
+  ],
+  "target_epoch": 2026.1901097943874,
+  "astrometry_source": "gaia dr3 4472832130942575872"
+}

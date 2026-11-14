@@ -1,0 +1,14 @@
+{
+  "detections": [
+    {
+      "x": 23.91176470588235,
+      "y": 23.441176470588236,
+      "label": "variable source",
+      "peak_sigma": 34.71085411388966,
+      "sign": -1,
+      "ml_score": 0.0
+    }
+  ],
+  "sigma": 0.7213995966374873,
+  "method": "rule-based: 5-sigma threshold, dipole pairing, proper-motion match"
+}

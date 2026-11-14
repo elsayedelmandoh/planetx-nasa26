@@ -3,11 +3,12 @@
     {
       "x": 24.5,
       "y": 24.0,
-      "label": "known high-proper-motion object",
-      "peak_sigma": 52.45711589325266,
-      "sign": "dipole"
+      "peak_sigma": 48.48697014413006,
+      "sign": "dipole",
+      "label": "known high-proper-motion object"
     }
   ],
-  "sigma": 0.025433504551649094,
-  "method": "rule-based: 5-sigma threshold, dipole pairing, proper-motion match"
+  "sigma": 0.026409505319595336,
+  "n_gaia_stars": 50000,
+  "method": "rule-based: 5-sigma threshold, dipole pairing, proper-motion match, gaia dr3 cross-match"
 }
