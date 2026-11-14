@@ -37,3 +37,12 @@ def test_cache_index_json_served_and_matches_contract() -> None:
     frames = target["detectors"]["d6"]
     assert [f["png"] for f in frames] == [f"cache/wise-0855/d6/pass-{n}.png" for n in (1, 2, 3)]
     assert [f["json"] for f in frames] == [f"cache/wise-0855/d6/pass-{n}.json" for n in (1, 2, 3)]
+
+
+def test_root_contains_mode_control() -> None:
+    response = client.get("/")
+
+    assert response.status_code == 200
+    assert 'id="mode-toggle"' in response.text
+    assert 'value="blink"' in response.text
+    assert 'value="difference"' in response.text

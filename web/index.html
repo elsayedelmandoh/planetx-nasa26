@@ -13,6 +13,7 @@
     #player-controls label { display: flex; align-items: center; gap: .35rem; }
     #caption { margin: .25rem 0; min-height: 1.4rem; }
     #no-cache { color: #a40000; }
+    #diff-note { color: #a40000; }
     footer { margin-top: 2rem; font-size: .85rem; color: #555; }
   </style>
 </head>
@@ -46,8 +47,13 @@
 
   <div id="presets" role="group" aria-label="benchmark targets"></div>
 
+  <div id="mode-toggle" role="group" aria-label="display mode">
+    <label><input type="radio" name="mode" value="blink" checked> blink</label>
+    <label><input type="radio" name="mode" value="difference"> difference</label>
+  </div>
   <canvas id="player" width="600" height="600" aria-label="sky image player"></canvas>
   <p id="no-cache" role="status" aria-live="polite" hidden>no cached frames for this position yet; live queries are not available on this static site</p>
+  <p id="diff-note" role="status" aria-live="polite" hidden>no difference frames for this detector yet</p>
   <p id="caption" aria-live="polite"></p>
 
   <div id="player-controls">
@@ -77,6 +83,9 @@
     const params = new URLSearchParams(location.search);
     const fovChoices = new Set(["2", "5", "15", "30"]);
     const detChoices = new Set(["d1", "d2", "d3", "d4", "d5", "d6"]);
+    const modeChoices = new Set(["blink", "difference"]);
+    const modeRadios = () => [...document.querySelectorAll('input[name="mode"]')];
+    const currentMode = () => modeRadios().find((r) => r.checked)?.value || "blink";
 
     function parseCoordinate(raw, axis) {
       const text = raw.trim().toLowerCase();
@@ -123,6 +132,7 @@
         dec: decInput.value.trim(),
         fov: fovInput.value,
         det: detInput.value,
+        mode: currentMode(),
       });
       const url = new URL(location.href);
       url.search = query.toString();
@@ -133,6 +143,9 @@
     if (params.has("dec")) decInput.value = params.get("dec");
     if (fovChoices.has(params.get("fov"))) fovInput.value = params.get("fov");
     if (detChoices.has(params.get("det"))) detInput.value = params.get("det");
+    if (modeChoices.has(params.get("mode"))) {
+      for (const r of modeRadios()) r.checked = r.value === params.get("mode");
+    }
     if (params.has("ra") || params.has("dec")) setError(coordinateError());
 
     // blink player state
@@ -144,6 +157,7 @@
     const scrubInput = document.getElementById("scrub");
     const caption = document.getElementById("caption");
     const noCache = document.getElementById("no-cache");
+    const diffNote = document.getElementById("diff-note");
     const ARC_MIN_DEG = 1 / 60;
     let targets = [];
     let frames = [];
@@ -202,7 +216,9 @@
         const scale = Math.min(canvas.width / img.width, canvas.height / img.height);
         const w = img.width * scale, h = img.height * scale;
         ctx.drawImage(img, (canvas.width - w) / 2, (canvas.height - h) / 2, w, h);
-        caption.textContent = `${meta.epoch_label} | ${meta.date_range.start} to ${meta.date_range.end} | ${meta.visit_count} visit${meta.visit_count === 1 ? "" : "s"}`;
+        caption.textContent = meta.kind === "difference"
+          ? meta.subtraction
+          : `${meta.epoch_label} | ${meta.date_range.start} to ${meta.date_range.end} | ${meta.visit_count} visit${meta.visit_count === 1 ? "" : "s"}`;
       } catch {
         caption.textContent = "failed to load frame";
       }
@@ -232,13 +248,18 @@
     async function refreshPlayer() {
       const target = matchingTarget();
       setDetOptions(target);
-      frames = target?.detectors?.[detInput.value] ? target.detectors[detInput.value].map((f) => ({ ...f })) : [];
+      const mode = currentMode();
+      const source = mode === "difference"
+        ? target?.differences?.[detInput.value]
+        : target?.detectors?.[detInput.value];
+      frames = source ? source.map((f) => ({ ...f })) : [];
+      diffNote.hidden = mode !== "difference" || frames.length !== 0;
+      noCache.hidden = mode === "difference" || frames.length !== 0;
       frameIndex = 0;
       scrubInput.max = String(Math.max(frames.length - 1, 0));
       scrubInput.value = "0";
       scrubInput.disabled = frames.length === 0;
       playButton.disabled = frames.length === 0;
-      noCache.hidden = frames.length !== 0;
       if (frames.length === 0) {
         setPlaying(false);
         caption.textContent = "";
@@ -260,6 +281,7 @@
       drawFrame();
     });
     detInput.addEventListener("change", () => { writeUrl(); refreshPlayer(); });
+    for (const r of modeRadios()) r.addEventListener("change", () => { writeUrl(); refreshPlayer(); });
 
     document.addEventListener("keydown", (event) => {
       const tag = event.target?.tagName;

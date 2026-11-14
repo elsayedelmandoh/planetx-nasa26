@@ -85,3 +85,57 @@ def test_fixture_end_to_end_with_network_monkeypatched(tmp_path, monkeypatch) ->
             meta["height"] * 4,
         )
     assert metas[0]["date_range"]["start"] == "2025-05-05"
+
+
+def test_difference_image_single_pixel_shift() -> None:
+    from src.utils.data_processing import difference_image
+
+    a = np.zeros((8, 8), dtype=np.float32)
+    b = np.zeros((8, 8), dtype=np.float32)
+    a[4, 4] = 10.0
+    b[4, 5] = 10.0
+
+    diff = difference_image(a, b)
+
+    assert diff[4, 4] == np.float32(-10.0)  # negative lobe at old position
+    assert diff[4, 5] == np.float32(10.0)  # positive lobe at new position
+
+
+def test_difference_image_propagates_nan() -> None:
+    from src.utils.data_processing import difference_image
+
+    a = np.array([[1.0, np.nan]], dtype=np.float32)
+    b = np.array([[2.0, 3.0]], dtype=np.float32)
+
+    diff = difference_image(a, b)
+
+    assert diff[0, 0] == np.float32(-0.5)  # (2 - median(b)) - (1 - median(a))
+    assert np.isnan(diff[0, 1])
+
+
+def test_write_diff_png_zero_is_mid_gray(tmp_path) -> None:
+    from src.utils.data_processing import write_diff_png
+
+    img = np.zeros((4, 4), dtype=np.float32)
+    img[0, 0] = np.nan
+
+    write_diff_png(img, tmp_path / "d.png")
+
+    im = Image.open(tmp_path / "d.png")
+    assert im.size == (16, 16) and im.mode == "L"
+    assert np.array(im)[0, 0] == 127 or np.array(im)[0, 0] == 128
+
+
+def test_difference_image_constant_offset_gives_zero() -> None:
+    from src.utils.data_processing import difference_image
+
+    rng = np.random.default_rng(1)
+    base = rng.normal(size=(20, 20)).astype(np.float32)
+    base[3, 3] = np.nan
+    a = base + 100.0
+    b = base + 250.0  # differs only by a constant background offset
+
+    diff = difference_image(a, b)
+
+    finite = diff[np.isfinite(diff)]
+    assert np.allclose(finite, 0.0, atol=1e-4)  # float32 rounding

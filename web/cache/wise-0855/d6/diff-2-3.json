@@ -1,0 +1,10 @@
+{
+  "kind": "difference",
+  "subtraction": "pass-3 - pass-2",
+  "epoch_label": "2026-04/05 minus 2025-11/12",
+  "stretch": "symmetric",
+  "width": 49,
+  "height": 49,
+  "native_pixel_scale_arcsec": 6.15,
+  "upsample_factor": 4
+}
