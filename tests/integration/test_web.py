@@ -1,3 +1,5 @@
+import re
+
 from fastapi.testclient import TestClient
 from src.api.app import app
 
@@ -46,3 +48,13 @@ def test_root_contains_mode_control() -> None:
     assert 'id="mode-toggle"' in response.text
     assert 'value="blink"' in response.text
     assert 'value="difference"' in response.text
+
+
+def test_home_and_team_served_and_clean() -> None:
+    for page in ("home.html", "team.html"):
+        response = client.get(f"/{page}")
+
+        assert response.status_code == 200
+        assert not re.search(r"[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,}", response.text)
+        assert "—" not in response.text
+        assert 'href="index.html"' in response.text

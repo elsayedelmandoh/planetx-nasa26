@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NASA Space Apps | Planet X - Home</title>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow&family=Barlow+Condensed:wght@400;700&family=Bellefair&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: #000000;
+      color: #fff;
+      font-family: 'Barlow', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Interactive Pure Black Starfield Canvas */
+    #spaceCanvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* Unified Heading Bar */
+    header {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.5rem 0 1.5rem 3rem;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      text-decoration: none;
+      color: #fff;
+    }
+    .logo {
+      width: 46px;
+      height: 46px;
+      background: #fff;
+      color: #000;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-weight: bold;
+      font-size: 1.4rem;
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.35);
+      flex-shrink: 0;
+    }
+    .brand-text span {
+      display: block;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 0.8rem;
+      letter-spacing: 3px;
+      color: #D0D6F9;
+      text-transform: uppercase;
+    }
+    .brand-text strong {
+      font-family: 'Bellefair', serif;
+      font-size: 1.25rem;
+      font-weight: 400;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+    nav {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      padding: 0 5rem 0 3.5rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+      border-left: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    nav ul {
+      display: flex;
+      list-style: none;
+      gap: 2.8rem;
+    }
+    nav a {
+      display: inline-block;
+      padding: 1.6rem 0;
+      color: #fff;
+      text-decoration: none;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1rem;
+      letter-spacing: 2.7px;
+      text-transform: uppercase;
+      border-bottom: 3px solid transparent;
+      transition: border-color 0.25s ease;
+    }
+    nav a b {
+      margin-right: 0.55rem;
+    }
+    nav a:hover {
+      border-bottom-color: rgba(255, 255, 255, 0.5);
+    }
+    nav a.active {
+      border-bottom-color: #fff;
+    }
+
+    /* Main Container */
+    main {
+      position: relative;
+      z-index: 5;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    /* Hero Section */
+    .hero {
+      min-height: calc(100vh - 110px);
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      align-items: center;
+      gap: 3rem;
+      padding: 2rem 0 4rem;
+    }
+    .hero-tag {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1.5rem;
+      letter-spacing: 4.5px;
+      color: #D0D6F9;
+      text-transform: uppercase;
+    }
+    .hero h1 {
+      font-family: 'Bellefair', serif;
+      font-size: clamp(4.5rem, 10vw, 8.5rem);
+      font-weight: 400;
+      text-transform: uppercase;
+      line-height: 1.05;
+      margin: 1rem 0 1.25rem;
+    }
+    .hero p {
+      color: #D0D6F9;
+      font-size: 1.1rem;
+      line-height: 1.8;
+      max-width: 480px;
+    }
+    .hero-hint {
+      margin-top: 1.4rem;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 0.9rem;
+      letter-spacing: 2.2px;
+      color: rgba(208, 214, 249, 0.7);
+      text-transform: uppercase;
+    }
+    .hero-hint strong {
+      color: #fff;
+      font-weight: 700;
+    }
+    .hero-cta-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2rem;
+    }
+    .explore-btn {
+      width: 240px;
+      height: 240px;
+      border-radius: 50%;
+      background: #fff;
+      color: #000;
+      display: grid;
+      place-items: center;
+      text-decoration: none;
+      font-family: 'Bellefair', serif;
+      font-size: 2rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      position: relative;
+      transition: transform 0.3s ease;
+    }
+    .explore-btn::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.14);
+      transform: scale(1);
+      transition: transform 0.4s ease;
+      z-index: -1;
+    }
+    .explore-btn:hover {
+      transform: scale(1.03);
+    }
+    .explore-btn:hover::after {
+      transform: scale(1.42);
+    }
+    .scroll-link {
+      font-family: 'Barlow Condensed', sans-serif;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      font-size: 0.9rem;
+      color: #D0D6F9;
+      text-decoration: none;
+      border-bottom: 1px solid rgba(208, 214, 249, 0.35);
+      padding-bottom: 4px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .scroll-link:hover {
+      color: #fff;
+      border-color: #fff;
+    }
+
+    /* Articles Section */
+    .articles-section {
+      padding: 4rem 0 6rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.12);
+    }
+    .section-head {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 1.5rem;
+      margin-bottom: 2.5rem;
+    }
+    .section-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1.65rem;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      font-weight: 400;
+    }
+    .section-title span {
+      opacity: 0.35;
+      font-weight: 700;
+      margin-right: 0.8rem;
+    }
+    .section-sub {
+      color: #D0D6F9;
+      margin-top: 0.4rem;
+      font-size: 1rem;
+    }
+
+    /* Filter Tabs */
+    .filter-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+    }
+    .tab-btn {
+      background: rgba(255, 255, 255, 0.05);
+      color: #D0D6F9;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      padding: 0.5rem 1.15rem;
+      border-radius: 30px;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 0.9rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .tab-btn:hover, .tab-btn.active {
+      background: #fff;
+      color: #000;
+      border-color: #fff;
+      font-weight: 700;
+    }
+
+    /* Multi-Article Grid */
+    .articles-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
+      gap: 2rem;
+    }
+    .article-card {
+      background: rgba(12, 15, 26, 0.82);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 14px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+    }
+    .article-card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(255, 255, 255, 0.65);
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.75);
+    }
+    .article-thumb {
+      position: relative;
+      height: 205px;
+      background: #060811;
+      overflow: hidden;
+    }
+    .article-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.4s ease;
+    }
+    .article-card:hover .article-thumb img {
+      transform: scale(1.05);
+    }
+    .article-badge {
+      position: absolute;
+      top: 0.9rem;
+      left: 0.9rem;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      color: #fff;
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 0.8rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+    .article-body {
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+    .article-meta {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 0.85rem;
+      letter-spacing: 2px;
+      color: #D0D6F9;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+    .article-body h3 {
+      font-family: 'Bellefair', serif;
+      font-size: 1.65rem;
+      font-weight: 400;
+      line-height: 1.25;
+      margin-bottom: 0.75rem;
+    }
+    .article-excerpt {
+      color: #D0D6F9;
+      font-size: 0.98rem;
+      line-height: 1.65;
+      margin-bottom: 1.5rem;
+      flex: 1;
+    }
+    .read-btn {
+      align-self: flex-start;
+      background: transparent;
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      padding: 0.55rem 1.25rem;
+      border-radius: 30px;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 0.9rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .read-btn:hover {
+      background: #fff;
+      color: #000;
+      border-color: #fff;
+    }
+
+    /* Full Article Reader Modal */
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.88);
+      backdrop-filter: blur(12px);
+      display: none;
+      place-items: center;
+      z-index: 100;
+      padding: 1.25rem;
+    }
+    .modal.open {
+      display: grid;
+    }
+    .reader-panel {
+      background: #0e1221;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      border-radius: 16px;
+      max-width: 780px;
+      width: 100%;
+      max-height: 88vh;
+      overflow-y: auto;
+      position: relative;
+      box-shadow: 0 25px 65px rgba(0, 0, 0, 0.9);
+    }
+    .close-btn {
+      position: sticky;
+      top: 1rem;
+      float: right;
+      margin: 1rem 1rem 0 0;
+      background: rgba(0, 0, 0, 0.75);
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      padding: 0.4rem 0.95rem;
+      border-radius: 20px;
+      font-family: 'Barlow Condensed', sans-serif;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      cursor: pointer;
+      z-index: 10;
+    }
+    .close-btn:hover {
+      background: #fff;
+      color: #000;
+    }
+    .reader-banner {
+      width: 100%;
+      height: 270px;
+      object-fit: cover;
+      display: block;
+    }
+    .reader-content {
+      padding: 2rem 2.25rem 2.5rem;
+    }
+    .reader-meta {
+      font-family: 'Barlow Condensed', sans-serif;
+      color: #D0D6F9;
+      letter-spacing: 2.2px;
+      text-transform: uppercase;
+      font-size: 0.9rem;
+    }
+    .reader-content h2 {
+      font-family: 'Bellefair', serif;
+      font-size: 2.4rem;
+      font-weight: 400;
+      line-height: 1.2;
+      margin: 0.6rem 0 1.25rem;
+    }
+    .reader-text p {
+      color: #D0D6F9;
+      font-size: 1.05rem;
+      line-height: 1.8;
+      margin-bottom: 1.15rem;
+    }
+
+    @media (max-width: 860px) {
+      header { padding-left: 1.5rem; }
+      nav { padding: 0 1.5rem; }
+      nav ul { gap: 1.4rem; }
+      .hero { grid-template-columns: 1fr; text-align: center; padding-top: 1rem; }
+      .hero p { margin: 0 auto; }
+      .explore-btn { width: 190px; height: 190px; font-size: 1.6rem; }
+    }
+  
+    /* ===== Interactive layer (shared by Home / Explore / Team) ===== */
+    .fx-progress { position: fixed; top: 0; left: 0; width: 100%; height: 2px; transform: scaleX(0); transform-origin: 0 50%; background: linear-gradient(90deg, #8d97d9, #fff); box-shadow: 0 0 10px rgba(208, 214, 249, 0.6); z-index: 300; pointer-events: none; }
+    .fx-halo { position: fixed; left: 0; top: 0; width: 34px; height: 34px; margin: -17px 0 0 -17px; border: 1px solid rgba(208, 214, 249, 0.55); border-radius: 50%; pointer-events: none; z-index: 400; opacity: 0; transition: opacity 0.25s, width 0.2s, height 0.2s, margin 0.2s, background 0.2s, border-color 0.2s; }
+    .fx-halo.on { opacity: 1; }
+    .fx-halo.hot { width: 58px; height: 58px; margin: -29px 0 0 -29px; background: rgba(208, 214, 249, 0.08); border-color: #fff; }
+    .fx-halo.down { width: 22px; height: 22px; margin: -11px 0 0 -11px; }
+    @media (pointer: coarse) { .fx-halo { display: none; } }
+    .brand .logo { transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s ease; }
+    .brand:hover .logo { transform: rotate(180deg) scale(1.08); box-shadow: 0 0 30px rgba(255, 255, 255, 0.65); }
+    .article-card, .member-card { position: relative; }
+    .article-card::before, .member-card::before { content: ""; position: absolute; inset: 0; z-index: 2; pointer-events: none; opacity: 0; transition: opacity 0.3s ease; background: radial-gradient(260px circle at var(--mx, 50%) var(--my, 50%), rgba(208, 214, 249, 0.14), transparent 62%); }
+    .article-card:hover::before, .member-card:hover::before { opacity: 1; }
+    .member-card .photo-box img { transition: transform 0.45s ease; }
+    .member-card:hover .photo-box img { transform: scale(1.06); }
+    .explore-btn, .spin { will-change: translate; transition: translate 0.25s ease-out, transform 0.3s ease; }
+    @media (prefers-reduced-motion: reduce) { .fx-halo, .fx-shoot { display: none; } }
+  </style>
+</head>
+<body>
+
+  <canvas id="spaceCanvas"></canvas>
+
+  <header>
+    <a href="home.html" class="brand">
+      <div class="logo">✦</div>
+      <div class="brand-text">
+        <span>NASA Space Apps</span>
+        <strong>Planet X</strong>
+      </div>
+    </a>
+    <nav>
+      <ul>
+        <li><a href="home.html" class="active"><b>00</b> Home</a></li>
+        <li><a href="index.html"><b>01</b> Blink Tool</a></li>
+        <li><a href="team.html"><b>02</b> Team</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <!-- Hero Section -->
+    <section class="hero">
+      <div>
+        <div class="hero-tag">So, you want to travel to</div>
+        <h1>Space</h1>
+        <p>
+          Let’s face it; if you want to go to space, you might as well genuinely go to
+          outer space and not hover kind of on the edge of it. Well sit back, and relax
+          because we’ll give you a truly out of this world experience!
+        </p>
+        <div class="hero-hint">
+          Click anywhere in space to spawn more star particles &bull; Active Particles: <strong id="particleCount">140</strong>
+        </div>
+      </div>
+      <div class="hero-cta-wrap">
+        <a href="index.html" class="explore-btn">Blink Tool</a>
+        <a href="#articles" class="scroll-link">↓ Read Mission Articles</a>
+      </div>
+    </section>
+
+    <!-- Articles Section -->
+    <section class="articles-section" id="articles">
+      <div class="section-head">
+        <div>
+          <h2 class="section-title"><span>01</span> Mission Articles &amp; Dispatches</h2>
+          <p class="section-sub">Latest findings, spectral sky surveys, and deep-space exploration logs.</p>
+        </div>
+        <div class="filter-tabs" id="filterTabs">
+          <button class="tab-btn active" data-cat="All">All Articles</button>
+          <button class="tab-btn" data-cat="Planet X">Planet X</button>
+          <button class="tab-btn" data-cat="Deep Sky">Deep Sky</button>
+          <button class="tab-btn" data-cat="Telemetry">Telemetry</button>
+        </div>
+      </div>
+
+      <div class="articles-grid" id="articlesGrid"></div>
+    </section>
+  </main>
+
+  <!-- Full Article Reader Modal -->
+  <div class="modal" id="articleModal">
+    <div class="reader-panel">
+      <button class="close-btn" id="closeReader">✕ Close</button>
+      <img class="reader-banner" id="readerImg" src="" alt="Article Cover">
+      <div class="reader-content">
+        <div class="reader-meta" id="readerMeta"></div>
+        <h2 id="readerTitle"></h2>
+        <div class="reader-text" id="readerBody"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 1. Interactive Pure Black Space Background - Click to Increase Particles
+    const canvas = document.getElementById("spaceCanvas");
+    const ctx = canvas.getContext("2d");
+    const countEl = document.getElementById("particleCount");
+    let width, height;
+    const stars = [];
+    const bursts = [];
+    const mouse = { x: -9999, y: -9999 };
+    const MAX_STARS = 750;
+
+    function createStar(x, y, boosted = false) {
+      return {
+        x: x !== undefined ? x : Math.random() * width,
+        y: y !== undefined ? y : Math.random() * height,
+        r: boosted ? (Math.random() * 2.2 + 0.8) : (Math.random() * 1.7 + 0.35),
+        vx: boosted ? ((Math.random() - 0.5) * 1.1) : ((Math.random() - 0.5) * 0.22),
+        vy: boosted ? ((Math.random() - 0.5) * 1.1) : ((Math.random() - 0.5) * 0.22),
+        alpha: boosted ? 1 : (Math.random() * 0.7 + 0.25),
+        twinkle: Math.random() * 0.025 + 0.008,
+        glow: boosted ? 1.0 : 0
+      };
+    }
+
+    function initStars() {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+      if (stars.length === 0) {
+        for (let i = 0; i < 140; i++) {
+          stars.push(createStar());
+        }
+        countEl.textContent = stars.length;
+      }
+    }
+    window.addEventListener("resize", initStars);
+    initStars();
+
+    window.addEventListener("pointermove", (e) => {
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
+    });
+
+    window.addEventListener("pointerleave", () => {
+      mouse.x = -9999;
+      mouse.y = -9999;
+    });
+
+    // Each click adds new persistent star particles + a visual shockwave ring
+    window.addEventListener("click", (e) => {
+      if (e.target.closest("a, button, .article-card, .reader-panel, nav")) return;
+
+      const addCount = 18;
+      for (let i = 0; i < addCount; i++) {
+        if (stars.length >= MAX_STARS) {
+          stars.shift();
+        }
+        const spreadX = e.clientX + (Math.random() - 0.5) * 70;
+        const spreadY = e.clientY + (Math.random() - 0.5) * 70;
+        stars.push(createStar(spreadX, spreadY, true));
+      }
+      countEl.textContent = stars.length;
+
+      bursts.push({
+        x: e.clientX,
+        y: e.clientY,
+        radius: 6,
+        alpha: 0.75
+      });
+    });
+
+    function animateSpace() {
+      ctx.fillStyle = "#000000";
+      ctx.fillRect(0, 0, width, height);
+
+      // Subtle cursor radial nebula glow
+      if (mouse.x > 0 && mouse.y > 0) {
+        const grad = ctx.createRadialGradient(mouse.x, mouse.y, 0, mouse.x, mouse.y, 240);
+        grad.addColorStop(0, "rgba(208, 214, 249, 0.09)");
+        grad.addColorStop(1, "rgba(0, 0, 0, 0)");
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, width, height);
+      }
+
+      // Draw & update star particles
+      for (let i = 0; i < stars.length; i++) {
+        const s = stars[i];
+        s.x += s.vx;
+        s.y += s.vy;
+
+        // Gradually settle boosted burst velocity into smooth drift
+        if (Math.abs(s.vx) > 0.25) s.vx *= 0.97;
+        if (Math.abs(s.vy) > 0.25) s.vy *= 0.97;
+        if (s.glow > 0) s.glow = Math.max(0, s.glow - 0.015);
+
+        if (s.x < 0) s.x = width;
+        if (s.x > width) s.x = 0;
+        if (s.y < 0) s.y = height;
+        if (s.y > height) s.y = 0;
+
+        s.alpha += s.twinkle;
+        if (s.alpha > 1 || s.alpha < 0.2) s.twinkle *= -1;
+
+        const dx = mouse.x - s.x;
+        const dy = mouse.y - s.y;
+        const dist = Math.hypot(dx, dy);
+
+        // Constellation lines to cursor
+        if (dist < 155) {
+          ctx.beginPath();
+          ctx.moveTo(s.x, s.y);
+          ctx.lineTo(mouse.x, mouse.y);
+          ctx.strokeStyle = `rgba(208, 214, 249, ${(1 - dist / 155) * 0.32})`;
+          ctx.lineWidth = 0.8;
+          ctx.stroke();
+
+          s.x -= dx * 0.0025;
+          s.y -= dy * 0.0025;
+        }
+
+        // Nearby particle-to-particle constellation links
+        for (let j = i + 1; j < stars.length; j++) {
+          const s2 = stars[j];
+          const pDist = Math.hypot(s.x - s2.x, s.y - s2.y);
+          if (pDist < 75) {
+            ctx.beginPath();
+            ctx.moveTo(s.x, s.y);
+            ctx.lineTo(s2.x, s2.y);
+            ctx.strokeStyle = `rgba(208, 214, 249, ${(1 - pDist / 75) * 0.14})`;
+            ctx.lineWidth = 0.6;
+            ctx.stroke();
+          }
+        }
+
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r + s.glow * 1.4, 0, Math.PI * 2);
+        ctx.fillStyle = s.glow > 0
+          ? `rgba(255, 255, 255, ${Math.min(1, s.alpha + s.glow)})`
+          : `rgba(255, 255, 255, ${s.alpha})`;
+        ctx.fill();
+      }
+
+      // Draw click ripple rings
+      for (let i = bursts.length - 1; i >= 0; i--) {
+        const b = bursts[i];
+        b.radius += 3.2;
+        b.alpha -= 0.025;
+        if (b.alpha <= 0) {
+          bursts.splice(i, 1);
+          continue;
+        }
+        ctx.beginPath();
+        ctx.arc(b.x, b.y, b.radius, 0, Math.PI * 2);
+        ctx.strokeStyle = `rgba(208, 214, 249, ${b.alpha})`;
+        ctx.lineWidth = 1.2;
+        ctx.stroke();
+      }
+
+      requestAnimationFrame(animateSpace);
+    }
+    animateSpace();
+
+    // 2. Multiple Articles Data
+    const articles = [
+      {
+        id: 1,
+        category: "Planet X",
+        date: "May 14, 2025 • DR1 Release",
+        readTime: "4 min read",
+        title: "Mapping the Outer Kuiper Belt for Planet X Signatures",
+        image: "https://images.unsplash.com/photo-1614728894747-a83421e2b9c9?auto=format&fit=crop&w=900&q=80",
+        excerpt: "Using wide-field infrared sky surveys to track subtle orbital anomalies among distant trans-Neptunian objects.",
+        content: [
+          "Deep beyond Neptune's orbit lies a cold frontier of icy bodies whose elongated trajectories hint at the gravitational influence of an unseen massive world - Planet X.",
+          "By combining multi-epoch infrared observations across consecutive survey windows, our team isolates faint moving targets against dense background starfields.",
+          "Explore the 9 candidate sky sectors directly in our interactive 3D sky wheel on the Explore page, where you can inspect coordinates and custom observation dates."
+        ]
+      },
+      {
+        id: 2,
+        category: "Deep Sky",
+        date: "Nov 02, 2025 • DR2 Release",
+        readTime: "5 min read",
+        title: "All-Sky Spectral Mapping: Unveiling Cosmic Ice & Water",
+        image: "https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&fit=crop&w=900&q=80",
+        excerpt: "How spectrophotometric imaging across 102 infrared color bands reveals hidden reservoirs of water in stellar nurseries.",
+        content: [
+          "Every patch of sky holds chemical fingerprints encoded in near-infrared light. Unlike traditional cameras that capture only a few broad colors, spectral mapping splits light into dozens of narrow bands.",
+          "This technique lets researchers measure the abundance of water ice, carbon monoxide, and organic molecules inside dense interstellar clouds before stars even ignite.",
+          "Each sector in our Explore wheel corresponds to a high-priority spectral field tracked throughout the 2025–2026 observation timeline."
+        ]
+      },
+      {
+        id: 3,
+        category: "Telemetry",
+        date: "May 19, 2026 • QR2 Release",
+        readTime: "3 min read",
+        title: "Navigating Multi-Epoch Sky Coordinates in Real Time",
+        image: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=900&q=80",
+        excerpt: "A guide to using Right Ascension, Declination, and custom date queries to compare celestial targets across seasons.",
+        content: [
+          "Because Earth orbits the Sun, every celestial sector is revisited roughly every six months under shifting solar elongation angles.",
+          "Comparing early DR1 images against later QR2 and QR3 epochs allows astronomers to separate stationary galaxies from fast-moving solar system objects.",
+          "Head over to the Explore page, click any of the 9 sky cards, and test both the numeric date selector and custom sky coordinate inputs."
+        ]
+      },
+      {
+        id: 4,
+        category: "Planet X",
+        date: "Nov 10, 2026 • QR3 Release",
+        readTime: "6 min read",
+        title: "Preparing Human & Robotic Missions for Deep-Space Frontiers",
+        image: "https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?auto=format&fit=crop&w=900&q=80",
+        excerpt: "From low-Earth orbital staging to long-range deep-space probes, see how mission timelines are engineered.",
+        content: [
+          "Charting new worlds begins with precise orbital mechanics, radiation shielding, and autonomous optical navigation.",
+          "Our NASA Space Apps Planet X initiative bridges public data visualization with real astronomical coordinate workflows so anyone can explore deep-sky sectors.",
+          "Meet the engineers, data scientists, and designers behind this project on the Team page."
+        ]
+      }
+    ];
+
+    const grid = document.getElementById("articlesGrid");
+    const modal = document.getElementById("articleModal");
+
+    function renderArticles(filter = "All") {
+      grid.innerHTML = "";
+      const filtered = filter === "All" ? articles : articles.filter(a => a.category === filter);
+
+      filtered.forEach(art => {
+        const card = document.createElement("article");
+        card.className = "article-card";
+        card.innerHTML = `
+          <div class="article-thumb">
+            <img src="${art.image}" alt="${art.title}">
+            <span class="article-badge">${art.category}</span>
+          </div>
+          <div class="article-body">
+            <div class="article-meta">${art.date} &bull; ${art.readTime}</div>
+            <h3>${art.title}</h3>
+            <p class="article-excerpt">${art.excerpt}</p>
+            <button class="read-btn">Read Full Article →</button>
+          </div>
+        `;
+        card.querySelector(".read-btn").addEventListener("click", () => openReader(art));
+        grid.appendChild(card);
+      });
+    }
+
+    function openReader(art) {
+      document.getElementById("readerImg").src = art.image;
+      document.getElementById("readerMeta").textContent = `${art.category} • ${art.date} • ${art.readTime}`;
+      document.getElementById("readerTitle").textContent = art.title;
+      document.getElementById("readerBody").innerHTML = art.content.map(p => `<p>${p}</p>`).join("");
+      modal.classList.add("open");
+    }
+
+    document.getElementById("closeReader").addEventListener("click", () => modal.classList.remove("open"));
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) modal.classList.remove("open");
+    });
+
+    document.querySelectorAll(".tab-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        renderArticles(btn.dataset.cat);
+      });
+    });
+
+    renderArticles();
+  </script>
+
+  <script>
+  (function () {
+    var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var fine = matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+    // 1. Reading-progress bar
+    var bar = document.createElement('div'); bar.className = 'fx-progress'; document.body.appendChild(bar);
+    function prog() { var h = document.documentElement.scrollHeight - innerHeight; bar.style.transform = 'scaleX(' + (h > 0 ? Math.min(1, scrollY / h) : 0) + ')'; }
+    addEventListener('scroll', prog, { passive: true }); addEventListener('resize', prog); prog();
+
+    // 2. Cursor halo that grows over anything clickable
+    if (fine && !reduce) {
+      var halo = document.createElement('div'); halo.className = 'fx-halo'; document.body.appendChild(halo);
+      var tx = 0, ty = 0, hx = 0, hy = 0;
+      addEventListener('pointermove', function (e) {
+        tx = e.clientX; ty = e.clientY; halo.classList.add('on');
+        halo.classList.toggle('hot', !!e.target.closest('a, button, input, select, summary, label, .stage, #trk, .member-card, .article-card'));
+      });
+      document.documentElement.addEventListener('pointerleave', function () { halo.classList.remove('on'); });
+      addEventListener('pointerdown', function () { halo.classList.add('down'); });
+      addEventListener('pointerup', function () { halo.classList.remove('down'); });
+      (function follow() { hx += (tx - hx) * 0.2; hy += (ty - hy) * 0.2; halo.style.transform = 'translate(' + hx + 'px,' + hy + 'px)'; requestAnimationFrame(follow); })();
+    }
+
+    // 3. Card spotlight + 3D tilt, and magnetic Explore / Spin buttons (event delegation, works for re-rendered cards)
+    if (fine && !reduce) {
+      var lastCard = null;
+      function resetCard(c) { if (c) { c.style.transform = ''; } }
+      document.addEventListener('pointermove', function (e) {
+        var card = e.target.closest('.article-card, .member-card');
+        if (lastCard && lastCard !== card) resetCard(lastCard);
+        lastCard = card;
+        if (card) {
+          var r = card.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top;
+          card.style.setProperty('--mx', x + 'px'); card.style.setProperty('--my', y + 'px');
+          var lift = card.classList.contains('member-card') ? -4 : -6;
+          card.style.transform = 'perspective(900px) rotateX(' + ((0.5 - y / r.height) * 7).toFixed(2) + 'deg) rotateY(' + ((x / r.width - 0.5) * 7).toFixed(2) + 'deg) translateY(' + lift + 'px)';
+        }
+        document.querySelectorAll('.explore-btn, .spin').forEach(function (b) {
+          var r = b.getBoundingClientRect(), cx = r.left + r.width / 2, cy = r.top + r.height / 2, d = Math.hypot(e.clientX - cx, e.clientY - cy), reach = Math.max(r.width, r.height);
+          b.style.translate = d < reach ? ((e.clientX - cx) * 0.18).toFixed(1) + 'px ' + ((e.clientY - cy) * 0.18).toFixed(1) + 'px' : '0px 0px';
+        });
+      });
+      document.documentElement.addEventListener('pointerleave', function () { resetCard(lastCard); lastCard = null; });
+    }
+
+    // 4. Occasional shooting star (rare, sits between the starfield and the content)
+    if (!reduce) {
+      var c = document.createElement('canvas'); c.className = 'fx-shoot';
+      c.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;z-index:1;pointer-events:none';
+      document.body.appendChild(c);
+      var x = c.getContext('2d'), W, H, streaks = [], next = 2500;
+      function size() { W = c.width = innerWidth; H = c.height = innerHeight; }
+      addEventListener('resize', size); size();
+      var last = performance.now();
+      (function loop(t) {
+        var dt = t - last; last = t; next -= dt;
+        if (next <= 0 && !document.hidden) {
+          var a = (22 + Math.random() * 16) * Math.PI / 180;
+          streaks.push({ x: Math.random() * W * 0.8, y: Math.random() * H * 0.45, vx: Math.cos(a) * (11 + Math.random() * 5), vy: Math.sin(a) * (11 + Math.random() * 5), life: 1 });
+          next = 5000 + Math.random() * 7000;
+        }
+        x.clearRect(0, 0, W, H);
+        for (var i = streaks.length - 1; i >= 0; i--) {
+          var s = streaks[i]; s.x += s.vx; s.y += s.vy; s.life -= 0.016;
+          if (s.life <= 0) { streaks.splice(i, 1); continue; }
+          var g = x.createLinearGradient(s.x, s.y, s.x - s.vx * 9, s.y - s.vy * 9);
+          g.addColorStop(0, 'rgba(255,255,255,' + s.life + ')'); g.addColorStop(1, 'rgba(208,214,249,0)');
+          x.strokeStyle = g; x.lineWidth = 1.6; x.beginPath(); x.moveTo(s.x, s.y); x.lineTo(s.x - s.vx * 9, s.y - s.vy * 9); x.stroke();
+        }
+        requestAnimationFrame(loop);
+      })(last);
+    }
+  })();
+  </script>
+
+  <footer style="position: relative; z-index: 5; text-align: center; padding: 1.5rem 2rem 2rem; color: #D0D6F9; font-size: 0.85rem; border-top: 1px solid rgba(255, 255, 255, 0.12);">
+    data: nasa / jpl-caltech / ipac via the nasa/ipac infrared science archive (irsa).<br>
+    spherex dr1 doi: <a href="https://doi.org/10.26131/IRSA678" style="color: #fff;">10.26131/IRSA678</a> &bull;
+    spherex qr3 doi: <a href="https://doi.org/10.26131/IRSA662" style="color: #fff;">10.26131/IRSA662</a>
+  </footer>
+</body>
+</html>
