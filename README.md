@@ -3,12 +3,12 @@
 <p align="center">
   <img src="docs/deliverables/03-screenshots/01-home.png" alt="planetx-nasa26 landing page: spot the movers in the sky" width="48%">
   &nbsp;
-  <img src="docs/deliverables/03-screenshots/03-difference-epsilon-indi-b.png" alt="background-subtracted difference image of epsilon indi b with the detected high-proper-motion object marked" width="48%">
+  <img src="docs/deliverables/03-screenshots/03-epsilon-indi-b-detection.png" alt="epsilon indi b difference image with the detected high-proper-motion object marked" width="48%">
 </p>
 <p align="center">
-  <img src="docs/deliverables/03-screenshots/02-blink-wise-0855.png" alt="blink player showing a spherex survey-pass coadd of wise 0855" width="48%">
+  <img src="docs/deliverables/03-screenshots/02-wise-0855-frame.png" alt="spherex d6 survey-pass coadd of wise 0855, real data" width="48%">
   &nbsp;
-  <img src="docs/deliverables/03-screenshots/04-blink-barnards-star.png" alt="blink player showing a spherex survey-pass coadd of barnard's star" width="48%">
+  <img src="docs/deliverables/03-screenshots/04-barnards-star-frame.png" alt="spherex d2 survey-pass coadd of barnard's star, real data" width="48%">
 </p>
 <p align="center">
   <img src="docs/deliverables/03-screenshots/06-explore.png" alt="explore page with the five challenge targets and the spherex gallery" width="48%">
