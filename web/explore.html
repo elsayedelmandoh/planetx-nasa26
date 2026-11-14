@@ -2,11 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>NASA Space Apps Planet X | Explore</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Barlow&family=Barlow+Condensed:wght@400;700&family=Bellefair&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;600;700&family=Barlow+Condensed:wght@400;700&family=Bellefair&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg-black: #000000;
@@ -173,478 +173,53 @@
       margin-bottom: 1rem;
     }
 
-    /* Compact 9-Card 3D Orbit Wheel */
-    .orbit-viewport {
-      width: 100%;
-      height: 310px;
-      perspective: 1200px;
-      display: grid;
-      place-items: center;
-      cursor: grab;
-      user-select: none;
-      margin-top: 0.5rem;
-    }
 
-    .orbit-viewport:active {
-      cursor: grabbing;
-    }
+    /* ===== SPHEREx Sky Orbit v4 (themed to this page) ===== */
 
-    .orbit-ring {
-      position: relative;
-      width: 195px;
-      height: 240px;
-      transform-style: preserve-3d;
-    }
+:root{--bg:#000;--bg2:#000;--panel:#0a0c14;--tx:#fff;--mut:rgba(208,214,249,.75);--ac:#D0D6F9;--glow:rgba(208,214,249,.35);--line:rgba(255,255,255,.16);--ok:#6fe3a5;--warn:#ffa466;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}*{box-sizing:border-box}
+.sx-base{color:var(--tx);font:14px/1.45 var(--font-sans)}
+.sxhead{max-width:1100px;margin:0 auto;padding:6px 16px 0;text-align:center}
+.sub,small{color:var(--mut)}
+form,.row{display:flex;flex-wrap:wrap;gap:8px;align-items:end;justify-content:center}
+label{display:grid;gap:3px;font-size:12px;color:var(--mut)}label.i{display:flex;align-items:center;gap:5px;color:var(--tx);font-size:13px}
+input[type=text],input[type=date],select{padding:6px 8px;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--tx);font:inherit}input[type=text]{width:112px}
+button{font:inherit;color:var(--tx);background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:6px 11px;cursor:pointer}
+button.go,.spin{border:0;color:#000;font-weight:700;background:#fff}.spin{border-radius:999px;padding:11px 26px;letter-spacing:.04em;box-shadow:0 0 18px rgba(255,255,255,.3)}
+button.on{outline:2px solid var(--ac);outline-offset:-2px}:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+#err{color:var(--warn);min-height:20px;font-size:13px;margin-top:4px}#chips{margin-top:8px}
+.stage{position:relative;height:min(56vh,490px);perspective:1500px;display:grid;place-items:center;overflow:hidden;cursor:grab;touch-action:pan-y;user-select:none}
+.mk{position:absolute;top:6px;left:50%;transform:translateX(-50%);border:11px solid transparent;border-top:15px solid var(--ac);filter:drop-shadow(0 0 8px var(--glow));z-index:2}
+.ring{--cw:clamp(120px,15vw,190px);position:relative;width:var(--cw);height:calc(var(--cw)*1.25);transform-style:preserve-3d;margin-top:30px}
+.card{position:absolute;inset:0;transform:rotateY(calc(var(--i)*40deg)) translateZ(var(--R));transform-style:preserve-3d}
+.face{position:absolute;inset:0;backface-visibility:hidden;opacity:var(--o,1);background:var(--panel);border:2px solid var(--ac);border-radius:12px;box-shadow:0 0 18px var(--glow);padding:6px;display:flex;flex-direction:column;gap:4px}
+.face.b{transform:rotateY(180deg)}.face canvas{width:100%;aspect-ratio:1;border-radius:7px;display:block;pointer-events:none}
+.face b{font-size:12px;line-height:1.2;pointer-events:none}.face small{pointer-events:none;font-size:11px}.face em{position:absolute;right:8px;bottom:6px;font:600 11px var(--font-sans);background:var(--tx);color:var(--bg);border-radius:9px;padding:1px 7px;pointer-events:none}
+.bar{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:10px 20px;padding:10px 16px 8px;max-width:1100px;margin:0 auto}#sel{min-width:260px;max-width:620px;text-align:center}#sel small{display:block}
+details{max-width:1100px;margin:6px auto 28px;padding:0 16px}summary{cursor:pointer;font-weight:600}table{border-collapse:collapse;width:100%;font-size:12.5px}td,th{border-bottom:1px solid var(--line);padding:5px 6px;text-align:left}
+#md{position:fixed;inset:0;background:rgba(0,0,0,.88);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);display:grid;place-items:center;padding:10px;z-index:100;overflow:auto}#md[hidden]{display:none}
+.dlg{width:min(1060px,100%);background:#090b12;border:1px solid rgba(255,255,255,.22);border-radius:16px;box-shadow:0 25px 65px rgba(0,0,0,.95);padding:12px;animation:pop .18s ease-out}
+@keyframes pop{from{transform:scale(.95);opacity:0}}@media(prefers-reduced-motion:reduce){.dlg{animation:none}}
+.dh{display:flex;gap:10px;align-items:center;justify-content:space-between}h2{margin:0;font:400 24px var(--font-serif);letter-spacing:.5px}
+#pg{height:18px;background:var(--line);border-radius:9px;overflow:hidden;position:relative;margin:8px 0}#pf{display:block;height:100%;background:linear-gradient(90deg,#8d97d9,#fff);width:0}#pt{position:absolute;inset:0;text-align:center;font-size:12px;line-height:18px;color:#fff;mix-blend-mode:difference}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}.body{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:12px}@media(max-width:800px){.body{grid-template-columns:1fr}}
+canvas.s{width:100%;aspect-ratio:1;border-radius:8px;background:#04060d;display:block}#big{cursor:move;touch-action:none}
+#cmpw{display:grid;grid-template-columns:1fr 1fr;gap:6px}#cmpw .full{grid-column:1/-1}
+.side{display:grid;gap:9px;align-content:start}.side[hidden],.pn[hidden],#cmpw[hidden],#big[hidden]{display:none}.pn{display:grid;gap:9px}
+dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:3px 12px}dt{color:var(--mut)}dd{margin:0;font-weight:600}.ck{display:flex;gap:6px 14px;flex-wrap:wrap}
+.ok{color:var(--ok)}.warn{color:var(--warn)}textarea{width:100%;height:90px;background:var(--panel);color:var(--tx);border:1px solid var(--line);border-radius:8px;font:12px/1.4 monospace}
+.tl{margin-top:10px}#trk{position:relative;height:46px;cursor:pointer;touch-action:none}#trk::before{content:"";position:absolute;left:0;right:0;top:50%;height:4px;margin-top:-2px;background:var(--line);border-radius:2px}
+#fill{position:absolute;left:0;top:50%;height:4px;margin-top:-2px;border-radius:2px;background:linear-gradient(90deg,transparent,#D0D6F9,#fff)}
+.tk{position:absolute;top:50%;width:2px;height:12px;margin:-6px 0 0 -1px;background:var(--mut);opacity:.7}.dv{position:absolute;top:2px;bottom:2px;border-left:2px dashed var(--ac)}
+#rk{position:absolute;top:50%;width:40px;height:40px;transform:translate(-50%,-50%);filter:drop-shadow(0 0 6px var(--glow));pointer-events:none}.lab{display:flex;justify-content:space-between;color:var(--mut);font-size:12px}
+.pn h3{margin:0;font-size:15px}.pn ul{margin:3px 0;padding-left:18px;columns:2;font-size:12.5px}.pn p{font-size:13px}.pn details{margin:0;padding:0;max-width:none}.pn table{font-size:12px}#dt0{max-width:140px}
 
-    .sky-card {
-      position: absolute;
-      inset: 0;
-      background: rgba(10, 12, 20, 0.92);
-      border: 1px solid var(--glass-border);
-      border-radius: 10px;
-      overflow: hidden;
-      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.85);
-      cursor: pointer;
-      transition: border-color 0.25s ease, box-shadow 0.25s ease;
-    }
+#sx{width:100%}
+.sx-base button{font-family:var(--font-sans-cond);letter-spacing:1.2px;text-transform:uppercase;font-size:.85rem}
+.sx-base button.spin{letter-spacing:2.2px;font-size:.95rem}
+.pn details p{margin:6px 0}#sx a,#md a{color:var(--ac)}#sx a:hover,#md a:hover{color:#fff}textarea{padding:6px}
+@media (max-width:860px){header{padding:1.25rem 1.5rem}.header-line{display:none}nav{padding:0 1.5rem}nav ul{gap:1.5rem}}
 
-    .sky-card:hover {
-      border-color: var(--white);
-      box-shadow: 0 0 22px rgba(208, 214, 249, 0.35);
-    }
-
-    .sky-card img {
-      width: 100%;
-      height: 74%;
-      object-fit: cover;
-      display: block;
-      pointer-events: none;
-    }
-
-    .sky-card-info {
-      height: 26%;
-      padding: 0.45rem 0.75rem;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      border-top: 1px solid rgba(255, 255, 255, 0.12);
-      background: rgba(255, 255, 255, 0.02);
-    }
-
-    .sky-card-info span {
-      font-family: var(--font-sans-cond);
-      font-size: 0.72rem;
-      letter-spacing: 2px;
-      color: var(--text-light);
-      text-transform: uppercase;
-    }
-
-    .sky-card-info h3 {
-      font-family: var(--font-serif);
-      font-size: 1.05rem;
-      font-weight: 400;
-      text-transform: uppercase;
-      margin-top: 1px;
-    }
-
-    /* Lowered Controls Bar */
-    .controls-bar {
-      margin-top: 3.5rem;
-      display: inline-flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: center;
-      gap: 1.35rem;
-      background: var(--glass);
-      backdrop-filter: blur(14px);
-      padding: 0.85rem 2rem;
-      border-radius: 50px;
-      border: 1px solid var(--glass-border);
-    }
-
-    .btn-spin {
-      background: var(--white);
-      color: #000;
-      border: none;
-      padding: 0.65rem 1.65rem;
-      border-radius: 30px;
-      font-family: var(--font-sans-cond);
-      font-size: 0.95rem;
-      font-weight: 700;
-      letter-spacing: 2.2px;
-      text-transform: uppercase;
-      cursor: pointer;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-
-    .btn-spin:hover {
-      transform: scale(1.04);
-      box-shadow: 0 0 18px rgba(255, 255, 255, 0.4);
-    }
-
-    .btn-reset {
-      background: transparent;
-      color: var(--text-light);
-      border: 1px solid var(--glass-border);
-      padding: 0.6rem 1.25rem;
-      border-radius: 30px;
-      font-family: var(--font-sans-cond);
-      font-size: 0.9rem;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      cursor: pointer;
-    }
-
-    .btn-reset:hover {
-      border-color: var(--white);
-      color: var(--white);
-    }
-
-    .toggle-label {
-      display: flex;
-      align-items: center;
-      gap: 0.45rem;
-      font-family: var(--font-sans-cond);
-      font-size: 0.9rem;
-      letter-spacing: 1.8px;
-      text-transform: uppercase;
-      color: var(--text-light);
-      cursor: pointer;
-    }
-
-    /* Pop-Out Modal */
-    .modal-backdrop {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.88);
-      backdrop-filter: blur(12px);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 100;
-      padding: 1.25rem;
-    }
-
-    .modal-backdrop.open {
-      display: flex;
-    }
-
-    .modal-panel {
-      background: #090b12;
-      border: 1px solid rgba(255, 255, 255, 0.22);
-      border-radius: 16px;
-      max-width: 960px;
-      width: 100%;
-      overflow: hidden;
-      position: relative;
-      display: grid;
-      grid-template-columns: 1fr 1.25fr;
-      box-shadow: 0 25px 65px rgba(0, 0, 0, 0.95);
-    }
-
-    .modal-close {
-      position: absolute;
-      top: 1rem;
-      right: 1rem;
-      background: rgba(255, 255, 255, 0.1);
-      border: 1px solid rgba(255, 255, 255, 0.25);
-      color: var(--white);
-      padding: 0.35rem 0.9rem;
-      border-radius: 20px;
-      font-family: var(--font-sans-cond);
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      cursor: pointer;
-      z-index: 10;
-    }
-
-    .modal-close:hover {
-      background: var(--white);
-      color: #000;
-    }
-
-    .modal-img-wrap {
-      position: relative;
-      background: #000;
-      min-height: 410px;
-      overflow: hidden;
-    }
-
-    .modal-img-wrap img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: filter 0.3s ease;
-    }
-
-    .target-reticle {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 92px;
-      height: 92px;
-      transform: translate(-50%, -50%);
-      border: 1px dashed rgba(255, 255, 255, 0.85);
-      border-radius: 50%;
-      pointer-events: none;
-    }
-
-    .orbit-trail {
-      position: absolute;
-      top: 50%;
-      left: 0;
-      width: 100%;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(208, 214, 249, 0.85), transparent);
-      pointer-events: none;
-    }
-
-    .modal-body {
-      padding: 2rem 2.25rem;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      gap: 1.1rem;
-    }
-
-    .modal-fov {
-      font-family: var(--font-sans-cond);
-      color: var(--text-light);
-      letter-spacing: 2.2px;
-      text-transform: uppercase;
-      font-size: 0.85rem;
-    }
-
-    .modal-body h2 {
-      font-family: var(--font-serif);
-      font-size: 2.75rem;
-      font-weight: 400;
-      text-transform: uppercase;
-      margin: 0.25rem 0 0.5rem;
-    }
-
-    .modal-desc {
-      color: var(--text-light);
-      line-height: 1.6;
-      font-size: 0.96rem;
-      padding-bottom: 1rem;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.14);
-    }
-
-    .telemetry-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 0.9rem 1.2rem;
-      margin-top: 0.9rem;
-    }
-
-    .stat-item span {
-      display: block;
-      font-family: var(--font-sans-cond);
-      font-size: 0.78rem;
-      letter-spacing: 2px;
-      color: var(--text-light);
-      text-transform: uppercase;
-    }
-
-    .stat-item strong {
-      font-family: var(--font-serif);
-      font-size: 1.25rem;
-      font-weight: 400;
-      text-transform: uppercase;
-      word-break: break-word;
-    }
-
-    /* Dual Custom Inputs: Date + Sky Coordinates */
-    .custom-inputs-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 0.9rem;
-      padding-top: 0.85rem;
-      border-top: 1px solid rgba(255, 255, 255, 0.14);
-    }
-
-    .input-group {
-      display: flex;
-      flex-direction: column;
-      gap: 0.4rem;
-    }
-
-    .input-group label {
-      font-family: var(--font-sans-cond);
-      font-size: 0.8rem;
-      letter-spacing: 1.8px;
-      text-transform: uppercase;
-      color: var(--text-light);
-    }
-
-    .input-row {
-      display: flex;
-      gap: 0.45rem;
-    }
-
-    .input-row input {
-      flex: 1;
-      min-width: 0;
-      background: rgba(255, 255, 255, 0.06);
-      border: 1px solid rgba(255, 255, 255, 0.25);
-      color: var(--white);
-      padding: 0.48rem 0.75rem;
-      border-radius: 6px;
-      font-family: var(--font-sans);
-      font-size: 0.88rem;
-      outline: none;
-    }
-
-    .input-row input:focus {
-      border-color: var(--white);
-      background: rgba(255, 255, 255, 0.1);
-    }
-
-    .btn-show {
-      background: var(--white);
-      color: #000;
-      border: none;
-      padding: 0.48rem 0.95rem;
-      border-radius: 6px;
-      font-family: var(--font-sans-cond);
-      font-size: 0.85rem;
-      font-weight: 700;
-      letter-spacing: 1.8px;
-      text-transform: uppercase;
-      cursor: pointer;
-      flex-shrink: 0;
-    }
-
-    .btn-show:hover {
-      opacity: 0.9;
-    }
-
-    /* Per-Photo Smooth Rocket Timeline */
-    .timeline-box {
-      padding-top: 0.85rem;
-      border-top: 1px solid rgba(255, 255, 255, 0.14);
-    }
-
-    .timeline-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 0.85rem;
-      font-family: var(--font-sans-cond);
-      font-size: 0.82rem;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: var(--text-light);
-    }
-
-    .timeline-track-wrap {
-      position: relative;
-      height: 36px;
-      display: flex;
-      align-items: center;
-      cursor: pointer;
-      user-select: none;
-      margin: 0 10px;
-    }
-
-    .timeline-base {
-      position: absolute;
-      left: 0;
-      right: 0;
-      height: 2px;
-      background: rgba(255, 255, 255, 0.2);
-      border-radius: 2px;
-    }
-
-    .timeline-fill {
-      position: absolute;
-      left: 0;
-      height: 2px;
-      width: 0%;
-      background: linear-gradient(90deg, #6e85ff, #ffffff);
-      box-shadow: 0 0 10px rgba(208, 214, 249, 0.7);
-      border-radius: 2px;
-    }
-
-    .timeline-rocket {
-      position: absolute;
-      left: 0%;
-      top: 50%;
-      transform: translate(-50%, -50%) rotate(45deg);
-      font-size: 1.25rem;
-      filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.8));
-      pointer-events: none;
-      z-index: 4;
-    }
-
-    .timeline-nodes {
-      position: relative;
-      width: 100%;
-      display: flex;
-      justify-content: space-between;
-      z-index: 2;
-    }
-
-    .t-node {
-      width: 11px;
-      height: 11px;
-      border-radius: 50%;
-      background: #090b12;
-      border: 2px solid rgba(255, 255, 255, 0.45);
-      cursor: pointer;
-      transition: transform 0.2s, border-color 0.2s, background 0.2s;
-    }
-
-    .t-node.active {
-      background: var(--white);
-      border-color: var(--white);
-      transform: scale(1.25);
-    }
-
-    .timeline-labels {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 0.35rem;
-      font-family: var(--font-sans-cond);
-      font-size: 0.74rem;
-      letter-spacing: 1.4px;
-      text-transform: uppercase;
-      color: rgba(208, 214, 249, 0.75);
-    }
-
-    .timeline-labels span {
-      cursor: pointer;
-    }
-
-    .timeline-labels span.active {
-      color: var(--white);
-      font-weight: 700;
-    }
-
-    @media (max-width: 860px) {
-      header {
-        padding: 1.25rem 1.5rem;
-      }
-      .header-line {
-        display: none;
-      }
-      nav {
-        padding: 0 1.5rem;
-      }
-      nav ul {
-        gap: 1.5rem;
-      }
-      .modal-panel {
-        grid-template-columns: 1fr;
-      }
-      .modal-img-wrap {
-        min-height: 220px;
-      }
-      .custom-inputs-grid {
-        grid-template-columns: 1fr;
-      }
-    }
   </style>
 </head>
 <body>
@@ -667,95 +242,50 @@
 
   <main>
     <h1 class="page-title"><span>01</span> Pick your destination</h1>
-    <p class="sub-hint">Drag or spin the ring, then click any of the 9 destinations to open its timeline and telemetry.</p>
+    <p class="sub-hint">Nine real SPHEREx gallery images with their published details, five challenge targets, and a viewer. Enter any RA/Dec, field of view (60″ to 6°) and date to open that patch of sky. Pixels are simulated; names, positions, dates and wavelengths are real.</p>
+    <div id="sx" class="sx-base">
 
-    <div class="orbit-viewport" id="viewport">
-      <div class="orbit-ring" id="orbitRing"></div>
-    </div>
+<div class="sxhead"><form id="f"><label>RA (deg or hh:mm:ss)<input id="ra" type="text" placeholder="133.7951"></label><label>Dec (deg or dd:mm:ss)<input id="dec" type="text" placeholder="-7.2451"></label>
+<label>Field of view<span class="row" style="gap:4px"><input id="fv0" type="text" value="240" style="width:70px"><select id="fu"><option value="1">″ arcsec</option><option value="60">′ arcmin</option><option value="3600">° deg</option></select></span></label><label>Date (optional)<input type="date" id="dt0" min="2025-05-01" max="2026-11-13"></label><button class="go">Search</button></form>
+<div id="err" role="alert"></div><div class="row" id="chips"></div></div>
+<div class="stage" id="st" tabindex="0" aria-label="Ring of nine SPHEREx images. Arrow keys rotate, Enter opens."><i class="mk"></i><div class="ring" id="ring"></div></div>
+<div class="bar"><div id="sel"></div><button class="spin" id="sp">SPIN ORBIT</button></div>
+<details><summary>Validation: the five challenge targets (computed from published positions and proper motions)</summary><div id="val"></div></details>
 
-    <div class="controls-bar">
-      <button class="btn-spin" id="spinBtn">Spin Orbit</button>
-      <label class="toggle-label"><input type="checkbox" id="trailCheck" checked /> Trail</label>
-      <label class="toggle-label"><input type="checkbox" id="targetCheck" checked /> Mark target</label>
-      <button class="btn-reset" id="resetBtn">Reset view</button>
     </div>
   </main>
 
-  <div class="modal-backdrop" id="modalBackdrop">
-    <div class="modal-panel">
-      <button class="modal-close" id="closeModalBtn">✕ Close</button>
-
-      <div class="modal-img-wrap">
-        <img id="modalImg" src="" alt="Destination Preview" />
-        <div class="target-reticle" id="targetReticle"></div>
-        <div class="orbit-trail" id="orbitTrail"></div>
-      </div>
-
-      <div class="modal-body">
-        <div>
-          <div class="modal-fov" id="modalFov">Field of view: 2.4° × 2.4°</div>
-          <h2 id="modalTitle">Sector 01</h2>
-          <p class="modal-desc" id="modalDesc">Details for this sky sector.</p>
-
-          <div class="telemetry-grid">
-            <div class="stat-item">
-              <span>Avg. distance</span>
-              <strong id="modalDist">384,400 km</strong>
-            </div>
-            <div class="stat-item">
-              <span>Est. travel time</span>
-              <strong id="modalTime">3 days</strong>
-            </div>
-            <div class="stat-item">
-              <span>Centre</span>
-              <strong id="modalCentre">RA 12h 40m</strong>
-            </div>
-            <div class="stat-item">
-              <span>Observation</span>
-              <strong id="modalObs">May 2025 DR1</strong>
-            </div>
-          </div>
-        </div>
-
-        <!-- Both Custom Date & Custom Coordinates Inputs Preserved -->
-        <div class="custom-inputs-grid">
-          <div class="input-group">
-            <label for="customDateInput">See this sky on another date</label>
-            <div class="input-row">
-              <input type="text" id="customDateInput" placeholder="e.g. Oct 14, 2026" />
-              <button class="btn-show" id="applyDateBtn">Show</button>
-            </div>
-          </div>
-
-          <div class="input-group">
-            <label for="customCoordsInput">Enter sky coordinates</label>
-            <div class="input-row">
-              <input type="text" id="customCoordsInput" placeholder="e.g. RA 14h 29m, Dec -62°" />
-              <button class="btn-show" id="applyCoordsBtn">Show</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Individual Per-Photo Smooth Rocket Timeline -->
-        <div class="timeline-box">
-          <div class="timeline-header">
-            <span>Mission Timeline</span>
-            <span id="timelineActiveLabel">May 2025 DR1</span>
-          </div>
-          <div class="timeline-track-wrap" id="timelineTrack">
-            <div class="timeline-base"></div>
-            <div class="timeline-fill" id="timelineFill"></div>
-            <div class="timeline-rocket" id="timelineRocket">🚀</div>
-            <div class="timeline-nodes" id="timelineNodes"></div>
-          </div>
-          <div class="timeline-labels" id="timelineLabels"></div>
-        </div>
-      </div>
-    </div>
-  </div>
+<div id="md" class="sx-base" role="dialog" aria-modal="true" aria-labelledby="mt" hidden><div class="dlg">
+<div class="dh"><div><h2 id="mt"></h2><small id="mm"></small></div><button id="x">✕ Close</button></div>
+<div id="pg" hidden><i id="pf"></i><span id="pt"></span></div>
+<div class="tabs" id="tabs"></div>
+<div class="body"><div><canvas class="s" id="big" width="560" height="560" aria-label="Sky viewer: drag to pan, scroll to zoom"></canvas>
+<div id="cmpw" hidden><canvas class="s" id="ca" width="300" height="300"></canvas><canvas class="s" id="cb" width="300" height="300"></canvas><canvas class="s full" id="cr" width="300" height="300" hidden></canvas></div></div>
+<div class="side">
+<div class="pn" id="p-info" hidden></div>
+<div class="pn" id="p-view"><dl><dt>Centre</dt><dd id="co"></dd><dt>Field of view</dt><dd id="fv"></dd><dt>Observation</dt><dd id="ob"></dd></dl>
+<label>Field of view / zoom<input id="fov" type="range" min="60" max="600" step="10"></label>
+<div class="row" style="justify-content:flex-start"><button id="pl">Play</button><button id="zi">Zoom in</button><button id="zo">Zoom out</button><button id="rs">Reset view</button></div>
+<label>Speed<input id="spd" type="range" min="1" max="12" value="4"></label>
+<label>See this sky on a date<span><input type="date" id="dt" min="2025-05-01" max="2026-11-13"> <button id="go2">Show</button></span></label>
+<div class="ck"><label class="i"><input type="checkbox" id="tr" checked>Trail</label><label class="i"><input type="checkbox" id="mkc" checked>Mark target</label><label class="i"><input type="checkbox" id="cat">Centre on catalog position</label><label class="i"><input type="checkbox" id="gaia">Gaia</label><label class="i"><input type="checkbox" id="wise">WISE</label><label class="i"><input type="checkbox" id="dets">Detections</label></div>
+<small>Aladin Lite goes in the context map slot of the real site.</small><button id="sh">Copy share link</button></div>
+<div class="pn" id="p-cmp" hidden><div class="row" style="justify-content:flex-start"><label>Epoch A<select id="ea"></select></label><label>Epoch B<select id="eb"></select></label></div>
+<div class="ck"><label class="i"><input type="radio" name="md" value="side" checked>Side by side</label><label class="i"><input type="radio" name="md" value="blink">Blink</label><label class="i"><input type="radio" name="md" value="diff">A − B</label><label class="i"><input type="radio" name="md" value="sum">A + B</label></div>
+<label class="i"><input type="checkbox" id="chb">Use a different channel for B (shows the wavelength trap)</label><div id="cmpq"></div><small>Both frames are drawn on one TAN/WCS grid centred on the same RA/Dec.</small></div>
+<div class="pn" id="p-dis" hidden><button id="run" class="go">Run detection</button><div id="dtab"></div><div class="row" style="justify-content:flex-start"><button id="sv">Save candidate</button><button id="ex">Export report</button></div><textarea id="rep" readonly hidden></textarea><div id="saved"></div>
+<small>How it works: align frames on one grid, subtract, find residual pairs, link them into a track, then match against Gaia and WISE. Anything left unmatched is a candidate.</small></div>
+<div class="pn" id="p-spec" hidden><div class="row" style="justify-content:flex-start"><label>Detector<select id="sd"></select></label><label>Channel (1–17)<select id="sc"></select></label></div>
+<div class="ck"><label class="i"><input type="checkbox" id="co4">Co-add detectors and epochs (better S/N)</label><label class="i"><input type="checkbox" id="ovb">Overlay epoch B</label></div><canvas class="s" id="spc" width="420" height="260" style="aspect-ratio:auto"></canvas><small id="spn"></small></div>
+<div class="pn" id="p-q" hidden><dl id="qm"></dl><label class="i"><input type="checkbox" id="mask">Show bad-pixel mask on the image</label><div id="qf"></div></div>
+</div></div>
+<div class="tl"><div id="trk" role="slider" tabindex="0" aria-label="Observation date" aria-valuemin="1" aria-valuemax="24"><div id="fill"></div>
+<svg id="rk" viewBox="0 0 24 24" aria-hidden="true"><g transform="rotate(90 12 12)"><path d="M12 1.5c3.2 3 4.2 7.2 4.2 11.5l-2.2 3.2h-4l-2.2-3.2c0-4.3 1-8.5 4.2-11.5z" fill="#fff" stroke="#7b8ba5" stroke-width=".6"/><circle cx="12" cy="9" r="1.9" fill="#1e90ff"/><path d="M7.8 12.5l-3.3 4.8 3.7-1.2zM16.2 12.5l3.3 4.8-3.7-1.2z" fill="#ff5d73"/><path d="M10 16.5h4l-2 5.8z" fill="#ffb454"/></g></svg></div>
+<div class="lab"><span>May 2025</span><span>DR1 | QR3</span><span>Nov 2026</span></div></div>
+</div></div>
 
   <script>
-    /* 1. Pure Black Twinkling Starfield */
+    (function(){/* 1. Pure Black Twinkling Starfield */
     const canvas = document.getElementById("starfield");
     const ctx = canvas.getContext("2d");
     let stars = [];
@@ -788,339 +318,199 @@
     window.addEventListener("resize", initStars);
     initStars();
     drawStars();
-
-    /* 2. 9 Destinations with Individual Timelines & Telemetry */
-    const destinations = [
-      {
-        id: "01",
-        title: "Sector 01 • Luna",
-        img: "1.png",
-        fb: "https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?w=700",
-        fov: "2.4° × 2.4°",
-        steps: [
-          { date: "May 2025 DR1", desc: "Initial lunar orbital pass mapping regolith mineral signatures.", dist: "384,400 km", time: "3 days", centre: "RA 12h 40m, Dec +02°", filter: "none" },
-          { date: "Nov 2025 DR2", desc: "South pole ice-crater infrared spectroscopy sweep.", dist: "382,100 km", time: "3 days", centre: "RA 12h 44m, Dec -88°", filter: "contrast(1.1) brightness(1.05)" },
-          { date: "May 2026 QR2", desc: "High-resolution Mare Tranquillitatis thermal profile.", dist: "385,900 km", time: "3 days", centre: "RA 12h 51m, Dec +08°", filter: "hue-rotate(35deg)" },
-          { date: "QR3 Nov 2026", desc: "Final deep-core relay calibration over far-side highlands.", dist: "384,000 km", time: "3 days", centre: "RA 13h 02m, Dec -14°", filter: "hue-rotate(190deg)" }
-        ]
-      },
-      {
-        id: "02",
-        title: "Sector 02 • Mars",
-        img: "2.png",
-        fb: "https://images.unsplash.com/photo-1614728894747-a83421e2b9c9?w=700",
-        fov: "3.1° × 3.1°",
-        steps: [
-          { date: "May 2025 DR1", desc: "Olympus Mons caldera atmospheric dust survey.", dist: "225 mil. km", time: "9 months", centre: "RA 18h 15m, Dec +18°", filter: "none" },
-          { date: "Nov 2025 DR2", desc: "Valles Marineris canyon water-vapor spectral scan.", dist: "210 mil. km", time: "8.5 months", centre: "RA 18h 22m, Dec -13°", filter: "saturate(1.25)" },
-          { date: "May 2026 QR2", desc: "Polar dry-ice cap seasonal sublimation tracking.", dist: "240 mil. km", time: "9.5 months", centre: "RA 18h 30m, Dec +82°", filter: "hue-rotate(45deg)" },
-          { date: "QR3 Nov 2026", desc: "Jezero basin ancient delta subsurface radar pass.", dist: "218 mil. km", time: "9 months", centre: "RA 18h 41m, Dec +18°", filter: "hue-rotate(210deg)" }
-        ]
-      },
-      {
-        id: "03",
-        title: "Sector 03 • Europa",
-        img: "3.png",
-        fb: "https://images.unsplash.com/photo-1614313913007-2b4ae8ce32d6?w=700",
-        fov: "1.8° × 1.8°",
-        steps: [
-          { date: "May 2025 DR1", desc: "Chaos terrain ice-crust fracture mapping.", dist: "628 mil. km", time: "3 years", centre: "RA 04h 52m, Dec +22°", filter: "none" },
-          { date: "Nov 2025 DR2", desc: "Southern hemisphere cryo-plume detection window.", dist: "615 mil. km", time: "2.9 years", centre: "RA 04h 58m, Dec -65°", filter: "contrast(1.15)" },
-          { date: "May 2026 QR2", desc: "Subsurface ocean salinity and tidal flex telemetry.", dist: "640 mil. km", time: "3.1 years", centre: "RA 05h 04m, Dec +11°", filter: "hue-rotate(130deg)" },
-          { date: "QR3 Nov 2026", desc: "Radiation belt boundary spectrometer sweep.", dist: "622 mil. km", time: "3 years", centre: "RA 05h 12m, Dec -09°", filter: "hue-rotate(240deg)" }
-        ]
-      },
-      {
-        id: "04",
-        title: "Sector 04 • Titan",
-        img: "4.png",
-        fb: "https://images.unsplash.com/photo-1614732414444-096e5f1122d5?w=700",
-        fov: "2.0° × 2.0°",
-        steps: [
-          { date: "May 2025 DR1", desc: "Kraken Mare liquid methane shoreline infrared imaging.", dist: "1.6 bil. km", time: "7 years", centre: "RA 21h 08m, Dec +68°", filter: "none" },
-          { date: "Nov 2025 DR2", desc: "Dense nitrogen haze organic aerosol profiling.", dist: "1.55 bil. km", time: "6.8 years", centre: "RA 21h 14m, Dec +15°", filter: "saturate(1.3)" },
-          { date: "May 2026 QR2", desc: "Equatorial sand dune radar altimetry pass.", dist: "1.64 bil. km", time: "7.2 years", centre: "RA 21h 20m, Dec -04°", filter: "hue-rotate(60deg)" },
-          { date: "QR3 Nov 2026", desc: "Ligeia Mare tidal depth acoustic-optical synthesis.", dist: "1.58 bil. km", time: "7 years", centre: "RA 21h 29m, Dec +78°", filter: "hue-rotate(200deg)" }
-        ]
-      },
-      {
-        id: "05",
-        title: "Sector 05 • Orion",
-        img: "5.png",
-        fb: "https://images.unsplash.com/photo-1462331940025-496dfbfc7564?w=700",
-        fov: "4.5° × 4.5°",
-        steps: [
-          { date: "May 2025 DR1", desc: "Trapezium cluster protostellar disk infrared census.", dist: "1,344 ly", time: "Deep Scan", centre: "RA 05h 35m, Dec -05°", filter: "none" },
-          { date: "Nov 2025 DR2", desc: "Ionized hydrogen shockwave front mapping.", dist: "1,344 ly", time: "Deep Scan", centre: "RA 05h 35m, Dec -05°", filter: "contrast(1.2)" },
-          { date: "May 2026 QR2", desc: "Water-ice grain abundance in molecular cloud core.", dist: "1,344 ly", time: "Deep Scan", centre: "RA 05h 36m, Dec -06°", filter: "hue-rotate(110deg)" },
-          { date: "QR3 Nov 2026", desc: "Full 102-band spectral cube of M42 central cavity.", dist: "1,344 ly", time: "Deep Scan", centre: "RA 05h 36m, Dec -05°", filter: "hue-rotate(260deg)" }
-        ]
-      },
-      {
-        id: "06",
-        title: "Sector 06 • LEO Hub",
-        img: "6.png",
-        fb: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=700",
-        fov: "5.0° × 5.0°",
-        steps: [
-          { date: "May 2025 DR1", desc: "Sun-synchronous dawn-dusk orbital insertion check.", dist: "650 km", time: "6 hours", centre: "RA 00h 12m, Dec +41°", filter: "none" },
-          { date: "Nov 2025 DR2", desc: "High-latitude geomagnetic aurora emission capture.", dist: "650 km", time: "6 hours", centre: "RA 00h 18m, Dec +67°", filter: "saturate(1.25)" },
-          { date: "May 2026 QR2", desc: "Earth-limb airglow calibration baseline.", dist: "650 km", time: "6 hours", centre: "RA 00h 24m, Dec -12°", filter: "hue-rotate(90deg)" },
-          { date: "QR3 Nov 2026", desc: "All-sky mosaic downlink relay verification.", dist: "650 km", time: "6 hours", centre: "RA 00h 31m, Dec +28°", filter: "hue-rotate(185deg)" }
-        ]
-      },
-      {
-        id: "07",
-        title: "Sector 07 • Andromeda",
-        img: "7.png",
-        fb: "https://images.unsplash.com/photo-1543722530-d2c3201371e7?w=700",
-        fov: "3.8° × 3.8°",
-        steps: [
-          { date: "May 2025 DR1", desc: "M31 spiral dust lane PAH emission survey.", dist: "2.5 mil. ly", time: "Deep Scan", centre: "RA 00h 42m, Dec +41°", filter: "none" },
-          { date: "Nov 2025 DR2", desc: "Double-nucleus stellar velocity dispersion pass.", dist: "2.5 mil. ly", time: "Deep Scan", centre: "RA 00h 43m, Dec +41°", filter: "contrast(1.15)" },
-          { date: "May 2026 QR2", desc: "Outer halo globular cluster metallicity catalog.", dist: "2.5 mil. ly", time: "Deep Scan", centre: "RA 00h 44m, Dec +40°", filter: "hue-rotate(140deg)" },
-          { date: "QR3 Nov 2026", desc: "Satellite dwarf galaxy M110 tidal bridge scan.", dist: "2.5 mil. ly", time: "Deep Scan", centre: "RA 00h 40m, Dec +41°", filter: "hue-rotate(230deg)" }
-        ]
-      },
-      {
-        id: "08",
-        title: "Sector 08 • Corona",
-        img: "8.png",
-        fb: "https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?w=700",
-        fov: "2.2° × 2.2°",
-        steps: [
-          { date: "May 2025 DR1", desc: "Zodiacal dust cloud thermal emission subtraction.", dist: "149 mil. km", time: "4 months", centre: "RA 09h 19m, Dec +16°", filter: "none" },
-          { date: "Nov 2025 DR2", desc: "Solar elongation 90° thermal shield stress test.", dist: "149 mil. km", time: "4 months", centre: "RA 09h 25m, Dec +14°", filter: "saturate(1.2)" },
-          { date: "May 2026 QR2", desc: "Inner asteroid belt silicate spectral sweep.", dist: "152 mil. km", time: "4 months", centre: "RA 09h 31m, Dec +12°", filter: "hue-rotate(50deg)" },
-          { date: "QR3 Nov 2026", desc: "Ecliptic plane background light residual audit.", dist: "148 mil. km", time: "4 months", centre: "RA 09h 38m, Dec +10°", filter: "hue-rotate(215deg)" }
-        ]
-      },
-      {
-        id: "09",
-        title: "Sector 09 • Galactic Core",
-        img: "9.png",
-        fb: "https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?w=700",
-        fov: "1.5° × 1.5°",
-        steps: [
-          { date: "May 2025 DR1", desc: "Sagittarius A* surrounding molecular ring survey.", dist: "26,000 ly", time: "Long Range", centre: "RA 17h 45m, Dec -29°", filter: "none" },
-          { date: "Nov 2025 DR2", desc: "Dense interstellar extinction ice-absorption map.", dist: "26,000 ly", time: "Long Range", centre: "RA 17h 46m, Dec -29°", filter: "contrast(1.18)" },
-          { date: "May 2026 QR2", desc: "Central parsec star-forming filament spectroscopy.", dist: "26,000 ly", time: "Long Range", centre: "RA 17h 45m, Dec -28°", filter: "hue-rotate(155deg)" },
-          { date: "QR3 Nov 2026", desc: "Deep-field cosmic inflation reionization benchmark.", dist: "26,000 ly", time: "Long Range", centre: "RA 17h 47m, Dec -29°", filter: "hue-rotate(270deg)" }
-        ]
-      }
-    ];
-
-    /* 3. Build 3D Orbit Wheel (9 Compact Cards) */
-    const ring = document.getElementById("orbitRing");
-    const viewport = document.getElementById("viewport");
-    const radius = 350;
-    let angle = 0, vel = 0, isDragging = false, startX = 0, dragDist = 0;
-
-    destinations.forEach((item, idx) => {
-      const card = document.createElement("div");
-      card.className = "sky-card";
-      card.style.transform = `rotateY(${idx * 40}deg) translateZ(${radius}px)`;
-      card.innerHTML = `
-        <img src="${item.img}" onerror="this.src='${item.fb}'" alt="${item.title}" />
-        <div class="sky-card-info">
-          <span>Sector ${item.id}</span>
-          <h3>${item.title.split("•")[1].trim()}</h3>
-        </div>
-      `;
-      card.addEventListener("click", () => {
-        if (dragDist < 8) openDestinationModal(item);
-      });
-      ring.appendChild(card);
-    });
-
-    viewport.addEventListener("pointerdown", (e) => {
-      isDragging = true;
-      startX = e.clientX;
-      dragDist = 0;
-      vel = 0;
-    });
-
-    window.addEventListener("pointermove", (e) => {
-      if (!isDragging) return;
-      const dx = e.clientX - startX;
-      dragDist += Math.abs(dx);
-      angle += dx * 0.28;
-      vel = dx * 0.28;
-      startX = e.clientX;
-    });
-
-    window.addEventListener("pointerup", () => {
-      isDragging = false;
-    });
-
-    document.getElementById("spinBtn").addEventListener("click", () => {
-      vel = (Math.random() > 0.5 ? 1 : -1) * (10 + Math.random() * 5);
-    });
-
-    document.getElementById("resetBtn").addEventListener("click", () => {
-      angle = 0;
-      vel = 0;
-    });
-
-    document.getElementById("trailCheck").addEventListener("change", (e) => {
-      document.getElementById("orbitTrail").style.display = e.target.checked ? "block" : "none";
-    });
-
-    document.getElementById("targetCheck").addEventListener("change", (e) => {
-      document.getElementById("targetReticle").style.display = e.target.checked ? "block" : "none";
-    });
-
-    (function animateWheel() {
-      if (!isDragging) {
-        angle += vel;
-        vel *= 0.94;
-        if (Math.abs(vel) < 0.05) angle -= 0.11;
-      }
-      ring.style.transform = `rotateY(${angle}deg)`;
-      requestAnimationFrame(animateWheel);
-    })();
-
-    /* 4. Pop-Out Modal + Smooth Rocket Timeline + Date & Coordinates Inputs */
-    const modalBackdrop = document.getElementById("modalBackdrop");
-    const modalImg = document.getElementById("modalImg");
-    const timelineTrack = document.getElementById("timelineTrack");
-    const timelineFill = document.getElementById("timelineFill");
-    const timelineRocket = document.getElementById("timelineRocket");
-    const timelineNodes = document.getElementById("timelineNodes");
-    const timelineLabels = document.getElementById("timelineLabels");
-
-    let activeItem = null;
-    let currentProgress = 0;
-    let targetProgress = 0;
-    let isScrubbing = false;
-
-    function openDestinationModal(item) {
-      activeItem = item;
-      modalImg.src = item.img;
-      modalImg.onerror = () => { modalImg.src = item.fb; };
-      document.getElementById("modalFov").textContent = `Field of view: ${item.fov}`;
-      document.getElementById("modalTitle").textContent = item.title;
-      document.getElementById("customDateInput").value = "";
-      document.getElementById("customCoordsInput").value = "";
-
-      // Build per-photo timeline nodes & labels
-      timelineNodes.innerHTML = "";
-      timelineLabels.innerHTML = "";
-      item.steps.forEach((step, idx) => {
-        const pct = (idx / (item.steps.length - 1)) * 100;
-
-        const dot = document.createElement("div");
-        dot.className = "t-node";
-        dot.addEventListener("click", (e) => {
-          e.stopPropagation();
-          targetProgress = pct;
-        });
-        timelineNodes.appendChild(dot);
-
-        const lbl = document.createElement("span");
-        lbl.textContent = step.date;
-        lbl.addEventListener("click", () => {
-          targetProgress = pct;
-        });
-        timelineLabels.appendChild(lbl);
-      });
-
-      currentProgress = 0;
-      targetProgress = 0;
-      applyStepData(0);
-      modalBackdrop.classList.add("open");
-    }
-
-    function applyStepData(stepIndex) {
-      if (!activeItem) return;
-      const step = activeItem.steps[stepIndex];
-      document.getElementById("modalDesc").textContent = step.desc;
-      document.getElementById("modalDist").textContent = step.dist;
-      document.getElementById("modalTime").textContent = step.time;
-      document.getElementById("modalCentre").textContent = step.centre;
-      document.getElementById("modalObs").textContent = step.date;
-      document.getElementById("timelineActiveLabel").textContent = step.date;
-      modalImg.style.filter = step.filter;
-
-      [...timelineNodes.children].forEach((n, i) => n.classList.toggle("active", i === stepIndex));
-      [...timelineLabels.children].forEach((l, i) => l.classList.toggle("active", i === stepIndex));
-    }
-
-    function updateScrub(clientX) {
-      const rect = timelineTrack.getBoundingClientRect();
-      const pct = Math.max(0, Math.min(100, ((clientX - rect.left) / rect.width) * 100));
-      targetProgress = pct;
-    }
-
-    timelineTrack.addEventListener("pointerdown", (e) => {
-      isScrubbing = true;
-      updateScrub(e.clientX);
-    });
-
-    window.addEventListener("pointermove", (e) => {
-      if (isScrubbing) updateScrub(e.clientX);
-    });
-
-    window.addEventListener("pointerup", () => {
-      if (!isScrubbing) return;
-      isScrubbing = false;
-      // Snap smoothly to nearest milestone
-      const nearestIdx = Math.round((targetProgress / 100) * 3);
-      targetProgress = (nearestIdx / 3) * 100;
-    });
-
-    let lastStepIdx = -1;
-    (function animateRocket() {
-      currentProgress += (targetProgress - currentProgress) * 0.14;
-      timelineFill.style.width = `${currentProgress}%`;
-      timelineRocket.style.left = `${currentProgress}%`;
-
-      if (activeItem && modalBackdrop.classList.contains("open")) {
-        const nearestIdx = Math.round((currentProgress / 100) * (activeItem.steps.length - 1));
-        if (nearestIdx !== lastStepIdx) {
-          lastStepIdx = nearestIdx;
-          applyStepData(nearestIdx);
-        }
-      }
-      requestAnimationFrame(animateRocket);
-    })();
-
-    /* Custom Date Input Handler */
-    function handleCustomDate() {
-      const val = document.getElementById("customDateInput").value.trim();
-      if (!val) return;
-      document.getElementById("modalObs").textContent = val;
-      document.getElementById("timelineActiveLabel").textContent = val;
-      modalImg.style.filter = "contrast(1.12) saturate(1.2)";
-    }
-    document.getElementById("applyDateBtn").addEventListener("click", handleCustomDate);
-    document.getElementById("customDateInput").addEventListener("keydown", (e) => {
-      if (e.key === "Enter") handleCustomDate();
-    });
-
-    /* Custom Sky Coordinates Input Handler */
-    function handleCustomCoords() {
-      const val = document.getElementById("customCoordsInput").value.trim();
-      if (!val) return;
-      document.getElementById("modalCentre").textContent = val;
-      document.getElementById("modalFov").textContent = `Target Lock • ${val}`;
-    }
-    document.getElementById("applyCoordsBtn").addEventListener("click", handleCustomCoords);
-    document.getElementById("customCoordsInput").addEventListener("keydown", (e) => {
-      if (e.key === "Enter") handleCustomCoords();
-    });
-
-    document.getElementById("closeModalBtn").addEventListener("click", () => {
-      modalBackdrop.classList.remove("open");
-      lastStepIdx = -1;
-    });
-
-    modalBackdrop.addEventListener("click", (e) => {
-      if (e.target === modalBackdrop) {
-        modalBackdrop.classList.remove("open");
-        lastStepIdx = -1;
-      }
-    });
+})();
   </script>
+  <script>
+const $=id=>document.getElementById(id),lerp=(a,b,t)=>a+(b-a)*t,NE=24,T0=2025.35,T1=2026.85,TR=2026.1,PXS=6.15,OBS=Array.from({length:NE},(_,i)=>T0+(T1-T0)*i/(NE-1));
+const BANDS=[[.75,1.09],[1.1,1.62],[1.63,2.41],[2.42,3.82],[3.83,4.41],[4.42,5]],HUE=['#8fa8ff','#4cc9f0','#7ee081','#f2d45c','#f29b5c','#ef6f8e'];
+function rng(a){return()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+const hash=(a,b)=>Math.floor(a*1000)*73856093^Math.floor(b*1000)*19349663,g=(x,m,s)=>Math.exp(-(((x-m)/s)**2));
+function S(c,l){let v;if(c==='Y')v=.03+g(l,4.55,.45)+.1*g(l,1.25,.08);else if(c==='M')v=.9*(1.1/l)**2;else if(c==='T')v=.1+.8*g(l,1.27,.12)+.5*g(l,1.6,.1)+.55*g(l,4.2,.5);
+ else if(c==='Mira')v=.3+.5*(l/5)**1.2-.25*g(l,2.75,.2)-.15*g(l,4.3,.15);else if(c==='TT')v=.6+.2*l/5+.2*g(l,3,.4);else v=.2+.7*g(l,3.29,.08)-.15*g(l,3,.15);return Math.max(.02,v)}
+const LAM=(d,c)=>{const[a,b]=BANDS[d-1];return a+(c-.5)/17*(b-a)},rel=e=>e<2026.4?'DR1':'QR3';
+const SRC='https://spherex.caltech.edu/',DL=(id,fn,ts,k,d,s,t)=>({id,fn,ts,k,d,s,t});
+const K7=['medium','large','larger','largest','huge','huger','jpg_original'],K6=['medium','large','larger','largest','huge','jpg_original'],K5=['medium','large','larger','largest','jpg_original'];
+const SQ=['320x320','500x500','1024x1024','1280x1280','1600x1600','3000x3000','3000x3000'],WD=['320x180','500x281','1024x576','1280x720','1600x900','3000x1688','4160x2340'],NG=['320x180','500x281','1024x576','1280x720','1600x900','2280x1282'],MS=['320x180','500x281','1024x576','1280x720','953x536'];
+const IMG=(s,t)=>['Image',t,'image/'+s],A='spherex20260415a-nasas-spherex-observatory-maps-interstellar-ice-in-milky-way',B='spherex20260415b-nasas-spherex-observatory-maps-stars-and-dust-in-cygnus',SA='spherex20251218a-spherex-all-sky-map-2025',SB='spherex20251218b-spherex-all-sky-map-2025-stars-and-galaxies',SC='spherex20251218c-spherex-all-sky-map-2025-dust-and-gas',NA='spherex20250501a-early-spherex-observations-ngc-1760-at-0-96-microns',NB='spherex20250501b-early-spherex-observations-ngc-1760-at-0-98-microns',NC='spherex20250501c-early-spherex-observations-ngc-1760-at-3-29-microns';
+const REL={cyg:[['Article','‘Interstellar Glaciers’: NASA’s SPHEREx Maps Vast Galactic Ice Regions','news/interstellar-glaciers-nasa-s-spherex-maps-vast-galactic-ice-regions'],IMG(A,'NASA’s SPHEREx Observatory Maps Interstellar Ice in Milky Way'),IMG(B,'NASA’s SPHEREx Observatory Maps Stars and Dust in Cygnus')],
+sky:[['Article','NASA’s SPHEREx Observatory Completes First Cosmic Map Like No Other','news/nasa-s-spherex-observatory-completes-first-cosmic-map-like-no-other'],IMG(SA,'SPHEREx All Sky Map 2025'),IMG(SB,'SPHEREx All Sky Map 2025: Stars and Galaxies'),IMG(SC,'SPHEREx All Sky Map 2025: Dust and Gas'),['Video','SPHEREx First All-Sky Map — Panorama','video/spherex-first-all-sky-map-panorama'],['Video','SPHEREx First All-Sky Map — Spectrum','video/spherex-first-all-sky-map-spectrum']],
+ngc:[['Article','NASA’s SPHEREx Space Telescope Begins Capturing Entire Sky','news/nasa-s-spherex-space-telescope-begins-capturing-entire-sky'],IMG(NA,'NGC 1760 at 0.96 microns'),IMG(NB,'NGC 1760 at 0.98 microns'),IMG(NC,'NGC 1760 at 3.29 microns'),['Video','SPHEREx Scans the Sky','video/spherex-scans-the-sky']]};
+const LAUNCH='SPHEREx launched on 11 March 2025. It sees the sky in 102 colors, each a different infrared wavelength that carries its own clues about galaxies, stars, planet-forming regions and other cosmic features.';
+const CYGP='RA 20h 30m 32.0s · Dec +40° 17′ 50.2″',NGCP='RA 4h 57m 43.6s · Dec −66° 21′ 5.2″ (J2000)',NGO=['NGC 1760','Nebula › Star Formation','163,000 light years'];
+const NGT='SPHEREx is mapping the whole sky in 102 colors of infrared light that people cannot see. NGC 1760 is a star-forming nebula in the neighboring Large Magellanic Cloud galaxy. ',NGQ='The picture uses data from only four pointings of the multispectral detectors, taken while the team prepared for the start of science operations on 1 May 2025; strips from the four observations were assembled into one single-wavelength image.';
+const SK0='Mosaic assembled from SPHEREx data gathered between May and December 2025, showing a small selection of the 102 infrared colors. Infrared is invisible to the eye, so the colors are shown in visible ones. ',SKM='The bright feature through the middle is the Milky Way; most points of light above and below it are other galaxies.',SKS='Spectroscopy splits light into its wavelengths. SPHEREx will use it to measure distances to galaxies and map the 3D distribution of hundreds of millions of them. The all-sky spectral map should give new insight into inflation, the dramatic event in the first billionth of a trillionth of a trillionth of a second after the big bang, which subtly shaped how galaxies are spread out.',SKR='To keep files small, the resolution is reduced by a factor of one thousand from the full SPHEREx data. The elliptical projection covers the entire visible sky.',PAH='The prominent red clouds are polycyclic aromatic hydrocarbons (PAHs), dust that is a common ingredient in forming stars and planets and that emits mainly near 3.4 µm. The blue bubbles are hot hydrogen gas, at about 4 µm.',ICE='Other SPHEREx wavelengths reveal water ice, carbon dioxide ice and carbon monoxide ice; with the all-sky view, scientists can map where these building blocks of organic material, essential to life as we know it, lie across the Milky Way.';
+const IM=[
+{n:'Cygnus: stars and dust',d:'15 Apr 2026',ra:307.633339,dec:40.297291,fv:'5.1° × 5.1°',fd:[5.1,5.1],w:'0.8, 1.63, 2.6 µm',c:'NASA/JPL-Caltech/IPAC/Hora et al.',u:B,h:[75,25],dens:380,
+ info:{full:'NASA’s SPHEREx Observatory Maps Stars and Dust in Cygnus',kind:'Observation',iso:'2026-04-15',pos:CYGP,ori:'North is 53.9° left of vertical',obj:['(name not listed)','Nebula › Interstellar Medium'],bands:[['Infrared','800 nm'],['Infrared','1.6 µm'],['Infrared','2.6 µm']],
+ txt:['A dusty infrared starfield toward the constellation Cygnus, seen by SPHEREx (Spectro-Photometer for the History of the Universe, Epoch of Reionization, and Ices Explorer).','Three of the 102 wavelengths SPHEREx maps (0.8, 1.63 and 2.6 µm, assigned to blue, green and red) show starlight from deep in the disk of the Milky Way.','Dust clouds grow more transparent at longer wavelengths, so stars behind thicker dust look yellow or red. The very densest clouds stay opaque even in the near infrared and show up as black streaks.',LAUNCH],
+ vis:'A square frame packed edge to edge with hundreds of thousands of needle-fine stars, like high-resolution static, over a mottled background of olive-green and rusty-orange cloud texture that resembles tea stains or mineral veins. Most stars are cool white or pale blue. The top and bottom edges lean slightly blue-violet and the centre is a warmer yellow-green. A jagged dark rift of dense dust cuts diagonally from the upper right toward the centre-left, like a shadowed canyon.',
+ dl:DL(44,'SPHEREx_Cygnus_Broadband.jpg',1776744276,K7,SQ,['70.4 KB','154 KB','646 KB','1020 KB','1.56 MB','4.79 MB','4.79 MB'],['3000 x 3000','26.1 MB']),rel:REL.cyg}},
+{n:'Cygnus X: interstellar ice',d:'15 Apr 2026',ra:307.633339,dec:40.297291,fv:'5.1° × 5.1°',fd:[5.1,5.1],w:'3.0 µm (H₂O ice), 3.3 µm (PAH)',c:'NASA/JPL-Caltech/IPAC/Hora et al.',u:A,h:[205,28],dens:300,
+ info:{full:'NASA’s SPHEREx Observatory Maps Interstellar Ice in Milky Way',kind:'Observation',iso:'2026-04-15',pos:CYGP,ori:'North is 53.9° left of vertical',obj:['(name not listed)','Nebula › Interstellar Medium'],bands:[['Infrared','3.0 µm'],['Infrared','3.3 µm']],
+ txt:['Chemical signatures of water ice (bright blue) and polycyclic aromatic hydrocarbons, PAHs (orange) in Cygnus X, one of the most active and turbulent star-forming regions of the Milky Way. The image was released on 15 April 2026 together with a study of the observation.','Mapping the chemical signatures of interstellar ices (water, carbon dioxide, carbon monoxide) is a main SPHEREx goal. These molecules are vital to the chemistry that lets life develop. Researchers believe the ice reservoirs on tiny dust grains are where most of the universe’s water forms and is stored, and that the water in Earth’s oceans and the ices in comets and on other planets and moons began in such regions.',LAUNCH],
+ vis:'A dark square frame with a near-black background and wispy glowing filaments of copper and burnt orange, shredded at the edges like embers or tangled wool, following the thinner dust clouds. Inside the thickest parts sit sharper, brighter electric-blue veins and clumps, like jagged icebergs on an inky sea; this is the spectral signature of water ice clinging to dust grains. A prominent spine of material runs diagonally from the lower left to the upper right, where orange and blue concentrate. Away from it the clouds break into lacy threads like plant roots or nerve-cell dendrites.',
+ dl:DL(43,'SPHEREs_Cygnus_H2O_Ice.jpg',1776743980,K7,SQ,['62.8 KB','113 KB','322 KB','449 KB','623 KB','1.52 MB','1.52 MB'],['3000 x 3000','10.3 MB']),rel:REL.cyg}},
+{n:'All-sky map 2025: stars and galaxies',d:'18 Dec 2025',fv:'all sky (elliptical projection)',w:'830 nm, 1.7 µm, 4.8 µm',c:'NASA/JPL-Caltech',u:SB,h:[215],dens:420,span:40,
+ info:{full:'SPHEREx All Sky Map 2025: Stars and Galaxies',kind:'Observation',iso:'2025-12-18',pos:'not listed (all-sky map)',ori:'',obj:['Milky Way','Galaxy › Spiral'],bands:[['Infrared','830 nm'],['Infrared','1.7 µm'],['Infrared','4.8 µm']],
+ txt:[SK0+'The colors chosen highlight stars at short, medium and long wavelengths, mapped to blue, green and red.',SKM,SKS,SKR],vis:'',
+ dl:DL(41,'SPHEREx_StarsRGB.jpg',1766089754,K7,WD,['27.3 KB','46.2 KB','167 KB','263 KB','413 KB','1.35 MB','2.37 MB'],['4160 x 2340','14.3 MB']),rel:REL.sky}},
+{n:'All-sky map 2025',d:'18 Dec 2025',fv:'all sky (elliptical projection)',w:'830 nm, 1.7 µm, 4.8 µm, 3.4 µm, 4.0 µm',c:'NASA/JPL-Caltech',u:SA,h:[8,215,120],dens:420,span:40,
+ info:{full:'SPHEREx All Sky Map 2025',kind:'Observation',iso:'2025-12-18',pos:'not listed (all-sky map)',ori:'',obj:['Milky Way','Galaxy › Spiral'],bands:[['Infrared','830 nm'],['Infrared','1.7 µm'],['Infrared','4.8 µm'],['Infrared','3.4 µm'],['Infrared','4.0 µm']],
+ txt:[SK0+'The colors chosen highlight stars (blue, green and white), hot hydrogen gas (blue) and cosmic dust (red).',SKM,PAH,'This image shows one main use of spectroscopy: identifying the presence of particular chemicals. '+ICE,'Spectroscopy can also measure distances to other galaxies. '+SKS.replace('Spectroscopy splits light into its wavelengths. ',''),SKR],vis:'',
+ dl:DL(40,'SPHEREx_StarsRGB_LinesRB.jpg',1766089662,K7,WD,['30.1 KB','46.8 KB','142 KB','214 KB','324 KB','1010 KB','1.71 MB'],['4160 x 2340','11.4 MB']),rel:REL.sky}},
+{n:'All-sky map 2025: dust and gas',d:'18 Dec 2025',fv:'all sky (elliptical projection)',w:'dust 3.4 µm (red), hot gas 4.0 µm (blue)',c:'NASA/JPL-Caltech',u:SC,h:[8,215],dens:250,span:40,
+ info:{full:'SPHEREx All Sky Map 2025: Dust and Gas',kind:'Observation',iso:'2025-12-18',pos:'not listed (all-sky map)',ori:'',obj:['Milky Way','Galaxy › Spiral'],bands:[['Infrared','3.4 µm'],['Infrared','4.0 µm']],
+ txt:['Mosaic assembled from SPHEREx data gathered between May and December 2025, showing just two of the 102 infrared colors, chosen to highlight hot hydrogen gas (blue) and cosmic dust (red). The bright band through the middle is the Milky Way, filled with gas and dust.',PAH,'This image illustrates a main use of spectroscopy: identifying chemicals. '+ICE,SKR],vis:'',
+ dl:DL(42,'SPHEREx_LinesRB.jpg',1766089789,K7,WD,['27.4 KB','39.6 KB','94 KB','129 KB','178 KB','446 KB','724 KB'],['4160 x 2340','5.37 MB']),rel:REL.sky}},
+{n:'SPHEREx images mosaic (LMC N11)',d:'5 May 2025',ra:74.43167,dec:-66.35144,inf:1,fv:'not listed (NGC 1760 field assumed, 1.3° × 0.7°)',fd:[1.3,.7],w:'0.98 µm (blue), 0.96 µm (green), 3.29 µm (red)',c:'',u:'spherex-images-mosaic',h:[135,25,215],dens:220,
+ info:{full:'SPHEREx Images Mosaic',kind:'Artwork',iso:'2025-05-05',pos:'not listed on the page; file name LMC_N11_v2 points to N11 in the Large Magellanic Cloud, so the NGC 1760 position is assumed here',ori:'',obj:['(not listed)','(not listed)'],bands:[],
+ txt:['Three-color mosaic of SPHEREx images from channels centered at 0.98 µm (blue), 0.96 µm (green) and 3.29 µm (red). The green areas are ionized regions near a cluster of young stars (blue), traced by the doubly ionized sulfur line; red traces emission from the surrounding dusty PAHs.'],vis:'',
+ dl:DL(38,'LMC_N11_v2.jpg',1746469877,K5,MS,['32.6 KB','63.8 KB','167 KB','227 KB','166 KB'],null),rel:[]}},
+{n:'NGC 1760 at 3.29 µm',d:'1 May 2025',ra:74.43167,dec:-66.35144,fv:'1.3° × 0.7°',fd:[1.3,.7],w:'3.29 µm (PAH)',c:'NASA/JPL-Caltech',u:NC,h:[25],dens:120,
+ info:{full:'Early SPHEREx Observations: NGC 1760 at 3.29 microns',kind:'Observation',iso:'2025-05-01',pos:NGCP,ori:'North is 53.3° right of vertical',obj:NGO,bands:[['Infrared','3.3 µm']],
+ txt:[NGT+'At 3.29 µm the image shows the glow of sooty, carbon-based dust particles called polycyclic aromatic hydrocarbons (PAHs).',NGQ],vis:'',
+ dl:DL(37,'SPHEREx_D4_3p29.jpg',1746231953,K6,NG,['53.2 KB','98.3 KB','263 KB','355 KB','476 KB','753 KB'],['2280 x 1282','3.64 MB']),rel:REL.ngc}},
+{n:'NGC 1760 at 0.96 µm',d:'1 May 2025',ra:74.43167,dec:-66.35144,fv:'1.3° × 0.7°',fd:[1.3,.7],w:'0.96 µm (S III)',c:'NASA/JPL-Caltech',u:NA,h:[135],dens:200,
+ info:{full:'Early SPHEREx Observations: NGC 1760 at 0.96 microns',kind:'Observation',iso:'2025-05-01',pos:NGCP,ori:'North is 53.3° right of vertical',obj:NGO,bands:[['Infrared','960 nm']],
+ txt:[NGT+'At 0.96 µm the image shows ionized gaseous sulfur (S III), heated by nearby stars until it has lost two electrons.',NGQ+' The grey strip along the top is an area not mapped at this wavelength in the four available pointings.'],vis:'',
+ dl:DL(36,'SPHEREx_D1_0p96.jpg',1746231875,K6,NG,['50 KB','94.4 KB','256 KB','349 KB','475 KB','765 KB'],['2280 x 1282','3.98 MB']),rel:REL.ngc}},
+{n:'NGC 1760 at 0.98 µm',d:'1 May 2025',ra:74.43167,dec:-66.35144,fv:'1.3° × 0.7° (same field)',fd:[1.3,.7],w:'0.98 µm (stars only)',c:'NASA/JPL-Caltech',u:NB,h:[],dens:260,
+ info:{full:'Early SPHEREx Observations: NGC 1760 at 0.98 microns',kind:'Observation',iso:'2025-05-01',pos:NGCP,ori:'North is 53.3° right of vertical',obj:NGO,bands:[['Infrared','980 nm']],
+ txt:[NGT+'At 0.98 µm there is very little glow from the nebula’s gas and dust, so only starlight remains.',NGQ],vis:'',
+ dl:DL(35,'SPHEREx_D1_0p98.jpg',1746231822,K6,NG,['55.4 KB','107 KB','302 KB','414 KB','566 KB','926 KB'],['2280 x 1282','4.8 MB']),rel:REL.ngc}}];
+const TG=[
+{n:'Barnard’s Star',ra:269.4521,dec:4.6934,pm:[-.8,10.33],ref:2000,cls:'M',kind:'m',g:1,b:.9,src:'epoch J2000; motion from memory (Hipparcos), verify in SIMBAD'},
+{n:'Epsilon Indi B',ra:331.0433,dec:-56.7826,pm:[3.98,-2.47],ref:2000,cls:'T',kind:'m',g:1,b:.6,src:'RA 22h04m10.4s, Dec −56°46′57″ near epoch 2000 (SuperCOSMOS); PM from Wikipedia'},
+{n:'WISE 0855',ra:133.79513,dec:-7.24515,pm:[-8.1237,.6732],ref:2010.5,cls:'Y',kind:'m',g:0,b:.5,src:'challenge position, epoch ≈2010.5 (my derivation); PM −8123.7, +673.2 mas/yr'},
+{n:'RW Aurigae',ra:76.9563,dec:30.4014,pm:[.004,-.027],ref:2000,cls:'TT',kind:'v',P:.2,g:1,b:.9,src:'05h07m49.5s +30°24′05″; irregular T Tauri dimmings'},
+{n:'R Draconis',ra:248.1667,dec:66.7547,pm:[0,0],ref:2000,cls:'Mira',kind:'v',P:.67,g:1,b:.9,src:'16h32m40s +66°45′17″; Mira, ~246 day period'}];
+function mk(s){const f={...s},r=rng(hash(s.ra||3,s.dec||5)+s.n.length);f.span=s.span||(s.fd?Math.min(40,Math.max(1,Math.max(...s.fd)*3600/600)):1);f.fmax=600*f.span;f.fv0=Math.min(f.fmax,s.fd?Math.round(Math.max(...s.fd)*3600):240);
+ f.stars=Array.from({length:f.dens||220},()=>({x:(r()-.5)*1400,y:(r()-.5)*1400,f:Math.pow(r(),3)}));
+ f.blobs=(f.h||(f.pm?[]:[200,25])).flatMap(h=>Array.from({length:3},()=>({x:(r()-.5)*600,y:(r()-.5)*600,r:100+r()*220,h})));
+ if(!f.pm){const a=r()*6.28,m=60+r()*60;f.pm=[m*Math.cos(a),m*Math.sin(a)];f.ref=TR;f.kind='m';f.cls='M';f.g=0;f.b=.6;f.sim=1}
+ f.dem=f.ra==null;if(f.dem){f.ra=0;f.dec=0}
+ f.crf=Math.cos(f.dec*Math.PI/180)||1;f.cra=f.ra+f.pm[0]*(TR-f.ref)/3600/f.crf;f.cde=f.dec+f.pm[1]*(TR-f.ref)/3600;
+ f.hot=Array.from({length:6},()=>[(r()-.5)*1.8,(r()-.5)*1.8]);f.obj=[{id:'T',st:f.g?'Known (Gaia)':'Not in Gaia',pm:[-f.pm[0],f.pm[1]],x0:0,y0:0,b:f.b},
+ {id:'K',st:'Known (Gaia)',pm:[1.2,-.9],x0:-70,y0:45,b:.5},{id:'U',st:'Unmatched candidate',pm:[7,-4],x0:55,y0:-60,b:.45}];return f}
+const IMF=IM.map(mk),TGF=TG.map(mk);
+function sky(c,F,k,o){const ep=OBS[k],W=c.width,x=c.getContext('2d'),q=W/o.fov,X=v=>W/2+(v-o.ox)*q,Y=v=>W/2-(v-o.oy)*q,s=Math.min(2.2,Math.max(.5,q)),sf=1+.12*(o.det-3)+.02*(o.ch-9);
+ x.fillStyle='#04060d';x.fillRect(0,0,W,W);
+ const sp=F.span;F.blobs.forEach(b=>{const r=x.createRadialGradient(X(b.x*sp),Y(b.y*sp),0,X(b.x*sp),Y(b.y*sp),b.r*sp*q);r.addColorStop(0,`hsla(${b.h},90%,58%,.5)`);r.addColorStop(1,`hsla(${b.h},90%,50%,0)`);x.fillStyle=r;x.fillRect(0,0,W,W)});
+ const dot=(px,py,r,cl)=>{const d=x.createRadialGradient(px,py,0,px,py,r);d.addColorStop(0,cl);d.addColorStop(1,'rgba(255,230,160,0)');x.fillStyle=d;x.fillRect(px-r,py-r,2*r,2*r)};
+ F.stars.forEach(t=>{const px=X(t.x*sp),py=Y(t.y*sp);if(px<-30||py<-30||px>W+30||py>W+30)return;dot(px,py,(1.6+t.f*5)*s,`rgba(255,245,230,${Math.min(1,(.45+t.f*.55)*sf)})`)});
+ const bs=o.cat?F.ref:TR,P=(b,t)=>b.id==='T'?[(t-bs)*b.pm[0],(t-bs)*b.pm[1]]:[b.x0+(t-TR)*b.pm[0],b.y0+(t-TR)*b.pm[1]],lam=LAM(o.det,o.ch);
+ const br=b=>b.id==='T'?F.b*S(F.cls,lam)*(F.kind==='v'?1+.6*Math.sin(6.283*(ep-T0)/(F.P||1)):1):b.b*.8;
+ const cl={T:'255,209,102',K:'125,249,255',U:'255,120,200'};
+ F.obj.forEach(b=>{if(!o.full&&b.id!=='T'&&!(o.dets))return;const p=P(b,ep),px=X(p[0]),py=Y(p[1]);
+  if(o.trail&&b.id!=='K')OBS.slice(0,k).forEach(e=>{const t=P(b,e);dot(X(t[0]),Y(t[1]),3*s,`rgba(${cl[b.id]},.45)`)});
+  dot(px,py,(4+8*Math.min(1.3,br(b)))*s,`rgba(${cl[b.id]},1)`);
+  if(o.mark&&b.id==='T'||o.dets){x.strokeStyle=`rgb(${cl[b.id]})`;x.lineWidth=1.5;x.setLineDash([4,4]);x.beginPath();x.arc(px,py,12*s+6,0,6.3);x.stroke();x.setLineDash([]);if(o.dets){x.fillStyle=`rgb(${cl[b.id]})`;x.font='12px Barlow,sans-serif';x.fillText(b.id==='T'?'target':b.id==='K'?'known':'candidate',px+14*s+4,py-8)}}
+  if(o.gaia&&(b.id==='K'||b.id==='T'&&F.g)){x.strokeStyle='#4cc9f0';x.lineWidth=1.5;x.beginPath();x.arc(px,py,9*s+10,0,6.3);x.stroke()}
+  if(o.wise&&b.id!=='U'){x.strokeStyle='#f29b5c';x.lineWidth=1.5;x.strokeRect(px-8*s-6,py-8*s-6,16*s+12,16*s+12)}});
+ F.hot.forEach(h=>{const px=X(h[0]*140),py=Y(h[1]*140);x.fillStyle='rgba(255,255,255,.55)';x.fillRect(px-1,py-1,3,3);if(o.mask){x.strokeStyle='#c77dff';x.lineWidth=1.5;x.strokeRect(px-5,py-5,10,10)}});
+ if(o.mask&&k%5===2){x.strokeStyle='#4cc9f0';x.beginPath();x.arc(W*.3,W*.72,12,0,6.3);x.stroke();x.fillStyle='#4cc9f0';x.font='11px Barlow,sans-serif';x.fillText('GHOST',W*.3+14,W*.72)}
+ if(o.mask&&k%7===3){x.strokeStyle='#ff4d6d';x.lineWidth=2;x.beginPath();x.moveTo(W*.1,W*.2);x.lineTo(W*.9,W*.34);x.stroke();x.fillStyle='#ff4d6d';x.fillText('STREAK',W*.1,W*.2-6)}
+ x.fillStyle='rgba(8,9,18,.72)';x.fillRect(6,6,W>400?230:150,22);x.fillStyle='#e6f6ff';x.font='600 12px Barlow,sans-serif';x.fillText(`${ep.toFixed(2)} · D${o.det} ch${o.ch} · ${rel(ep)}`,12,21)}
+/* carousel */
+const ring=$('ring'),N=9,SN=40;let R=400,a=0,spin=false,vel=0,drag=null,moved=0,lt=0,shown=-1,hit=null;
+IMF.forEach((F,i)=>{const c=document.createElement('div');c.className='card';c.dataset.i=i;c.style.setProperty('--i',i);
+ ['f','b'].forEach(s=>{const f=document.createElement('div');f.className='face '+s;f.innerHTML=`<canvas width="200" height="200"></canvas><b>${F.n}</b><small>${F.d}</small><em>#${i+1}</em>`;sky(f.firstChild,F,12,{ox:0,oy:0,fov:420*F.span,det:2,ch:7});c.append(f)});ring.append(c)});
+const cards=[...ring.children];
+function size(){R=ring.offsetWidth*1.12/(2*Math.tan(Math.PI/N));ring.style.setProperty('--R',R+'px')}
+function apply(){ring.style.transform=`translateZ(${-R}px) rotateX(-10deg) rotateY(${a}deg)`;cards.forEach((c,i)=>c.style.setProperty('--o',(.3+.7*(Math.cos((i*SN+a)*Math.PI/180)+1)/2).toFixed(2)));
+ const i=((Math.round(-a/SN)%N)+N)%N;if(i!==shown){shown=i;const F=IMF[i];$('sel').innerHTML=`<b>#${i+1} ${F.n}</b><small>${F.d} · ${F.dem?'position not listed on the source page':`RA ${F.ra.toFixed(4)}°  Dec ${F.dec.toFixed(4)}°${F.inf?' (assumed)':''}`} · FOV ${F.fv}<br>${F.w} · Credit ${F.c}<br><a href="https://spherex.caltech.edu/image/${F.u}" target="_blank" rel="noopener">Open the real image page ↗</a> · click the card to open the viewer</small>`}}
+function loop(t){const dt=Math.min(.05,(t-lt)/1000||0);lt=t;if(!drag){if(spin){vel+=(16-vel)*.05;a-=vel*dt}else{vel=0;a+=(Math.round(a/SN)*SN-a)*.12}}apply();if(M&&M.play&&!$('md').hidden&&M.tab==='view'&&t-pl>1000/+$('spd').value){pl=t;M.k=(M.k+1)%NE;render()}requestAnimationFrame(loop)}
+let pl=0;const st=$('st');
+st.onpointerdown=e=>{drag={x:e.clientX,a0:a};moved=0;hit=e.target.closest('.card')};
+addEventListener('pointermove',e=>{if(!drag)return;const dx=e.clientX-drag.x;moved=Math.max(moved,Math.abs(dx));a=drag.a0+dx*.3});
+addEventListener('pointerup',()=>{if(drag&&moved<6&&hit)openM(IMF[+hit.dataset.i],'i'+hit.dataset.i);drag=null;hit=null});
+st.onkeydown=e=>{if(e.key==='ArrowLeft')a+=SN;else if(e.key==='ArrowRight')a-=SN;else if(e.key==='Enter')openM(IMF[shown],'i'+shown);else return;e.preventDefault();spin=false;$('sp').textContent='SPIN ORBIT'};
+$('sp').onclick=()=>{spin=!spin;$('sp').textContent=spin?'STOP ORBIT':'SPIN ORBIT'};
+TGF.forEach((F,i)=>{const b=document.createElement('button');b.textContent=F.n;b.onclick=()=>openM(F,'t'+i);$('chips').append(b)});
+/* viewer */
+let M=null,ft=null,bt=null;const TABS=[['info','About'],['view','View'],['cmp','Compare'],['dis','Discover'],['spec','Spectrum'],['q','Quality']];
+TABS.forEach(([k,l])=>{const b=document.createElement('button');b.textContent=l;b.dataset.t=k;b.onclick=()=>{M.tab=k;render()};$('tabs').append(b)});
+for(let d=1;d<=6;d++)$('sd').add(new Option(`D${d} (${BANDS[d-1][0]}–${BANDS[d-1][1]} µm)`,d));for(let c=1;c<=17;c++)$('sc').add(new Option(c,c));
+OBS.forEach((e,i)=>{const t=new Date(Date.UTC(Math.floor(e),0,1)+(e%1)*365.25*864e5).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric',timeZone:'UTC'});$('ea').add(new Option(`${t} (${rel(e)})`,i));$('eb').add(new Option(`${t} (${rel(e)})`,i))});
+const toD=y=>new Date(Date.UTC(Math.floor(y),0,1)+(y%1)*365.25*864e5),iso=y=>toD(y).toISOString().slice(0,10),pretty=y=>toD(y).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric',timeZone:'UTC'});
+const fromIso=v=>{const d=new Date(v+'T00:00:00Z'),y=d.getUTCFullYear();return y+(d-Date.UTC(y,0,1))/(365.25*864e5)},nearK=y=>OBS.reduce((b,e,i)=>Math.abs(e-y)<Math.abs(OBS[b]-y)?i:b,0);
+const ob=()=>({ox:M.ox,oy:M.oy,fov:M.fov,det:M.det,ch:M.ch,trail:$('tr').checked,mark:$('mkc').checked,cat:$('cat').checked,gaia:$('gaia').checked,wise:$('wise').checked,dets:$('dets').checked,mask:$('mask').checked});
+function openM(F,src,init){M={F,src,k:12,ox:0,oy:0,fov:F.fv0||240,det:2,ch:7,tab:F.info?'info':'view',play:false,saved:[],...(init||{})};M.fov=Math.max(60,Math.min(F.fmax,M.fov));$('fov').max=F.fmax;$('fov').step=Math.max(10,Math.round(F.fmax/400));document.querySelectorAll('#tabs button').forEach(b=>b.hidden=b.dataset.t==='info'&&!F.info);$('mt').textContent=F.n;
+ $('mm').textContent=F.sim?'Simulated field with a simulated mover (position not from a catalog)':F.dem?'Position not listed on the source page: demo field':(F.src||`${F.d} · FOV ${F.fv} · ${F.w}`);
+ $('md').hidden=false;$('pl').textContent='Play';$('x').focus();$('ea').value=4;$('eb').value=19;
+ clearInterval(ft);const pg=$('pg');pg.hidden=false;let n=0;ft=setInterval(()=>{n++;const fail=n===9?2:0;$('pf').style.width=Math.min(100,n/NE*100)+'%';$('pt').textContent=fail?'2 cutouts failed, retrying…':`Fetching cutouts ${Math.min(n,NE)}/${NE}`;if(n>=NE){clearInterval(ft);pg.hidden=true}},45);render()}
+function closeM(){$('md').hidden=true;clearInterval(ft);clearInterval(bt);try{history.replaceState(null,'','#')}catch(e){}st.focus()}
+function render(){const F=M.F,e=OBS[M.k];if(M.tab==='info'&&!F.info)M.tab='view';const t=M.tab;document.querySelectorAll('#tabs button').forEach(b=>b.classList.toggle('on',b.dataset.t===t));
+ ['info','view','cmp','dis','spec','q'].forEach(k=>$('p-'+k).hidden=k!==t);$('big').hidden=t==='cmp';$('cmpw').hidden=t!=='cmp';$('sd').value=M.det;$('sc').value=M.ch;
+ const cos=F.crf,cr=F.cra-M.ox/3600/cos,cd=F.cde+M.oy/3600;$('co').textContent=F.dem?'demo field':`RA ${cr.toFixed(4)}°  Dec ${cd.toFixed(4)}°`;$('fv').textContent=`${(M.fov/60).toFixed(1)}′ (${Math.round(M.fov)}″${M.fov>=3600?' = '+(M.fov/3600).toFixed(2)+'°':''})`;$('ob').textContent=`${pretty(e)} · ${rel(e)}`;$('fov').value=M.fov;$('dt').value=iso(e);
+ const p=M.k/(NE-1);$('rk').style.left=p*100+'%';$('fill').style.width=p*100+'%';$('trk').setAttribute('aria-valuenow',M.k+1);
+ if(t==='cmp')cmp();else sky($('big'),F,M.k,{...ob(),full:0});
+ if(t==='info')info();if(t==='dis')dis();if(t==='spec')spec();if(t==='q')qual();wr()}
+
+function info(){const F=M.F,I=F.info,dl=I.dl,U=(a,x)=>`${SRC}system/avm_images/binaries/${dl.id}/${a}/${x||dl.fn}?${dl.ts}`,L=(p,t)=>`<a href="${SRC}${p}" target="_blank" rel="noopener">${t}</a>`;
+ $('p-info').innerHTML=`<img src="${U(dl.k[1])}" alt="${I.full}" style="width:100%;border-radius:8px;background:#04060d" onerror="this.remove()"><small>The real image loads when your browser can reach spherex.caltech.edu. The canvas on the left is always a simulated sky.</small><h3>${I.full}</h3>
+ <dl><dt>Entry</dt><dd>${I.kind} · ${F.d}</dd><dt>Credit</dt><dd>${F.c||'not listed on the page'}</dd><dt>Object</dt><dd>${I.obj[0]}</dd><dt>Type</dt><dd>${I.obj[1]}</dd>${I.obj[2]?`<dt>Distance</dt><dd>${I.obj[2]}</dd>`:''}<dt>Position</dt><dd>${I.pos}</dd><dt>Field of view</dt><dd>${F.fv}</dd><dt>Orientation</dt><dd>${I.ori||'not listed'}</dd><dt>Wavelengths</dt><dd>${F.w}</dd></dl>
+ ${I.bands.length?`<table><tr><th>Band</th><th>Wavelength</th><th>Telescope</th></tr>${I.bands.map(b=>`<tr><td>${b[0]}</td><td>${b[1]}</td><td>SPHEREx</td></tr>`).join('')}</table>`:'<small>This page has no colour-mapping table; wavelengths come from its description.</small>'}
+ ${I.txt.map(t=>`<p style="margin:0">${t}</p>`).join('')}
+ ${I.vis?`<details><summary>Visual description</summary><p>${I.vis}</p></details>`:''}
+ <b>Downloads</b><ul>${dl.k.map((k,i)=>`<li><a href="${U(k)}" target="_blank" rel="noopener">JPG ${dl.d[i]} (${dl.s[i]})</a></li>`).join('')}${dl.t?`<li><a href="${U('original',dl.fn.replace('.jpg','.tif'))}" target="_blank" rel="noopener">TIF ${dl.t[0]} (${dl.t[1]})</a></li>`:''}</ul>
+ ${I.rel.length?`<b>Related media</b><ul style="columns:1">${I.rel.map(r=>`<li>${r[0]}: ${L(r[2],r[1])}</li>`).join('')}</ul>`:''}
+ <div class="row" style="justify-content:flex-start"><button id="jd2">See the sky on ${F.d}</button>${L('image/'+F.u,'Open the real page ↗')}</div>`;
+ $('jd2').onclick=()=>{M.k=nearK(fromIso(I.iso));M.tab='view';render()}}
+function cmp(){const F=M.F,A=+$('ea').value,B=+$('eb').value,o=ob();o.fov=Math.min(M.fov,400);const ca=$('ca'),cb=$('cb'),cr=$('cr'),m=document.querySelector('input[name=md]:checked').value,chB=$('chb').checked?(M.ch%17)+1:M.ch;
+ clearInterval(bt);sky(ca,F,A,o);sky(cb,F,B,{...o,ch:chB});cr.hidden=!(m==='diff'||m==='sum');cb.hidden=m==='blink';
+ if(m==='blink'){let s=0;bt=setInterval(()=>{s^=1;sky(ca,F,s?B:A,{...o,ch:s?chB:M.ch})},600)}
+ if(m==='diff'||m==='sum'){const a=ca.getContext('2d').getImageData(0,0,300,300),b=cb.getContext('2d').getImageData(0,0,300,300),r=cr.getContext('2d'),im=r.createImageData(300,300);
+  for(let i=0;i<a.data.length;i+=4){const la=(a.data[i]+a.data[i+1]+a.data[i+2])/3,lb=(b.data[i]+b.data[i+1]+b.data[i+2])/3;
+   if(m==='sum'){const v=Math.min(255,la+lb);im.data.set([v,v,v*.9,255],i)}else{const d=Math.max(-1,Math.min(1,(la-lb)/60)),c=d<0?[70,160,255]:[255,170,60];im.data.set([lerp(14,c[0],Math.abs(d)),lerp(16,c[1],Math.abs(d)),lerp(32,c[2],Math.abs(d)),255],i)}}r.putImageData(im,0,0)}
+ const ok=(c,t)=>`<div class="${c?'ok':'warn'}">${c?'✓':'⚠'} ${t}</div>`;
+ $('cmpq').innerHTML=ok(true,'Same detector D'+M.det)+ok(!$('chb').checked,$('chb').checked?'Different wavelength channels: differences may be spectral, not motion':'Same wavelength channel ch'+M.ch)+ok(rel(OBS[A])===rel(OBS[B]),rel(OBS[A])===rel(OBS[B])?'Same release ('+rel(OBS[A])+')':'Different releases: check calibration before trusting the difference')+ok(true,'Same TAN/WCS grid and zodi model subtracted')}
+function dets(){const F=M.F,e=OBS[M.k];return F.obj.map(b=>{const mv=Math.hypot(...b.pm)*(T1-T0),pa=Math.round((Math.atan2(-b.pm[0],b.pm[1])*180/Math.PI+360)%360),va=b.id==='T'&&F.kind==='v'?'±60% (variable)':b.id==='T'?'<5%':'<8%';
+ const x=b.id==='T'?0:b.x0+(e-TR)*b.pm[0],y=b.id==='T'?0:b.y0+(e-TR)*b.pm[1];return{id:b.id,ra:(F.cra-x/3600/F.crf).toFixed(4),de:(F.cde+y/3600).toFixed(4),mv:mv.toFixed(1),px:(mv/PXS).toFixed(1),pa,va,st:b.st,bright:(b.id==='T'?F.b:b.b).toFixed(2)}})}
+function dis(){const d=dets();$('dtab').innerHTML=`<table><tr><th>ID</th><th>RA / Dec (now)</th><th>Motion over baseline</th><th>Brightness</th><th>Match</th></tr>${d.map(r=>`<tr><td>${r.id}</td><td>${r.ra}, ${r.de}</td><td>${r.mv}″ (${r.px} px), PA ${r.pa}°</td><td>${r.bright} · ${r.va}</td><td class="${r.st.startsWith('Unm')||r.st.startsWith('Not')?'warn':'ok'}">${r.st}</td></tr>`).join('')}</table>`;$('dets').checked=true;
+ try{M.saved=JSON.parse(localStorage.getItem('spxc')||'[]')}catch(e){}$('saved').innerHTML=M.saved.length?`<b>Saved candidates</b><br>${M.saved.map(s=>`${s.n}: ${s.id} at ${s.ra}, ${s.de} (${s.st})`).join('<br>')}`:''}
+$('run').onclick=()=>{$('dets').checked=true;render()};
+$('sv').onclick=()=>{const u=dets().find(r=>r.id==='U');const v={n:M.F.n,...u};M.saved.push(v);try{localStorage.setItem('spxc',JSON.stringify(M.saved))}catch(e){}dis()};
+$('ex').onclick=()=>{const d=dets(),t=$('rep');t.hidden=false;t.value=`SPHEREx candidate report (simulated)\nField: ${M.F.n}\nEpoch: ${pretty(OBS[M.k])} (${rel(OBS[M.k])})\n`+d.map(r=>`${r.id}: ${r.ra}, ${r.de}; moved ${r.mv}″; ${r.st}`).join('\n');t.select();try{navigator.clipboard.writeText(t.value)}catch(e){}};
+function spec(){const c=$('spc'),x=c.getContext('2d'),W=c.width,H=c.height,F=M.F,co=$('co4').checked,sig=co?.03:.08,X=l=>34+(W-46)*(l-.75)/4.25,Y=v=>H-26-(H-44)*v/1.25,r=rng(7);
+ x.fillStyle='#0b0c14';x.fillRect(0,0,W,H);x.strokeStyle='#2b3050';x.fillStyle='#9aa0bf';x.font='11px Barlow,sans-serif';[1,2,3,4,5].forEach(l=>{x.beginPath();x.moveTo(X(l),8);x.lineTo(X(l),H-26);x.stroke();x.fillText(l+' µm',X(l)-10,H-10)});
+ const draw=(k,cl)=>{const vr=F.kind==='v'?1+.6*Math.sin(6.283*(OBS[k]-T0)/(F.P||1)):1;for(let d=1;d<=6;d++)for(let c2=1;c2<=17;c2++){const l=LAM(d,c2),v=F.b*S(F.cls,l)*vr+(r()+r()+r()-1.5)*sig;x.fillStyle=cl||HUE[d-1];x.globalAlpha=d===M.det&&c2===M.ch?1:.8;x.beginPath();x.arc(X(l),Y(v),d===M.det&&c2===M.ch?5:2.5,0,6.3);x.fill()}};
+ draw(M.k);if($('ovb').checked)draw(+$('eb').value,'#ffffff');x.globalAlpha=1;x.fillStyle='#e6f6ff';x.fillText('flux (arbitrary) vs wavelength; 102 points = 6 detectors × 17 channels',34,14);
+ $('spn').textContent=`Model shape (${F.cls}) plus simulated noise, not measured data. ${co?'Co-adding lowers the noise.':'Tick co-add to see the S/N improve.'} Selected: D${M.det} ch${M.ch} = ${LAM(M.det,M.ch).toFixed(2)} µm.`}
+const FL=[['TRANSIENT',1,'cosmic-ray-like hit'],['OVERFLOW',2,'near saturation'],['NONFUNC',64,'dead pixel'],['DICHROIC',128,'unusable, bands 3–4 overlap'],['HOT',1024,'noisy pixel'],['COLD',2048,'unresponsive pixel'],['PERSIST',131072,'persistent charge'],['CROSSTALK',1048576,''],['SOURCE',2097152,'known source'],['GHOST',4194304,''],['STREAK',33554432,'']];
+function qual(){const e=OBS[M.k],k=M.k,l=LAM(M.det,M.ch),n=(M.k*37+M.det*11)%9;
+ $('qm').innerHTML=[['Observation',`${Math.floor(e)}W${String(Math.min(52,Math.floor((e%1)*52)+1)).padStart(2,'0')}_2B_${String(100+k*37).padStart(4,'0')}_1`],['Detector',`D${M.det}`],['Wavelength',`${l.toFixed(2)} µm`],['Epoch',`${e.toFixed(3)} (MJD ${Math.round(51544+(e-2000)*365.25)})`],['Release',rel(e)],['Pixel scale',PXS+'″'],['Flagged pixels',(1.2+n*.4).toFixed(1)+'%'],['Fit quality (fit_ql)',(1+n*.04).toFixed(2)],['Background',(.4+n*.03).toFixed(2)+' MJy/sr (sim)'],['Zodi','model subtracted']].map(r=>`<dt>${r[0]}</dt><dd>${r[1]}</dd>`).join('');
+ $('qf').innerHTML=`<small>Real flag names and bit values from IRSA’s spectrophotometry help:</small><table>${FL.map(f=>`<tr><td>${f[0]}</td><td>${f[1]}</td><td>${f[2]}</td></tr>`).join('')}</table>`}
+['tr','mkc','cat','gaia','wise','dets','mask','co4','ovb','chb'].forEach(k=>$(k).onchange=()=>render());
+['ea','eb','sd','sc'].forEach(k=>$(k).onchange=()=>{if(k==='sd')M.det=+$(k).value;if(k==='sc')M.ch=+$(k).value;render()});document.querySelectorAll('input[name=md]').forEach(r=>r.onchange=render);
+$('fov').oninput=e=>{M.fov=+e.target.value;render()};$('zi').onclick=()=>{M.fov=Math.max(60,M.fov/1.4);render()};$('zo').onclick=()=>{M.fov=Math.min(M.F.fmax,M.fov*1.4);render()};$('rs').onclick=()=>{M.ox=M.oy=0;M.fov=M.F.fv0||240;render()};
+$('pl').onclick=()=>{M.play=!M.play;$('pl').textContent=M.play?'Pause':'Play'};
+$('go2').onclick=()=>{const v=$('dt').value;if(!v)return;const y=fromIso(v);M.k=nearK(y);render()};
+$('sh').onclick=()=>{const b=$('sh');try{navigator.clipboard.writeText(location.href).then(()=>b.textContent='Link copied',()=>b.textContent='Copy failed: use the address bar')}catch(e){b.textContent='Copy failed: use the address bar'}setTimeout(()=>b.textContent='Copy share link',1800)};
+$('x').onclick=closeM;$('md').onclick=e=>{if(e.target.id==='md')closeM()};addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('md').hidden)closeM()});
+const big=$('big');let pd=null;big.onpointerdown=e=>{pd={x:e.clientX,y:e.clientY};big.setPointerCapture(e.pointerId)};
+big.onpointermove=e=>{if(!pd)return;const f=M.fov/big.getBoundingClientRect().width;M.ox-=(e.clientX-pd.x)*f;M.oy+=(e.clientY-pd.y)*f;pd={x:e.clientX,y:e.clientY};render()};big.onpointerup=()=>{pd=null};
+big.onwheel=e=>{e.preventDefault();M.fov=Math.max(60,Math.min(M.F.fmax,M.fov*Math.exp(e.deltaY*.001)));render()};
+const trk=$('trk');let td=false;OBS.forEach(e=>{const d=document.createElement('i');d.className='tk';d.style.left=(e-T0)/(T1-T0)*100+'%';trk.append(d)});
+const dv=document.createElement('i');dv.className='dv';dv.style.left=(2026.4-T0)/(T1-T0)*100+'%';trk.append(dv);
+const fx=cx=>{const r=trk.getBoundingClientRect();return Math.round(Math.max(0,Math.min(1,(cx-r.left)/r.width))*(NE-1))};
+trk.onpointerdown=e=>{td=true;trk.setPointerCapture(e.pointerId);M.k=fx(e.clientX);render()};trk.onpointermove=e=>{if(td){M.k=fx(e.clientX);render()}};trk.onpointerup=()=>{td=false};
+trk.onkeydown=e=>{if(e.key==='ArrowRight')M.k=Math.min(NE-1,M.k+1);else if(e.key==='ArrowLeft')M.k=Math.max(0,M.k-1);else return;e.preventDefault();render()};
+/* search, url, validation */
+function pa(s,h){s=s.trim();if(/[:hms]/i.test(s)){const p=s.replace(/[hms°'"]/gi,' ').replace(/:/g,' ').trim().split(/\s+/).map(Number);if(p.some(isNaN))return NaN;const sg=/^-/.test(s)?-1:1;return sg*(Math.abs(p[0])+(p[1]||0)/60+(p[2]||0)/3600)*(h?15:1)}return s===''?NaN:+s}
+$('f').onsubmit=e=>{e.preventDefault();const r=pa($('ra').value,true),d=pa($('dec').value,false),fv=+$('fv0').value*+$('fu').value,er=$('err'),dv=$('dt0').value;er.textContent='';
+ if(isNaN(r)||r<0||r>=360)return er.textContent='RA must be a number between 0 and 360 degrees, or hh:mm:ss.';if(isNaN(d)||d<-90||d>90)return er.textContent='Dec must be between −90 and +90 degrees, or dd:mm:ss.';if(isNaN(fv)||fv<60||fv>21600)return er.textContent='Field of view must be between 60″ (1′) and 21600″ (6°).';
+ const k=dv?nearK(fromIso(dv)):12,cs=Math.cos(d*Math.PI/180)||1,all=[...TGF.map((F,i)=>[F,'t'+i]),...IMF.map((F,i)=>[F,'i'+i])].filter(x=>!x[0].dem);
+ let m=all.find(([F])=>[[F.ra,F.dec],[F.cra,F.cde]].some(([a,b])=>Math.hypot((a-r)*F.crf,b-d)<.05));
+ const cov=IMF.map((F,i)=>[F,i]).filter(([F])=>F.fd&&!F.dem&&Math.abs(F.ra-r)*cs<Math.max(...F.fd)/2&&Math.abs(F.dec-d)<Math.max(...F.fd)/2);
+ if(!m&&cov.length)m=[cov[0][0],'i'+cov[0][1]];
+ if(m)openM(m[0],m[1],{fov:fv,k,tab:'view',ox:(m[0].cra-r)*3600*m[0].crf,oy:(d-m[0].cde)*3600});else openM(mk({n:'Simulated field',ra:r,dec:d,span:Math.max(1,fv*2/600)}),'g',{fov:fv,k,tab:'view'});
+ $('mm').textContent+=' · '+[dv&&`epoch ${pretty(OBS[k])} (nearest to your date)`,cov.length&&`inside the footprint of ${cov.map(c=>c[0].n).join('; ')}`,'the three all-sky maps cover every position'].filter(Boolean).join(' · ')};
+function wr(){try{history.replaceState(null,'','#'+new URLSearchParams({s:M.src,k:M.k,tab:M.tab,fov:M.fov,det:M.det,ch:M.ch,ra:M.F.ra.toFixed(4),dec:M.F.dec.toFixed(4)}))}catch(e){}}
+function rd(){const p=new URLSearchParams(location.hash.slice(1));if(!p.get('s'))return;const s=p.get('s');let F;if(s[0]==='i')F=IMF[+s.slice(1)];else if(s[0]==='t')F=TGF[+s.slice(1)];else F=mk({n:'Simulated field',ra:+p.get('ra'),dec:+p.get('dec'),span:Math.max(1,(+p.get('fov')||240)*2/600)});
+ if(F)openM(F,s,{k:Math.max(0,Math.min(NE-1,+p.get('k')||12)),tab:p.get('tab')||(F.info?'info':'view'),fov:+p.get('fov')||F.fv0||240,det:+p.get('det')||2,ch:+p.get('ch')||7})}
+$('val').innerHTML=`<table><tr><th>Target</th><th>Catalog position (epoch)</th><th>Motion</th><th>Offset by 2026.1</th><th>In a 240″ field centred on the catalog position?</th></tr>${TGF.map(F=>{const m=Math.hypot(...F.pm),off=m*(TR-F.ref);return`<tr><td>${F.n}</td><td>${F.ra.toFixed(4)}°, ${F.dec.toFixed(4)}° (${F.ref})</td><td>${m.toFixed(3)}″/yr</td><td>${off.toFixed(0)}″</td><td class="${off<120?'ok':'warn'}">${off<120?'yes':'NO: recentre on the propagated position'}</td></tr>`}).join('')}</table><small>Why it matters: SPHEREx observes in 2025–2026, so the cutout must be centred where the object is now, not where the catalog says it was.</small>`;
+addEventListener('resize',size);size();spin=!matchMedia('(prefers-reduced-motion: reduce)').matches;$('sp').textContent=spin?'STOP ORBIT':'SPIN ORBIT';requestAnimationFrame(loop);rd();
+</script>
 </body>
 </html>
