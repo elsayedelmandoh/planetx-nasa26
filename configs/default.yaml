@@ -9,6 +9,11 @@ DATA_RELEASES: ["spherex_dr1", "spherex_qr3"]
 FOV_PRESETS_ARCMIN: [2, 5, 15, 30]
 DEFAULT_FOV_ARCMIN: 5
 
+# parallel cutout downloads (irsa per-request latency dominates)
+DOWNLOAD_WORKERS: 4
+# max visits kept per survey pass, spread evenly in time
+MAX_VISITS_PER_PASS: 25
+
 # position epoch for TARGETS coords. proper motions below move the sources to the
 # epoch of each run's mean visit time, see src/utils/data_processing.py.
 POS_EPOCH: J2000.0

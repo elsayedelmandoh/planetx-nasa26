@@ -154,3 +154,35 @@ def test_write_png_fills_enclosed_nan_holes_white(tmp_path) -> None:
     up = UPSAMPLE_FACTOR
     assert (im[4 * up:6 * up, 4 * up:6 * up] == 255).all()
     assert im[0, 0] == 0
+
+
+def test_cap_passes_spreads_evenly_and_leaves_small_passes() -> None:
+    big = [{"mjd": float(m)} for m in range(100)]
+    small = [{"mjd": 1000.0}, {"mjd": 1001.0}]
+
+    capped = acq.cap_passes([big, small], 25)
+
+    assert len(capped[0]) == 25
+    idx = [int(round(i)) for i in np.linspace(0, 99, 25)]
+    assert [v["mjd"] for v in capped[0]] == [big[i]["mjd"] for i in idx]
+    assert capped[1] == small
+
+
+def test_download_visits_parallel_once_and_skips_failures(monkeypatch, tmp_path) -> None:
+    calls = []
+
+    def fake_download(url, ra, dec, size_deg, dest):
+        calls.append(url)
+        if "bad" in url:
+            raise RuntimeError("server busy")
+        dest.write_bytes(b"SIMPLE")
+
+    monkeypatch.setattr(acq, "download_cutout", fake_download)
+    names = ("a", "b", "bad", "c")
+    visits = [{"url": f"http://x/{n}", "path": tmp_path / n} for n in names]
+
+    acq.download_visits(visits, 1.0, 2.0, 0.1)  # must not raise
+
+    assert sorted(calls) == sorted(v["url"] for v in visits)
+    assert (tmp_path / "a").exists() and (tmp_path / "c").exists()
+    assert not (tmp_path / "bad").exists()

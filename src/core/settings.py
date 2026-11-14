@@ -35,6 +35,8 @@ class Settings(BaseSettings):
     FOV_PRESETS_ARCMIN: list[float] = [2, 5, 15, 30]
     DEFAULT_FOV_ARCMIN: float = 5
     TARGETS: list[dict] = []
+    DOWNLOAD_WORKERS: int = 4
+    MAX_VISITS_PER_PASS: int = 25
 
     # relative targets, overridable from configs/default.yaml
     DATA_REL: Path = Path("data")

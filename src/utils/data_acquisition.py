@@ -9,14 +9,16 @@ import json
 import re
 import sys
 import time
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
+import numpy as np
 import requests
 from astropy.io.votable import parse_single_table
 from astropy.time import Time
 
 from src.core.settings import settings
-from src.utils.data_processing import propagate, render_passes
+from src.utils.data_processing import group_into_passes, propagate, render_passes
 
 SIA_URL = "https://irsa.ipac.caltech.edu/SIA"
 TIMEOUT_S = (10, 120)  # fail connects fast, allow slow reads: busy irsa refuses connections
@@ -60,6 +62,34 @@ def download_cutout(url: str, ra: float, dec: float, size_deg: float, dest) -> N
     raise RuntimeError(
         f"cutout failed after {TRIES} tries: {url} -> {resp.status_code} {resp.content[:60]!r}"
     )
+
+
+def cap_passes(passes: list[list[dict]], max_visits: int) -> list[list[dict]]:
+    """keep at most max_visits evenly spread visits per pass (time-sorted input)."""
+    capped = []
+    for n, p in enumerate(passes, start=1):
+        if len(p) > max_visits:
+            idx = [int(round(i)) for i in np.linspace(0, len(p) - 1, max_visits)]
+            kept = [p[i] for i in idx]
+            print(f"capped pass {n}: {len(kept)}/{len(p)} visits")
+            capped.append(kept)
+        else:
+            capped.append(p)
+    return capped
+
+
+def download_visits(visits: list[dict], ra: float, dec: float, size_deg: float) -> None:
+    """fetch cutouts in parallel; a failed visit is skipped, not fatal."""
+
+    def fetch(v):
+        try:
+            download_cutout(v["url"], ra, dec, size_deg, v["path"])
+        except (RuntimeError, requests.RequestException) as err:
+            # irsa is often busy; one lost visit must not kill the run, a rerun fetches it later
+            print(f"skipped visit: {err}")
+
+    with ThreadPoolExecutor(max_workers=settings.DOWNLOAD_WORKERS) as ex:
+        list(ex.map(fetch, visits))
 
 
 def slugify(name: str) -> str:
@@ -161,13 +191,12 @@ def run(target: str, detector: str, fov_arcmin: float | None = None) -> list[dic
     ctr = center_slug(ra_c, dec_c, size_deg)
     raw_dir = settings.DATA_DIR / "raw" / slug / detector
     raw_dir.mkdir(parents=True, exist_ok=True)
+    # cap visits per pass before downloading; dropped visits' on-disk cutouts are just unused
+    capped = cap_passes(group_into_passes(visits), settings.MAX_VISITS_PER_PASS)
+    visits = [v for p in capped for v in p]
     for v in visits:
         v["path"] = raw_dir / (f"{ctr}_" + v["url"].rsplit("/", 1)[-1])
-        try:
-            download_cutout(v["url"], ra_c, dec_c, size_deg, v["path"])
-        except (RuntimeError, requests.RequestException) as err:
-            # irsa is often busy; one lost visit must not kill the run, a rerun fetches it later
-            print(f"skipped visit: {err}")
+    download_visits(visits, ra_c, dec_c, size_deg)
     got = [v for v in visits if v["path"].exists()]
     if not got:
         raise SystemExit(f"no {detector} cutouts for {t['name']}, irsa busy: rerun later")
