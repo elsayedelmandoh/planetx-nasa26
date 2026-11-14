@@ -2,513 +2,58 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>NASA Space Apps | Planet X - Home</title>
-  <link href="https://fonts.googleapis.com/css2?family=Barlow&family=Barlow+Condensed:wght@400;700&family=Bellefair&display=swap" rel="stylesheet">
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
-    body {
-      background: #000000;
-      color: #fff;
-      font-family: 'Barlow', sans-serif;
-      min-height: 100vh;
-      overflow-x: hidden;
-      position: relative;
-    }
-
-    /* Interactive Pure Black Starfield Canvas */
-    #spaceCanvas {
-      position: fixed;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 0;
-      pointer-events: none;
-    }
-
-    /* Unified Heading Bar */
-    header {
-      position: relative;
-      z-index: 10;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1.5rem 0 1.5rem 3rem;
-    }
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      text-decoration: none;
-      color: #fff;
-    }
-    .logo {
-      width: 46px;
-      height: 46px;
-      background: #fff;
-      color: #000;
-      border-radius: 50%;
-      display: grid;
-      place-items: center;
-      font-weight: bold;
-      font-size: 1.4rem;
-      box-shadow: 0 0 20px rgba(255, 255, 255, 0.35);
-      flex-shrink: 0;
-    }
-    .brand-text span {
-      display: block;
-      font-family: 'Barlow Condensed', sans-serif;
-      font-size: 0.8rem;
-      letter-spacing: 3px;
-      color: #D0D6F9;
-      text-transform: uppercase;
-    }
-    .brand-text strong {
-      font-family: 'Bellefair', serif;
-      font-size: 1.25rem;
-      font-weight: 400;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-    }
-    nav {
-      background: rgba(255, 255, 255, 0.05);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      padding: 0 5rem 0 3.5rem;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.15);
-      border-left: 1px solid rgba(255, 255, 255, 0.1);
-    }
-    nav ul {
-      display: flex;
-      list-style: none;
-      gap: 2.8rem;
-    }
-    nav a {
-      display: inline-block;
-      padding: 1.6rem 0;
-      color: #fff;
-      text-decoration: none;
-      font-family: 'Barlow Condensed', sans-serif;
-      font-size: 1rem;
-      letter-spacing: 2.7px;
-      text-transform: uppercase;
-      border-bottom: 3px solid transparent;
-      transition: border-color 0.25s ease;
-    }
-    nav a b {
-      margin-right: 0.55rem;
-    }
-    nav a:hover {
-      border-bottom-color: rgba(255, 255, 255, 0.5);
-    }
-    nav a.active {
-      border-bottom-color: #fff;
-    }
-
-    /* Main Container */
-    main {
-      position: relative;
-      z-index: 5;
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 2rem;
-    }
-
-    /* Hero Section */
-    .hero {
-      min-height: calc(100vh - 110px);
-      display: grid;
-      grid-template-columns: 1.2fr 1fr;
-      align-items: center;
-      gap: 3rem;
-      padding: 2rem 0 4rem;
-    }
-    .hero-tag {
-      font-family: 'Barlow Condensed', sans-serif;
-      font-size: 1.5rem;
-      letter-spacing: 4.5px;
-      color: #D0D6F9;
-      text-transform: uppercase;
-    }
-    .hero h1 {
-      font-family: 'Bellefair', serif;
-      font-size: clamp(4.5rem, 10vw, 8.5rem);
-      font-weight: 400;
-      text-transform: uppercase;
-      line-height: 1.05;
-      margin: 1rem 0 1.25rem;
-    }
-    .hero p {
-      color: #D0D6F9;
-      font-size: 1.1rem;
-      line-height: 1.8;
-      max-width: 480px;
-    }
-    .hero-hint {
-      margin-top: 1.4rem;
-      font-family: 'Barlow Condensed', sans-serif;
-      font-size: 0.9rem;
-      letter-spacing: 2.2px;
-      color: rgba(208, 214, 249, 0.7);
-      text-transform: uppercase;
-    }
-    .hero-hint strong {
-      color: #fff;
-      font-weight: 700;
-    }
-    .hero-cta-wrap {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 2rem;
-    }
-    .explore-btn {
-      width: 240px;
-      height: 240px;
-      border-radius: 50%;
-      background: #fff;
-      color: #000;
-      display: grid;
-      place-items: center;
-      text-decoration: none;
-      font-family: 'Bellefair', serif;
-      font-size: 2rem;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      position: relative;
-      transition: transform 0.3s ease;
-    }
-    .explore-btn::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.14);
-      transform: scale(1);
-      transition: transform 0.4s ease;
-      z-index: -1;
-    }
-    .explore-btn:hover {
-      transform: scale(1.03);
-    }
-    .explore-btn:hover::after {
-      transform: scale(1.42);
-    }
-    .scroll-link {
-      font-family: 'Barlow Condensed', sans-serif;
-      letter-spacing: 2.5px;
-      text-transform: uppercase;
-      font-size: 0.9rem;
-      color: #D0D6F9;
-      text-decoration: none;
-      border-bottom: 1px solid rgba(208, 214, 249, 0.35);
-      padding-bottom: 4px;
-      transition: color 0.2s, border-color 0.2s;
-    }
-    .scroll-link:hover {
-      color: #fff;
-      border-color: #fff;
-    }
-
-    /* Articles Section */
-    .articles-section {
-      padding: 4rem 0 6rem;
-      border-top: 1px solid rgba(255, 255, 255, 0.12);
-    }
-    .section-head {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      align-items: flex-end;
-      gap: 1.5rem;
-      margin-bottom: 2.5rem;
-    }
-    .section-title {
-      font-family: 'Barlow Condensed', sans-serif;
-      font-size: 1.65rem;
-      letter-spacing: 4px;
-      text-transform: uppercase;
-      font-weight: 400;
-    }
-    .section-title span {
-      opacity: 0.35;
-      font-weight: 700;
-      margin-right: 0.8rem;
-    }
-    .section-sub {
-      color: #D0D6F9;
-      margin-top: 0.4rem;
-      font-size: 1rem;
-    }
-
-    /* Filter Tabs */
-    .filter-tabs {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.6rem;
-    }
-    .tab-btn {
-      background: rgba(255, 255, 255, 0.05);
-      color: #D0D6F9;
-      border: 1px solid rgba(255, 255, 255, 0.18);
-      padding: 0.5rem 1.15rem;
-      border-radius: 30px;
-      font-family: 'Barlow Condensed', sans-serif;
-      font-size: 0.9rem;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-    .tab-btn:hover, .tab-btn.active {
-      background: #fff;
-      color: #000;
-      border-color: #fff;
-      font-weight: 700;
-    }
-
-    /* Multi-Article Grid */
-    .articles-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
-      gap: 2rem;
-    }
-    .article-card {
-      background: rgba(12, 15, 26, 0.82);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.16);
-      border-radius: 14px;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
-    }
-    .article-card:hover {
-      transform: translateY(-6px);
-      border-color: rgba(255, 255, 255, 0.65);
-      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.75);
-    }
-    .article-thumb {
-      position: relative;
-      height: 205px;
-      background: #060811;
-      overflow: hidden;
-    }
-    .article-thumb img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform 0.4s ease;
-    }
-    .article-card:hover .article-thumb img {
-      transform: scale(1.05);
-    }
-    .article-badge {
-      position: absolute;
-      top: 0.9rem;
-      left: 0.9rem;
-      background: rgba(0, 0, 0, 0.75);
-      backdrop-filter: blur(8px);
-      border: 1px solid rgba(255, 255, 255, 0.25);
-      color: #fff;
-      padding: 0.25rem 0.75rem;
-      border-radius: 20px;
-      font-family: 'Barlow Condensed', sans-serif;
-      font-size: 0.8rem;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-    }
-    .article-body {
-      padding: 1.5rem;
-      display: flex;
-      flex-direction: column;
-      flex: 1;
-    }
-    .article-meta {
-      font-family: 'Barlow Condensed', sans-serif;
-      font-size: 0.85rem;
-      letter-spacing: 2px;
-      color: #D0D6F9;
-      text-transform: uppercase;
-      margin-bottom: 0.5rem;
-    }
-    .article-body h3 {
-      font-family: 'Bellefair', serif;
-      font-size: 1.65rem;
-      font-weight: 400;
-      line-height: 1.25;
-      margin-bottom: 0.75rem;
-    }
-    .article-excerpt {
-      color: #D0D6F9;
-      font-size: 0.98rem;
-      line-height: 1.65;
-      margin-bottom: 1.5rem;
-      flex: 1;
-    }
-    .read-btn {
-      align-self: flex-start;
-      background: transparent;
-      color: #fff;
-      border: 1px solid rgba(255, 255, 255, 0.35);
-      padding: 0.55rem 1.25rem;
-      border-radius: 30px;
-      font-family: 'Barlow Condensed', sans-serif;
-      font-size: 0.9rem;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-    .read-btn:hover {
-      background: #fff;
-      color: #000;
-      border-color: #fff;
-    }
-
-    /* Full Article Reader Modal */
-    .modal {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.88);
-      backdrop-filter: blur(12px);
-      display: none;
-      place-items: center;
-      z-index: 100;
-      padding: 1.25rem;
-    }
-    .modal.open {
-      display: grid;
-    }
-    .reader-panel {
-      background: #0e1221;
-      border: 1px solid rgba(255, 255, 255, 0.22);
-      border-radius: 16px;
-      max-width: 780px;
-      width: 100%;
-      max-height: 88vh;
-      overflow-y: auto;
-      position: relative;
-      box-shadow: 0 25px 65px rgba(0, 0, 0, 0.9);
-    }
-    .close-btn {
-      position: sticky;
-      top: 1rem;
-      float: right;
-      margin: 1rem 1rem 0 0;
-      background: rgba(0, 0, 0, 0.75);
-      color: #fff;
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      padding: 0.4rem 0.95rem;
-      border-radius: 20px;
-      font-family: 'Barlow Condensed', sans-serif;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      cursor: pointer;
-      z-index: 10;
-    }
-    .close-btn:hover {
-      background: #fff;
-      color: #000;
-    }
-    .reader-banner {
-      width: 100%;
-      height: 270px;
-      object-fit: cover;
-      display: block;
-    }
-    .reader-content {
-      padding: 2rem 2.25rem 2.5rem;
-    }
-    .reader-meta {
-      font-family: 'Barlow Condensed', sans-serif;
-      color: #D0D6F9;
-      letter-spacing: 2.2px;
-      text-transform: uppercase;
-      font-size: 0.9rem;
-    }
-    .reader-content h2 {
-      font-family: 'Bellefair', serif;
-      font-size: 2.4rem;
-      font-weight: 400;
-      line-height: 1.2;
-      margin: 0.6rem 0 1.25rem;
-    }
-    .reader-text p {
-      color: #D0D6F9;
-      font-size: 1.05rem;
-      line-height: 1.8;
-      margin-bottom: 1.15rem;
-    }
-
-    @media (max-width: 860px) {
-      header { padding-left: 1.5rem; }
-      nav { padding: 0 1.5rem; }
-      nav ul { gap: 1.4rem; }
-      .hero { grid-template-columns: 1fr; text-align: center; padding-top: 1rem; }
-      .hero p { margin: 0 auto; }
-      .explore-btn { width: 190px; height: 190px; font-size: 1.6rem; }
-    }
-  
-    /* ===== Interactive layer (shared by Home / Explore / Team) ===== */
-    .fx-progress { position: fixed; top: 0; left: 0; width: 100%; height: 2px; transform: scaleX(0); transform-origin: 0 50%; background: linear-gradient(90deg, #8d97d9, #fff); box-shadow: 0 0 10px rgba(208, 214, 249, 0.6); z-index: 300; pointer-events: none; }
-    .fx-halo { position: fixed; left: 0; top: 0; width: 34px; height: 34px; margin: -17px 0 0 -17px; border: 1px solid rgba(208, 214, 249, 0.55); border-radius: 50%; pointer-events: none; z-index: 400; opacity: 0; transition: opacity 0.25s, width 0.2s, height 0.2s, margin 0.2s, background 0.2s, border-color 0.2s; }
-    .fx-halo.on { opacity: 1; }
-    .fx-halo.hot { width: 58px; height: 58px; margin: -29px 0 0 -29px; background: rgba(208, 214, 249, 0.08); border-color: #fff; }
-    .fx-halo.down { width: 22px; height: 22px; margin: -11px 0 0 -11px; }
-    @media (pointer: coarse) { .fx-halo { display: none; } }
-    .brand .logo { transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s ease; }
-    .brand:hover .logo { transform: rotate(180deg) scale(1.08); box-shadow: 0 0 30px rgba(255, 255, 255, 0.65); }
-    .article-card, .member-card { position: relative; }
-    .article-card::before, .member-card::before { content: ""; position: absolute; inset: 0; z-index: 2; pointer-events: none; opacity: 0; transition: opacity 0.3s ease; background: radial-gradient(260px circle at var(--mx, 50%) var(--my, 50%), rgba(208, 214, 249, 0.14), transparent 62%); }
-    .article-card:hover::before, .member-card:hover::before { opacity: 1; }
-    .member-card .photo-box img { transition: transform 0.45s ease; }
-    .member-card:hover .photo-box img { transform: scale(1.06); }
-    .explore-btn, .spin { will-change: translate; transition: translate 0.25s ease-out, transform 0.3s ease; }
-    @media (prefers-reduced-motion: reduce) { .fx-halo, .fx-shoot { display: none; } }
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>NASA Space Apps | Planet X</title>
+  <meta name="theme-color" content="#000000" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;600;700&family=Barlow+Condensed:wght@400;600;700&family=Bellefair&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
 </head>
-<body>
-
+<body data-page="home">
+  <div id="film" role="dialog" aria-modal="true" aria-label="Introduction film" aria-describedby="fcap"><canvas id="fc"></canvas><div id="fct"></div><div id="fcap" aria-live="polite"></div><div id="ftag">Illustrated: generated graphics, not real SPHEREx pixels.</div><button id="fskip">Skip ✕</button><div id="fbar"><button id="fback" aria-label="Previous scene">←</button><button id="fpause" aria-label="Pause or resume">II</button><div id="fdots"></div><button id="fcc" aria-pressed="true" aria-label="Captions on or off">CC</button><button id="flang" aria-label="Switch language">عربي</button><button id="fsnd" aria-pressed="false" aria-label="Sound on or off">Sound</button><button id="fnext" class="go">Next →</button></div><div id="fprog"><i></i></div></div>
+  <script>(function(){var r=location.hash.replace(/^#/,'').split('?')[0]||'home';var ok=['home','explore','museum','team','signin'].indexOf(r)>=0?r:'home';document.body.dataset.page=ok;if(ok==='home'){var f=document.getElementById('film');if(f)f.className='on show'}})();</script>
   <canvas id="spaceCanvas"></canvas>
-
   <header>
-    <a href="home.html" class="brand">
+    <a href="#home" class="brand">
       <div class="logo">✦</div>
       <div class="brand-text">
         <span>NASA Space Apps</span>
         <strong>Planet X</strong>
       </div>
     </a>
-    <nav>
+    <nav aria-label="Main">
       <ul>
-        <li><a href="home.html" class="active"><b>00</b> Home</a></li>
-        <li><a href="index.html"><b>01</b> Blink Tool</a></li>
-        <li><a href="team.html"><b>02</b> Team</a></li>
+        <li><a href="#intro" id="introBtn" role="button" aria-haspopup="dialog"><b>00</b><i class="play">▶</i> Intro</a></li>
+        <li><a href="#signin"><b>01</b> Sign in</a></li>
+        <li><a href="#home"><b>02</b> Home</a></li>
+        <li><a href="#explore"><b>03</b> Explore</a></li>
+        <li><a href="#museum"><b>04</b> Museum Halls</a></li>
+        <li><a href="#team"><b>05</b> Team</a></li>
+        <li><a href="index.html"><b>06</b> Blink tool</a></li>
       </ul>
     </nav>
   </header>
-
+  <div id="views">
+<div class="view" id="view-home" data-view="home">
   <main>
-    <!-- Hero Section -->
     <section class="hero">
       <div>
-        <div class="hero-tag">So, you want to travel to</div>
-        <h1>Space</h1>
-        <p>
-          Let’s face it; if you want to go to space, you might as well genuinely go to
-          outer space and not hover kind of on the edge of it. Well sit back, and relax
-          because we’ll give you a truly out of this world experience!
+        <div class="hero-tag rv" style="--d:0">Spot the movers in the</div>
+        <h1 class="rv" style="--d:1">Sky</h1>
+        <p class="rv" style="--d:2">
+          Since 2025, NASA’s SPHEREx mission has mapped the entire sky every six months in
+          102 bands of near-infrared light. Comets, asteroids, stars, brown dwarfs and even new
+          planets give themselves away by shifting position between images. Enter a patch of sky,
+          flip through the frames like a little video, and find what moves.
         </p>
-        <div class="hero-hint">
+        <div class="hero-hint rv" style="--d:3">
           Click anywhere in space to spawn more star particles &bull; Active Particles: <strong id="particleCount">140</strong>
         </div>
       </div>
-      <div class="hero-cta-wrap">
-        <a href="index.html" class="explore-btn">Blink Tool</a>
-        <a href="#articles" class="scroll-link">↓ Read Mission Articles</a>
+      <div class="hero-cta-wrap rv" style="--d:3">
+        <a href="#explore" class="explore-btn">Explore</a>
+        <a href="#home" class="scroll-link" data-scroll="articles">↓ Read the Challenge Brief</a>
       </div>
     </section>
 
@@ -516,19 +61,20 @@
     <section class="articles-section" id="articles">
       <div class="section-head">
         <div>
-          <h2 class="section-title"><span>01</span> Mission Articles &amp; Dispatches</h2>
-          <p class="section-sub">Latest findings, spectral sky surveys, and deep-space exploration logs.</p>
+          <h2 class="section-title"><span>01</span> Challenge Briefing</h2>
+          <p class="section-sub">Background, objectives and test targets for the Planet X and SPHEREx challenge.</p>
         </div>
         <div class="filter-tabs" id="filterTabs">
-          <button class="tab-btn active" data-cat="All">All Articles</button>
-          <button class="tab-btn" data-cat="Planet X">Planet X</button>
-          <button class="tab-btn" data-cat="Deep Sky">Deep Sky</button>
-          <button class="tab-btn" data-cat="Telemetry">Telemetry</button>
+          <button class="tab-btn active" data-cat="All">All Topics</button>
+          <button class="tab-btn" data-cat="Challenge">Challenge</button>
+          <button class="tab-btn" data-cat="SPHEREx">SPHEREx</button>
+          <button class="tab-btn" data-cat="Discovery">Discovery</button>
         </div>
       </div>
 
       <div class="articles-grid" id="articlesGrid"></div>
     </section>
+  </main>
   </main>
 
   <!-- Full Article Reader Modal -->
@@ -543,359 +89,125 @@
       </div>
     </div>
   </div>
+</div>
+<div class="view" id="view-explore" data-view="explore">
+  <main class="explore">
+    <h1 class="page-title"><span>03</span> Pick your destination</h1>
+    <p class="page-sub">Nine real SPHEREx gallery images with their published details, five challenge targets, and a viewer. Enter any RA/Dec, field of view (60″ to 6°) and date to open that patch of sky. Pixels are simulated; names, positions, dates and wavelengths are real.</p>
+    <div id="sx" class="sx-base">
 
-  <script>
-    // 1. Interactive Pure Black Space Background - Click to Increase Particles
-    const canvas = document.getElementById("spaceCanvas");
-    const ctx = canvas.getContext("2d");
-    const countEl = document.getElementById("particleCount");
-    let width, height;
-    const stars = [];
-    const bursts = [];
-    const mouse = { x: -9999, y: -9999 };
-    const MAX_STARS = 750;
+<div class="sxhead"><form id="f"><label>RA (deg or hh:mm:ss)<input id="ra" type="text" placeholder="133.7951"></label><label>Dec (deg or dd:mm:ss)<input id="dec" type="text" placeholder="-7.2451"></label>
+<label>Field of view<span class="row" style="gap:4px"><input id="fv0" type="text" value="240" style="width:70px"><select id="fu"><option value="1">″ arcsec</option><option value="60">′ arcmin</option><option value="3600">° deg</option></select></span></label><label>Date (optional)<input type="date" id="dt0" min="2025-05-01" max="2026-11-13"></label><button class="go">Search</button></form>
+<div id="err" role="alert"></div><div class="row" id="chips"></div></div>
+<div class="stage" id="st" tabindex="0" aria-label="Ring of nine SPHEREx images. Arrow keys rotate, Enter opens."><i class="mk"></i><div class="ring" id="ring"></div></div>
+<div class="bar"><div id="sel"></div><button class="spin" id="sp">SPIN ORBIT</button></div>
+<details><summary>Validation: the five challenge targets (computed from published positions and proper motions)</summary><div id="val"></div></details>
 
-    function createStar(x, y, boosted = false) {
-      return {
-        x: x !== undefined ? x : Math.random() * width,
-        y: y !== undefined ? y : Math.random() * height,
-        r: boosted ? (Math.random() * 2.2 + 0.8) : (Math.random() * 1.7 + 0.35),
-        vx: boosted ? ((Math.random() - 0.5) * 1.1) : ((Math.random() - 0.5) * 0.22),
-        vy: boosted ? ((Math.random() - 0.5) * 1.1) : ((Math.random() - 0.5) * 0.22),
-        alpha: boosted ? 1 : (Math.random() * 0.7 + 0.25),
-        twinkle: Math.random() * 0.025 + 0.008,
-        glow: boosted ? 1.0 : 0
-      };
-    }
+    </div>
+    <p class="explore-foot">Want the science first? <a href="#museum">Walk through the Museum Halls</a>.</p>
+  </main>
 
-    function initStars() {
-      width = canvas.width = window.innerWidth;
-      height = canvas.height = window.innerHeight;
-      if (stars.length === 0) {
-        for (let i = 0; i < 140; i++) {
-          stars.push(createStar());
-        }
-        countEl.textContent = stars.length;
-      }
-    }
-    window.addEventListener("resize", initStars);
-    initStars();
+<div id="md" class="sx-base" role="dialog" aria-modal="true" aria-labelledby="mt" hidden><div class="dlg">
+<div class="dh"><div><h2 id="mt"></h2><small id="mm"></small></div><button id="x">✕ Close</button></div>
+<div id="pg" hidden><i id="pf"></i><span id="pt"></span></div>
+<div class="tabs" id="tabs"></div>
+<div class="body"><div><canvas class="s" id="big" width="560" height="560" aria-label="Sky viewer: drag to pan, scroll to zoom"></canvas>
+<div id="cmpw" hidden><canvas class="s" id="ca" width="300" height="300"></canvas><canvas class="s" id="cb" width="300" height="300"></canvas><canvas class="s full" id="cr" width="300" height="300" hidden></canvas></div></div>
+<div class="side">
+<div class="pn" id="p-info" hidden></div>
+<div class="pn" id="p-view"><dl><dt>Centre</dt><dd id="co"></dd><dt>Field of view</dt><dd id="fv"></dd><dt>Observation</dt><dd id="ob"></dd></dl>
+<label>Field of view / zoom<input id="fov" type="range" min="60" max="600" step="10"></label>
+<div class="row" style="justify-content:flex-start"><button id="pl">Play</button><button id="zi">Zoom in</button><button id="zo">Zoom out</button><button id="rs">Reset view</button></div>
+<label>Speed<input id="spd" type="range" min="1" max="12" value="4"></label>
+<label>See this sky on a date<span><input type="date" id="dt" min="2025-05-01" max="2026-11-13"> <button id="go2">Show</button></span></label>
+<div class="ck"><label class="i"><input type="checkbox" id="tr" checked>Trail</label><label class="i"><input type="checkbox" id="mkc" checked>Mark target</label><label class="i"><input type="checkbox" id="cat">Centre on catalog position</label><label class="i"><input type="checkbox" id="gaia">Gaia</label><label class="i"><input type="checkbox" id="wise">WISE</label><label class="i"><input type="checkbox" id="dets">Detections</label></div>
+<small>Aladin Lite goes in the context map slot of the real site.</small><button id="sh">Copy share link</button><a class="go real-link" id="realLink" href="index.html">open real spherex data</a></div>
+<div class="pn" id="p-cmp" hidden><div class="row" style="justify-content:flex-start"><label>Epoch A<select id="ea"></select></label><label>Epoch B<select id="eb"></select></label></div>
+<div class="ck"><label class="i"><input type="radio" name="md" value="side" checked>Side by side</label><label class="i"><input type="radio" name="md" value="blink">Blink</label><label class="i"><input type="radio" name="md" value="diff">A − B</label><label class="i"><input type="radio" name="md" value="sum">A + B</label></div>
+<label class="i"><input type="checkbox" id="chb">Use a different channel for B (shows the wavelength trap)</label><div id="cmpq"></div><small>Both frames are drawn on one TAN/WCS grid centred on the same RA/Dec.</small></div>
+<div class="pn" id="p-dis" hidden><p id="dtx" style="margin:0"><b>Explore:</b> click any spot in the image to ask “what is here?”. Somewhere in this field one moving source matches no catalog. Find it, then name it.</p><div id="dno" class="warn" hidden></div><div id="pick" aria-live="polite">Click the image to start.</div><small id="dh">The hint unlocks after your first click: try to find it yourself first.</small><button id="run" class="go">Show all detections (hint)</button><div id="dtab"></div><div class="row" style="justify-content:flex-start"><button id="sv">Save candidate</button><button id="ex">Export report</button></div><textarea id="rep" readonly hidden></textarea><div id="saved"></div>
+<small>How it works: align frames on one grid, subtract, find residual pairs, link them into a track, then match against Gaia and WISE. Anything left unmatched is a candidate.</small></div>
+<div class="pn" id="p-spec" hidden><div class="row" style="justify-content:flex-start"><label>Detector<select id="sd"></select></label><label>Channel (1–17)<select id="sc"></select></label></div>
+<div class="ck"><label class="i"><input type="checkbox" id="co4">Co-add detectors and epochs (better S/N)</label><label class="i"><input type="checkbox" id="ovb">Overlay epoch B</label></div><canvas class="s" id="spc" width="420" height="260" style="aspect-ratio:auto"></canvas><small id="spn"></small></div>
+<div class="pn" id="p-q" hidden><dl id="qm"></dl><label class="i"><input type="checkbox" id="mask">Show bad-pixel mask on the image</label><div id="qf"></div></div>
+</div></div>
+<div class="tl"><div id="trk" role="slider" tabindex="0" aria-label="Observation date" aria-valuemin="1" aria-valuemax="24"><div id="fill"></div>
+<svg id="rk" viewBox="0 0 24 24" aria-hidden="true"><g transform="rotate(90 12 12)"><path d="M12 1.5c3.2 3 4.2 7.2 4.2 11.5l-2.2 3.2h-4l-2.2-3.2c0-4.3 1-8.5 4.2-11.5z" fill="#fff" stroke="#7b8ba5" stroke-width=".6"/><circle cx="12" cy="9" r="1.9" fill="#1e90ff"/><path d="M7.8 12.5l-3.3 4.8 3.7-1.2zM16.2 12.5l3.3 4.8-3.7-1.2z" fill="#ff5d73"/><path d="M10 16.5h4l-2 5.8z" fill="#D0D6F9"/></g></svg></div>
+<div class="lab"><span>May 2025</span><span>DR1 | QR3</span><span>Nov 2026</span></div></div>
+</div></div>
 
-    window.addEventListener("pointermove", (e) => {
-      mouse.x = e.clientX;
-      mouse.y = e.clientY;
-    });
+</div>
+<div class="view" id="view-museum" data-view="museum">
+  <main>
+    <h1 class="page-title"><span>04</span> Museum halls</h1>
+    <p class="page-sub">Four short exhibitions explain the science behind this project. Each one is interactive and ends in the real tool that uses it.</p>
+    <div class="hall-grid" id="hgrid">
+      <button class="hall-card" type="button" aria-haspopup="dialog">
+        <span class="hall-art"><svg viewBox="0 0 320 150" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect x="40" y="0" width="60" height="150" fill="#fff" opacity=".08"/><rect x="108" y="0" width="170" height="150" fill="#D0D6F9" opacity=".1"/><path d="M14 132C70 130 96 40 132 34 170 30 200 92 306 126" stroke="#D0D6F9" fill="none" stroke-width="2" stroke-linecap="round"/><line x1="132" y1="26" x2="132" y2="136" stroke="#fff" stroke-dasharray="4 4" opacity=".7"/></svg></span>
+        <span class="hall-body"><span class="hall-eyebrow">Hall 01</span><h3>Infrared Universe</h3><p>Why does SPHEREx look in the infrared?</p><span class="hall-go"><span>Enter the hall</span></span></span>
+      </button>
+      <button class="hall-card" type="button" aria-haspopup="dialog">
+        <span class="hall-art"><svg viewBox="0 0 320 150" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><path d="M12 48C60 52 78 54 96 64 104 108 112 108 120 66 150 70 170 72 186 76 190 112 196 112 200 78 232 84 252 88 268 92 272 122 280 122 284 96 296 98 306 100" stroke="#D0D6F9" fill="none" stroke-width="2" stroke-linecap="round"/><g stroke="#D0D6F9" opacity=".3"><line x1="108" y1="20" x2="108" y2="130"/><line x1="193" y1="20" x2="193" y2="130"/><line x1="278" y1="20" x2="278" y2="130"/></g></svg></span>
+        <span class="hall-body"><span class="hall-eyebrow">Hall 02</span><h3>Dust and Ices</h3><p>How can light reveal frozen water?</p><span class="hall-go"><span>Enter the hall</span></span></span>
+      </button>
+      <button class="hall-card" type="button" aria-haspopup="dialog">
+        <span class="hall-art"><svg viewBox="0 0 320 150" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><g stroke="#fff" opacity=".18"><line x1="16" y1="36" x2="16" y2="54"/><line x1="26" y1="36" x2="26" y2="54"/><line x1="36" y1="36" x2="36" y2="54"/><line x1="46" y1="36" x2="46" y2="54"/><line x1="56" y1="36" x2="56" y2="54"/><line x1="66" y1="36" x2="66" y2="54"/><line x1="76" y1="36" x2="76" y2="54"/><line x1="86" y1="36" x2="86" y2="54"/><line x1="96" y1="36" x2="96" y2="54"/><line x1="106" y1="36" x2="106" y2="54"/><line x1="116" y1="36" x2="116" y2="54"/><line x1="126" y1="36" x2="126" y2="54"/><line x1="136" y1="36" x2="136" y2="54"/><line x1="146" y1="36" x2="146" y2="54"/><line x1="156" y1="36" x2="156" y2="54"/><line x1="166" y1="36" x2="166" y2="54"/><line x1="176" y1="36" x2="176" y2="54"/><line x1="186" y1="36" x2="186" y2="54"/><line x1="196" y1="36" x2="196" y2="54"/><line x1="206" y1="36" x2="206" y2="54"/><line x1="216" y1="36" x2="216" y2="54"/><line x1="226" y1="36" x2="226" y2="54"/><line x1="236" y1="36" x2="236" y2="54"/><line x1="246" y1="36" x2="246" y2="54"/><line x1="256" y1="36" x2="256" y2="54"/><line x1="266" y1="36" x2="266" y2="54"/><line x1="276" y1="36" x2="276" y2="54"/><line x1="286" y1="36" x2="286" y2="54"/><line x1="296" y1="36" x2="296" y2="54"/><line x1="306" y1="36" x2="306" y2="54"/><line x1="316" y1="36" x2="316" y2="54"/><line x1="16" y1="100" x2="16" y2="118"/><line x1="26" y1="100" x2="26" y2="118"/><line x1="36" y1="100" x2="36" y2="118"/><line x1="46" y1="100" x2="46" y2="118"/><line x1="56" y1="100" x2="56" y2="118"/><line x1="66" y1="100" x2="66" y2="118"/><line x1="76" y1="100" x2="76" y2="118"/><line x1="86" y1="100" x2="86" y2="118"/><line x1="96" y1="100" x2="96" y2="118"/><line x1="106" y1="100" x2="106" y2="118"/><line x1="116" y1="100" x2="116" y2="118"/><line x1="126" y1="100" x2="126" y2="118"/><line x1="136" y1="100" x2="136" y2="118"/><line x1="146" y1="100" x2="146" y2="118"/><line x1="156" y1="100" x2="156" y2="118"/><line x1="166" y1="100" x2="166" y2="118"/><line x1="176" y1="100" x2="176" y2="118"/><line x1="186" y1="100" x2="186" y2="118"/><line x1="196" y1="100" x2="196" y2="118"/><line x1="206" y1="100" x2="206" y2="118"/><line x1="216" y1="100" x2="216" y2="118"/><line x1="226" y1="100" x2="226" y2="118"/><line x1="236" y1="100" x2="236" y2="118"/><line x1="246" y1="100" x2="246" y2="118"/><line x1="256" y1="100" x2="256" y2="118"/><line x1="266" y1="100" x2="266" y2="118"/><line x1="276" y1="100" x2="276" y2="118"/><line x1="286" y1="100" x2="286" y2="118"/><line x1="296" y1="100" x2="296" y2="118"/><line x1="306" y1="100" x2="306" y2="118"/><line x1="316" y1="100" x2="316" y2="118"/></g><path d="M16 45H92" stroke="#D0D6F9" fill="none" stroke-width="2" stroke-linecap="round" opacity=".5"/><circle cx="92" cy="45" r="5" fill="#D0D6F9"/><path d="M16 109H236" stroke="#D0D6F9" fill="none" stroke-width="2" stroke-linecap="round" opacity=".5"/><circle cx="236" cy="109" r="5" fill="#fff"/></svg></span>
+        <span class="hall-body"><span class="hall-eyebrow">Hall 03</span><h3>Moving Stars</h3><p>How far does a star drift?</p><span class="hall-go"><span>Enter the hall</span></span></span>
+      </button>
+      <button class="hall-card" type="button" aria-haspopup="dialog">
+        <span class="hall-art"><svg viewBox="0 0 320 150" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><path d="M40 75H280" stroke="#D0D6F9" stroke-width="2" opacity=".5"/><circle cx="40" cy="75" r="12" fill="#0e1221" stroke="#D0D6F9" stroke-width="2"/><circle cx="100" cy="75" r="12" fill="#0e1221" stroke="#D0D6F9" stroke-width="2"/><circle cx="160" cy="75" r="12" fill="#0e1221" stroke="#D0D6F9" stroke-width="2"/><circle cx="220" cy="75" r="12" fill="#0e1221" stroke="#D0D6F9" stroke-width="2"/><circle cx="280" cy="75" r="12" fill="#fff" stroke="#D0D6F9" stroke-width="2"/></svg></span>
+        <span class="hall-body"><span class="hall-eyebrow">Hall 04</span><h3>Discovery</h3><p>How does a candidate become a result?</p><span class="hall-go"><span>Enter the hall</span></span></span>
+      </button>
+    </div>
+  </main>
 
-    window.addEventListener("pointerleave", () => {
-      mouse.x = -9999;
-      mouse.y = -9999;
-    });
-
-    // Each click adds new persistent star particles + a visual shockwave ring
-    window.addEventListener("click", (e) => {
-      if (e.target.closest("a, button, .article-card, .reader-panel, nav")) return;
-
-      const addCount = 18;
-      for (let i = 0; i < addCount; i++) {
-        if (stars.length >= MAX_STARS) {
-          stars.shift();
-        }
-        const spreadX = e.clientX + (Math.random() - 0.5) * 70;
-        const spreadY = e.clientY + (Math.random() - 0.5) * 70;
-        stars.push(createStar(spreadX, spreadY, true));
-      }
-      countEl.textContent = stars.length;
-
-      bursts.push({
-        x: e.clientX,
-        y: e.clientY,
-        radius: 6,
-        alpha: 0.75
-      });
-    });
-
-    function animateSpace() {
-      ctx.fillStyle = "#000000";
-      ctx.fillRect(0, 0, width, height);
-
-      // Subtle cursor radial nebula glow
-      if (mouse.x > 0 && mouse.y > 0) {
-        const grad = ctx.createRadialGradient(mouse.x, mouse.y, 0, mouse.x, mouse.y, 240);
-        grad.addColorStop(0, "rgba(208, 214, 249, 0.09)");
-        grad.addColorStop(1, "rgba(0, 0, 0, 0)");
-        ctx.fillStyle = grad;
-        ctx.fillRect(0, 0, width, height);
-      }
-
-      // Draw & update star particles
-      for (let i = 0; i < stars.length; i++) {
-        const s = stars[i];
-        s.x += s.vx;
-        s.y += s.vy;
-
-        // Gradually settle boosted burst velocity into smooth drift
-        if (Math.abs(s.vx) > 0.25) s.vx *= 0.97;
-        if (Math.abs(s.vy) > 0.25) s.vy *= 0.97;
-        if (s.glow > 0) s.glow = Math.max(0, s.glow - 0.015);
-
-        if (s.x < 0) s.x = width;
-        if (s.x > width) s.x = 0;
-        if (s.y < 0) s.y = height;
-        if (s.y > height) s.y = 0;
-
-        s.alpha += s.twinkle;
-        if (s.alpha > 1 || s.alpha < 0.2) s.twinkle *= -1;
-
-        const dx = mouse.x - s.x;
-        const dy = mouse.y - s.y;
-        const dist = Math.hypot(dx, dy);
-
-        // Constellation lines to cursor
-        if (dist < 155) {
-          ctx.beginPath();
-          ctx.moveTo(s.x, s.y);
-          ctx.lineTo(mouse.x, mouse.y);
-          ctx.strokeStyle = `rgba(208, 214, 249, ${(1 - dist / 155) * 0.32})`;
-          ctx.lineWidth = 0.8;
-          ctx.stroke();
-
-          s.x -= dx * 0.0025;
-          s.y -= dy * 0.0025;
-        }
-
-        // Nearby particle-to-particle constellation links
-        for (let j = i + 1; j < stars.length; j++) {
-          const s2 = stars[j];
-          const pDist = Math.hypot(s.x - s2.x, s.y - s2.y);
-          if (pDist < 75) {
-            ctx.beginPath();
-            ctx.moveTo(s.x, s.y);
-            ctx.lineTo(s2.x, s2.y);
-            ctx.strokeStyle = `rgba(208, 214, 249, ${(1 - pDist / 75) * 0.14})`;
-            ctx.lineWidth = 0.6;
-            ctx.stroke();
-          }
-        }
-
-        ctx.beginPath();
-        ctx.arc(s.x, s.y, s.r + s.glow * 1.4, 0, Math.PI * 2);
-        ctx.fillStyle = s.glow > 0
-          ? `rgba(255, 255, 255, ${Math.min(1, s.alpha + s.glow)})`
-          : `rgba(255, 255, 255, ${s.alpha})`;
-        ctx.fill();
-      }
-
-      // Draw click ripple rings
-      for (let i = bursts.length - 1; i >= 0; i--) {
-        const b = bursts[i];
-        b.radius += 3.2;
-        b.alpha -= 0.025;
-        if (b.alpha <= 0) {
-          bursts.splice(i, 1);
-          continue;
-        }
-        ctx.beginPath();
-        ctx.arc(b.x, b.y, b.radius, 0, Math.PI * 2);
-        ctx.strokeStyle = `rgba(208, 214, 249, ${b.alpha})`;
-        ctx.lineWidth = 1.2;
-        ctx.stroke();
-      }
-
-      requestAnimationFrame(animateSpace);
-    }
-    animateSpace();
-
-    // 2. Multiple Articles Data
-    const articles = [
-      {
-        id: 1,
-        category: "Planet X",
-        date: "May 14, 2025 • DR1 Release",
-        readTime: "4 min read",
-        title: "Mapping the Outer Kuiper Belt for Planet X Signatures",
-        image: "https://images.unsplash.com/photo-1614728894747-a83421e2b9c9?auto=format&fit=crop&w=900&q=80",
-        excerpt: "Using wide-field infrared sky surveys to track subtle orbital anomalies among distant trans-Neptunian objects.",
-        content: [
-          "Deep beyond Neptune's orbit lies a cold frontier of icy bodies whose elongated trajectories hint at the gravitational influence of an unseen massive world - Planet X.",
-          "By combining multi-epoch infrared observations across consecutive survey windows, our team isolates faint moving targets against dense background starfields.",
-          "Explore the 9 candidate sky sectors directly in our interactive 3D sky wheel on the Explore page, where you can inspect coordinates and custom observation dates."
-        ]
-      },
-      {
-        id: 2,
-        category: "Deep Sky",
-        date: "Nov 02, 2025 • DR2 Release",
-        readTime: "5 min read",
-        title: "All-Sky Spectral Mapping: Unveiling Cosmic Ice & Water",
-        image: "https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&fit=crop&w=900&q=80",
-        excerpt: "How spectrophotometric imaging across 102 infrared color bands reveals hidden reservoirs of water in stellar nurseries.",
-        content: [
-          "Every patch of sky holds chemical fingerprints encoded in near-infrared light. Unlike traditional cameras that capture only a few broad colors, spectral mapping splits light into dozens of narrow bands.",
-          "This technique lets researchers measure the abundance of water ice, carbon monoxide, and organic molecules inside dense interstellar clouds before stars even ignite.",
-          "Each sector in our Explore wheel corresponds to a high-priority spectral field tracked throughout the 2025–2026 observation timeline."
-        ]
-      },
-      {
-        id: 3,
-        category: "Telemetry",
-        date: "May 19, 2026 • QR2 Release",
-        readTime: "3 min read",
-        title: "Navigating Multi-Epoch Sky Coordinates in Real Time",
-        image: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=900&q=80",
-        excerpt: "A guide to using Right Ascension, Declination, and custom date queries to compare celestial targets across seasons.",
-        content: [
-          "Because Earth orbits the Sun, every celestial sector is revisited roughly every six months under shifting solar elongation angles.",
-          "Comparing early DR1 images against later QR2 and QR3 epochs allows astronomers to separate stationary galaxies from fast-moving solar system objects.",
-          "Head over to the Explore page, click any of the 9 sky cards, and test both the numeric date selector and custom sky coordinate inputs."
-        ]
-      },
-      {
-        id: 4,
-        category: "Planet X",
-        date: "Nov 10, 2026 • QR3 Release",
-        readTime: "6 min read",
-        title: "Preparing Human & Robotic Missions for Deep-Space Frontiers",
-        image: "https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?auto=format&fit=crop&w=900&q=80",
-        excerpt: "From low-Earth orbital staging to long-range deep-space probes, see how mission timelines are engineered.",
-        content: [
-          "Charting new worlds begins with precise orbital mechanics, radiation shielding, and autonomous optical navigation.",
-          "Our NASA Space Apps Planet X initiative bridges public data visualization with real astronomical coordinate workflows so anyone can explore deep-sky sectors.",
-          "Meet the engineers, data scientists, and designers behind this project on the Team page."
-        ]
-      }
-    ];
-
-    const grid = document.getElementById("articlesGrid");
-    const modal = document.getElementById("articleModal");
-
-    function renderArticles(filter = "All") {
-      grid.innerHTML = "";
-      const filtered = filter === "All" ? articles : articles.filter(a => a.category === filter);
-
-      filtered.forEach(art => {
-        const card = document.createElement("article");
-        card.className = "article-card";
-        card.innerHTML = `
-          <div class="article-thumb">
-            <img src="${art.image}" alt="${art.title}">
-            <span class="article-badge">${art.category}</span>
-          </div>
-          <div class="article-body">
-            <div class="article-meta">${art.date} &bull; ${art.readTime}</div>
-            <h3>${art.title}</h3>
-            <p class="article-excerpt">${art.excerpt}</p>
-            <button class="read-btn">Read Full Article →</button>
-          </div>
-        `;
-        card.querySelector(".read-btn").addEventListener("click", () => openReader(art));
-        grid.appendChild(card);
-      });
-    }
-
-    function openReader(art) {
-      document.getElementById("readerImg").src = art.image;
-      document.getElementById("readerMeta").textContent = `${art.category} • ${art.date} • ${art.readTime}`;
-      document.getElementById("readerTitle").textContent = art.title;
-      document.getElementById("readerBody").innerHTML = art.content.map(p => `<p>${p}</p>`).join("");
-      modal.classList.add("open");
-    }
-
-    document.getElementById("closeReader").addEventListener("click", () => modal.classList.remove("open"));
-    modal.addEventListener("click", (e) => {
-      if (e.target === modal) modal.classList.remove("open");
-    });
-
-    document.querySelectorAll(".tab-btn").forEach(btn => {
-      btn.addEventListener("click", () => {
-        document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
-        btn.classList.add("active");
-        renderArticles(btn.dataset.cat);
-      });
-    });
-
-    renderArticles();
-  </script>
-
-  <script>
-  (function () {
-    var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-    var fine = matchMedia('(hover: hover) and (pointer: fine)').matches;
-
-    // 1. Reading-progress bar
-    var bar = document.createElement('div'); bar.className = 'fx-progress'; document.body.appendChild(bar);
-    function prog() { var h = document.documentElement.scrollHeight - innerHeight; bar.style.transform = 'scaleX(' + (h > 0 ? Math.min(1, scrollY / h) : 0) + ')'; }
-    addEventListener('scroll', prog, { passive: true }); addEventListener('resize', prog); prog();
-
-    // 2. Cursor halo that grows over anything clickable
-    if (fine && !reduce) {
-      var halo = document.createElement('div'); halo.className = 'fx-halo'; document.body.appendChild(halo);
-      var tx = 0, ty = 0, hx = 0, hy = 0;
-      addEventListener('pointermove', function (e) {
-        tx = e.clientX; ty = e.clientY; halo.classList.add('on');
-        halo.classList.toggle('hot', !!e.target.closest('a, button, input, select, summary, label, .stage, #trk, .member-card, .article-card'));
-      });
-      document.documentElement.addEventListener('pointerleave', function () { halo.classList.remove('on'); });
-      addEventListener('pointerdown', function () { halo.classList.add('down'); });
-      addEventListener('pointerup', function () { halo.classList.remove('down'); });
-      (function follow() { hx += (tx - hx) * 0.2; hy += (ty - hy) * 0.2; halo.style.transform = 'translate(' + hx + 'px,' + hy + 'px)'; requestAnimationFrame(follow); })();
-    }
-
-    // 3. Card spotlight + 3D tilt, and magnetic Explore / Spin buttons (event delegation, works for re-rendered cards)
-    if (fine && !reduce) {
-      var lastCard = null;
-      function resetCard(c) { if (c) { c.style.transform = ''; } }
-      document.addEventListener('pointermove', function (e) {
-        var card = e.target.closest('.article-card, .member-card');
-        if (lastCard && lastCard !== card) resetCard(lastCard);
-        lastCard = card;
-        if (card) {
-          var r = card.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top;
-          card.style.setProperty('--mx', x + 'px'); card.style.setProperty('--my', y + 'px');
-          var lift = card.classList.contains('member-card') ? -4 : -6;
-          card.style.transform = 'perspective(900px) rotateX(' + ((0.5 - y / r.height) * 7).toFixed(2) + 'deg) rotateY(' + ((x / r.width - 0.5) * 7).toFixed(2) + 'deg) translateY(' + lift + 'px)';
-        }
-        document.querySelectorAll('.explore-btn, .spin').forEach(function (b) {
-          var r = b.getBoundingClientRect(), cx = r.left + r.width / 2, cy = r.top + r.height / 2, d = Math.hypot(e.clientX - cx, e.clientY - cy), reach = Math.max(r.width, r.height);
-          b.style.translate = d < reach ? ((e.clientX - cx) * 0.18).toFixed(1) + 'px ' + ((e.clientY - cy) * 0.18).toFixed(1) + 'px' : '0px 0px';
-        });
-      });
-      document.documentElement.addEventListener('pointerleave', function () { resetCard(lastCard); lastCard = null; });
-    }
-
-    // 4. Occasional shooting star (rare, sits between the starfield and the content)
-    if (!reduce) {
-      var c = document.createElement('canvas'); c.className = 'fx-shoot';
-      c.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;z-index:1;pointer-events:none';
-      document.body.appendChild(c);
-      var x = c.getContext('2d'), W, H, streaks = [], next = 2500;
-      function size() { W = c.width = innerWidth; H = c.height = innerHeight; }
-      addEventListener('resize', size); size();
-      var last = performance.now();
-      (function loop(t) {
-        var dt = t - last; last = t; next -= dt;
-        if (next <= 0 && !document.hidden) {
-          var a = (22 + Math.random() * 16) * Math.PI / 180;
-          streaks.push({ x: Math.random() * W * 0.8, y: Math.random() * H * 0.45, vx: Math.cos(a) * (11 + Math.random() * 5), vy: Math.sin(a) * (11 + Math.random() * 5), life: 1 });
-          next = 5000 + Math.random() * 7000;
-        }
-        x.clearRect(0, 0, W, H);
-        for (var i = streaks.length - 1; i >= 0; i--) {
-          var s = streaks[i]; s.x += s.vx; s.y += s.vy; s.life -= 0.016;
-          if (s.life <= 0) { streaks.splice(i, 1); continue; }
-          var g = x.createLinearGradient(s.x, s.y, s.x - s.vx * 9, s.y - s.vy * 9);
-          g.addColorStop(0, 'rgba(255,255,255,' + s.life + ')'); g.addColorStop(1, 'rgba(208,214,249,0)');
-          x.strokeStyle = g; x.lineWidth = 1.6; x.beginPath(); x.moveTo(s.x, s.y); x.lineTo(s.x - s.vx * 9, s.y - s.vy * 9); x.stroke();
-        }
-        requestAnimationFrame(loop);
-      })(last);
-    }
-  })();
-  </script>
-
-  <footer style="position: relative; z-index: 5; text-align: center; padding: 1.5rem 2rem 2rem; color: #D0D6F9; font-size: 0.85rem; border-top: 1px solid rgba(255, 255, 255, 0.12);">
-    data: nasa / jpl-caltech / ipac via the nasa/ipac infrared science archive (irsa).<br>
-    spherex dr1 doi: <a href="https://doi.org/10.26131/IRSA678" style="color: #fff;">10.26131/IRSA678</a> &bull;
-    spherex qr3 doi: <a href="https://doi.org/10.26131/IRSA662" style="color: #fff;">10.26131/IRSA662</a>
-  </footer>
+  <div id="hall" role="dialog" aria-modal="true" aria-labelledby="hht" aria-describedby="htx">
+    <div class="hd">
+      <div class="hd-top"><small class="e" id="hhe"></small><button id="hx" type="button">✕ Close</button></div>
+      <h3 id="hht"></h3>
+      <canvas id="hcv" role="img" aria-label="Interactive exhibit"></canvas>
+      <div class="cn" id="hctl"></div>
+      <div id="hrd" aria-live="polite"></div>
+      <p id="htx"></p>
+      <div class="cn"><button class="go" id="hgo" type="button"></button></div>
+      <p class="hn" id="hnote"></p>
+    </div>
+  </div>
+</div>
+<div class="view" id="view-team" data-view="team">
+  <main>
+    <h1 class="page-title"><span>05</span> Meet our team</h1>
+    <p class="page-sub">Direct mission contacts, roles, and team leads.</p>
+    <div class="team-grid" id="teamGrid"></div>
+  </main>
+</div>
+<div class="view" id="view-signin" data-view="signin">
+  <main class="auth-main">
+    <h1 class="page-title"><span>01</span> Sign in</h1>
+    <p class="page-sub">Keep your sky candidates and favourite fields with you.</p>
+    <div class="auth-wrap">
+      <div class="auth-copy">
+        <h2>Your sky, saved</h2>
+        <p>Sign in to keep the candidates you find in the Explore viewer, return to the same patch of sky, and carry your share links with you.</p>
+      </div>
+      <div class="auth-card" id="authCard">
+        <div class="auth-tabs" role="tablist" aria-label="Account">
+          <button type="button" class="pill active" id="tabIn" role="tab" aria-selected="true">Sign in</button>
+          <button type="button" class="pill" id="tabUp" role="tab" aria-selected="false">Create account</button>
+        </div>
+        <p class="auth-note">This is a front-end demo. There is no server yet, so your details stay in this browser and your password is never stored.</p>
+        <div class="auth-done" id="authDone" aria-live="polite">
+          <div class="avatar" id="avatar">✦</div>
+          <h3 id="doneName">Welcome</h3>
+          <p id="doneMail"></p>
+          <div class="auth-actions"><a class="pill solid" href="#explore">Explore the sky</a><button type="button" class="pill" id="outBtn">Sign out</button></div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+  </div>
+  <footer class="site-foot">data: nasa / jpl-caltech / ipac via irsa, spherex dr1 doi <a href="https://doi.org/10.26131/IRSA678" target="_blank" rel="noopener">10.26131/IRSA678</a>, qr3 doi <a href="https://doi.org/10.26131/IRSA662" target="_blank" rel="noopener">10.26131/IRSA662</a></footer>
+  <script src="app.js"></script>
 </body>
 </html>

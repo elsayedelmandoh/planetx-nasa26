@@ -68,3 +68,26 @@ def test_home_and_team_served_and_clean() -> None:
         assert not re.search(r"[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,}", response.text)
         assert "—" not in response.text
         assert 'href="index.html"' in response.text
+
+
+def test_home_app_styles_served_clean_and_linked() -> None:
+    home = client.get("/home.html")
+    js = client.get("/app.js")
+    css = client.get("/styles.css")
+
+    assert home.status_code == 200
+    assert js.status_code == 200
+    assert css.status_code == 200
+
+    email_re = re.compile(r"[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,}")
+    assert not email_re.search(home.text)
+    assert not email_re.search(js.text)
+    assert "—" not in home.text
+    assert "—" not in js.text
+
+    combined = js.text + home.text
+    assert "index.html?ra=" in combined
+    assert "open real spherex data" in combined
+
+    # guard against gutting the teammate's app.js
+    assert len(js.text.splitlines()) > 600
