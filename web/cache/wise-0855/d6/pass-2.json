@@ -1,0 +1,13 @@
+{
+  "epoch_label": "2025-11/12",
+  "date_range": {
+    "start": "2025-11-10",
+    "end": "2025-12-13"
+  },
+  "visit_count": 21,
+  "stretch": "zscale",
+  "width": 49,
+  "height": 49,
+  "native_pixel_scale_arcsec": 6.15,
+  "upsample_factor": 4
+}
