@@ -1,0 +1,28 @@
+{
+  "epoch_label": "2025-09/11",
+  "date_range": {
+    "start": "2025-09-28",
+    "end": "2025-11-04"
+  },
+  "visit_count": 20,
+  "frame_center": {
+    "ra_deg": 331.09680191530225,
+    "dec_deg": -56.80071307491547,
+    "mjd": 61070.6193728,
+    "epoch": "2026-01-30"
+  },
+  "center_ra_deg": 331.09680191530225,
+  "center_dec_deg": -56.80071307491547,
+  "center_epoch": 2026.081093423135,
+  "stretch": "zscale",
+  "width": 49,
+  "height": 49,
+  "native_pixel_scale_arcsec": 6.15,
+  "upsample_factor": 4,
+  "target_px": [
+    24.199877570153717,
+    24.123741837459114
+  ],
+  "target_epoch": 2025.7648375459275,
+  "astrometry_source": "gaia dr3 6412596012146801152"
+}

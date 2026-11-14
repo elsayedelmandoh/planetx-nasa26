@@ -34,6 +34,87 @@
           }
         ]
       }
+    },
+    {
+      "name": "Barnard's Star",
+      "slug": "barnard-s-star",
+      "ra_deg": 269.452075,
+      "dec_deg": 4.693364,
+      "kind": "high proper-motion red dwarf",
+      "detectors": {
+        "d2": [
+          {
+            "png": "cache/barnard-s-star/d2/pass-1.png",
+            "json": "cache/barnard-s-star/d2/pass-1.json"
+          },
+          {
+            "png": "cache/barnard-s-star/d2/pass-2.png",
+            "json": "cache/barnard-s-star/d2/pass-2.json"
+          },
+          {
+            "png": "cache/barnard-s-star/d2/pass-3.png",
+            "json": "cache/barnard-s-star/d2/pass-3.json"
+          }
+        ]
+      },
+      "differences": {
+        "d2": [
+          {
+            "png": "cache/barnard-s-star/d2/diff-1-2.png",
+            "json": "cache/barnard-s-star/d2/diff-1-2.json"
+          },
+          {
+            "png": "cache/barnard-s-star/d2/diff-2-3.png",
+            "json": "cache/barnard-s-star/d2/diff-2-3.json"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Epsilon Indi B",
+      "slug": "epsilon-indi-b",
+      "ra_deg": 331.044147,
+      "dec_deg": -56.782844,
+      "kind": "binary brown dwarfs",
+      "detectors": {
+        "d6": [
+          {
+            "png": "cache/epsilon-indi-b/d6/pass-1.png",
+            "json": "cache/epsilon-indi-b/d6/pass-1.json"
+          },
+          {
+            "png": "cache/epsilon-indi-b/d6/pass-2.png",
+            "json": "cache/epsilon-indi-b/d6/pass-2.json"
+          },
+          {
+            "png": "cache/epsilon-indi-b/d6/pass-3.png",
+            "json": "cache/epsilon-indi-b/d6/pass-3.json"
+          },
+          {
+            "png": "cache/epsilon-indi-b/d6/pass-4.png",
+            "json": "cache/epsilon-indi-b/d6/pass-4.json"
+          }
+        ]
+      },
+      "differences": {
+        "d6": [
+          {
+            "png": "cache/epsilon-indi-b/d6/diff-1-2.png",
+            "json": "cache/epsilon-indi-b/d6/diff-1-2.json",
+            "markers": "cache/epsilon-indi-b/d6/diff-1-2.markers.json"
+          },
+          {
+            "png": "cache/epsilon-indi-b/d6/diff-2-3.png",
+            "json": "cache/epsilon-indi-b/d6/diff-2-3.json",
+            "markers": "cache/epsilon-indi-b/d6/diff-2-3.markers.json"
+          },
+          {
+            "png": "cache/epsilon-indi-b/d6/diff-3-4.png",
+            "json": "cache/epsilon-indi-b/d6/diff-3-4.json",
+            "markers": "cache/epsilon-indi-b/d6/diff-3-4.markers.json"
+          }
+        ]
+      }
     }
   ]
 }

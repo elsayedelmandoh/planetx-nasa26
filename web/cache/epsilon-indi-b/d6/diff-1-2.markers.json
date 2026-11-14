@@ -1,0 +1,13 @@
+{
+  "detections": [
+    {
+      "x": 24.5,
+      "y": 24.0,
+      "label": "known high-proper-motion object",
+      "peak_sigma": 52.45711589325266,
+      "sign": "dipole"
+    }
+  ],
+  "sigma": 0.025433504551649094,
+  "method": "rule-based: 5-sigma threshold, dipole pairing, proper-motion match"
+}

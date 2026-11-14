@@ -5,9 +5,24 @@
     "end": "2025-05-05"
   },
   "visit_count": 3,
+  "frame_center": {
+    "ra_deg": 133.75977801169407,
+    "dec_deg": -7.242252014846071,
+    "mjd": 61058.46478984445,
+    "epoch": "2026-01-18"
+  },
+  "center_ra_deg": 133.75977801169407,
+  "center_dec_deg": -7.242252014846071,
+  "center_epoch": 2026.0478159886227,
   "stretch": "zscale",
   "width": 49,
   "height": 49,
   "native_pixel_scale_arcsec": 6.15,
-  "upsample_factor": 4
+  "upsample_factor": 4,
+  "target_px": [
+    23.06838824999302,
+    23.923057587678958
+  ],
+  "target_epoch": 2025.3422185598904,
+  "astrometry_source": "luhman and esplin 2016, unverified: simbad was down"
 }
