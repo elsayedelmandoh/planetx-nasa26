@@ -102,12 +102,27 @@ def coadd_pass(paths: list[Path], wcs: WCS, shape: tuple[int, int]) -> np.ndarra
     return np.nanmedian(np.stack(frames), axis=0)
 
 
-def write_png(img: np.ndarray, path: Path) -> None:
-    """zscale stretch, 4x nearest-neighbour upsample for display, 8-bit png. nan pixels black."""
+def saturation_holes(img: np.ndarray) -> np.ndarray:
+    """nan pixels enclosed by the finite footprint (saturated cores), not the frame border."""
+    from scipy import ndimage
+
+    finite = np.isfinite(img)
+    return ndimage.binary_fill_holes(finite) & ~finite
+
+
+def write_png(img: np.ndarray, path: Path) -> int:
+    """zscale stretch, 4x nearest-neighbour upsample for display, 8-bit png.
+
+    nan holes enclosed by the finite footprint render white (saturated); nan outside stays black.
+    returns the number of filled hole pixels.
+    """
+    holes = saturation_holes(img)
     lo, hi = ZScaleInterval().get_limits(img[np.isfinite(img)])
     scaled = np.clip((np.nan_to_num(img, nan=lo) - lo) / max(hi - lo, 1e-12), 0, 1)
+    scaled[holes] = 1.0
     up = np.kron(scaled, np.ones((UPSAMPLE_FACTOR, UPSAMPLE_FACTOR)))
     Image.fromarray((up * 255).astype(np.uint8), mode="L").save(path)
+    return int(holes.sum())
 
 
 def detect(diff: np.ndarray, sigma_k: float = 5, expected_px: list | None = None) -> dict:
@@ -224,7 +239,7 @@ def render_passes(
     for n, group in enumerate(groups, start=1):
         img = coadd_pass([v["path"] for v in group], wcs, shape)
         coadds.append(img)
-        write_png(img, out_dir / f"pass-{n}.png")
+        saturated_px = write_png(img, out_dir / f"pass-{n}.png")
         start, end = (Time(group[i]["mjd"], format="mjd").strftime("%Y-%m-%d") for i in (0, -1))
         meta = {
             "epoch_label": epoch_label(start, end),
@@ -237,6 +252,7 @@ def render_passes(
                 Time(frame_epoch_mjd, format="mjd").jyear if frame_epoch_mjd is not None else None
             ),
             "stretch": "zscale",
+            "saturated_px": saturated_px,
             "width": shape[1],
             "height": shape[0],
             "native_pixel_scale_arcsec": NATIVE_PIXEL_SCALE_ARCSEC,

@@ -6,6 +6,7 @@ from astropy.io import fits
 from PIL import Image
 from src.utils import data_acquisition as acq
 from src.utils.data_processing import (
+    UPSAMPLE_FACTOR,
     bad_mask,
     coadd_pass,
     common_wcs,
@@ -139,3 +140,17 @@ def test_difference_image_constant_offset_gives_zero() -> None:
 
     finite = diff[np.isfinite(diff)]
     assert np.allclose(finite, 0.0, atol=1e-4)  # float32 rounding
+
+
+def test_write_png_fills_enclosed_nan_holes_white(tmp_path) -> None:
+    img = np.ones((9, 9), dtype=np.float32)
+    img[4:6, 4:6] = np.nan  # saturated core hole
+    img[0, 0] = np.nan  # outside footprint border nan
+
+    n = write_png(img, tmp_path / "holes.png")
+
+    assert n == 4
+    im = np.asarray(Image.open(tmp_path / "holes.png"))
+    up = UPSAMPLE_FACTOR
+    assert (im[4 * up:6 * up, 4 * up:6 * up] == 255).all()
+    assert im[0, 0] == 0
