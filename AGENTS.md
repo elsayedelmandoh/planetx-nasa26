@@ -239,7 +239,7 @@ project/
 ├── .github/           ci.yml, deploy.yml
 ├── .env  .env.example
 ├── AGENTS.md  README.md  LICENSE
-├── app.py  Makefile  Dockerfile
+├── app.py  Makefile
 └── pyproject.toml
 ```
  

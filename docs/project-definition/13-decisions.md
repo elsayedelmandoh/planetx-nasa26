@@ -106,3 +106,5 @@ why the project looks the way it does. one line per decision, oldest first.
   pushes only web/ (with the precomputed cache) at the space root -- docker spaces now return 402
   and need hf pro -- no backend in production: the 5 cached benchmark targets work, live queries for
   other coordinates do not, and the frontend must read targets and frames from static files.
+- 2026-11-14 -- removed the dockerfile and .dockerignore -- the deploy is a static space that ships
+  only web/; nothing builds a container -- running the api locally uses `make serve`.

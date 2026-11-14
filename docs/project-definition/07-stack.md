@@ -20,7 +20,7 @@
 - architect: claude 4.6 opus
 - implementation: glm5, kimi k2.5, qwen 3.6 pro
 - code review: claude 4.6 opus
-- deployment: hugging face, docker
+- deployment: free static hugging face space (no docker)
 
 ## libraries
 - runtime: numpy, pyyaml, pydantic, pydantic-settings

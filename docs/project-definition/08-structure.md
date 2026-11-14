@@ -52,7 +52,7 @@ planetx-nasa26/
 ├── .github/workflows/  ci.yml, deploy.yml
 ├── .env  .env.example
 ├── AGENTS.md  README.md  LICENSE
-├── app.py  Makefile  Dockerfile  pyproject.toml
+├── app.py  Makefile  pyproject.toml
 ```
 
 ## directory explanation
@@ -71,7 +71,7 @@ planetx-nasa26/
 - docs/project-definition/: the settled definition of the product.
 - docs/requirements/: raw thinking before the definition. once settled, it moves up.
 - docs/.internal/: agent plans, lessons, skills, sprints, team notes. not product docs.
-- .github/workflows/: ci (lint, test, eval gate) and the push to a hugging face docker space.
+- .github/workflows/: ci (lint, test, eval gate) and the push of web/ to a static hugging face space.
 
 ## rules
 
