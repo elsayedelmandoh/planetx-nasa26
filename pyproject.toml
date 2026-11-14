@@ -19,6 +19,7 @@ dependencies = [
     "astropy>=6.1",
     "astroquery>=0.4.7",
     "reproject>=0.13",
+    "scipy>=1.11",
     "pillow>=10.0",
     "requests>=2.32",
 ]

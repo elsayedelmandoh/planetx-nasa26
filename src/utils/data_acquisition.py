@@ -93,7 +93,11 @@ def build_index(web_dir: Path) -> dict:
                 if not png.exists():
                     continue
                 rel = f"cache/{slug}/{det}"
-                differences.append({"png": f"{rel}/{png.name}", "json": f"{rel}/{js.name}"})
+                entry = {"png": f"{rel}/{png.name}", "json": f"{rel}/{js.name}"}
+                markers = det_dir / f"{js.stem}.markers.json"
+                if markers.exists():
+                    entry["markers"] = f"{rel}/{markers.name}"
+                differences.append(entry)
             if passes:
                 detectors[det] = passes
             if differences:
