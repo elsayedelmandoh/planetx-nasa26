@@ -108,6 +108,75 @@ def write_png(img: np.ndarray, path: Path) -> None:
     Image.fromarray((up * 255).astype(np.uint8), mode="L").save(path)
 
 
+def detect(diff: np.ndarray, sigma_k: float = 5, expected_px: list | None = None) -> dict:
+    """rule-based detection on a background-subtracted difference (native pixels).
+
+    robust sigma from the mad, connected regions past +/-k*sigma, then:
+    a negative+positive pair within 3 px is a dipole (moving source), a dipole
+    near the expected target positions is a known high-proper-motion object,
+    a lone residual at the target is a variable source. isolated single-sign
+    regions away from the target smaller than 2 px are treated as noise.
+    """
+    from scipy import ndimage
+
+    expected = [tuple(p) for p in (expected_px or [])]
+    finite = diff[np.isfinite(diff)]
+    sigma = 1.4826 * np.median(np.abs(finite - np.median(finite))) if finite.size else 0.0
+    regions = []
+    if sigma > 0:
+        ok = np.isfinite(diff)
+        masks = ((1, ok & (diff > sigma_k * sigma)), (-1, ok & (diff < -sigma_k * sigma)))
+        for sign, mask in masks:
+            lab, n = ndimage.label(mask, structure=np.ones((3, 3), int))
+            for i in range(1, n + 1):
+                ys, xs = np.nonzero(lab == i)
+                peak = float(np.abs(diff[ys, xs]).max() / sigma)
+                regions.append({"x": float(xs.mean()), "y": float(ys.mean()),
+                                "sign": sign, "peak_sigma": peak, "size": len(xs)})
+
+    def near(x, y, dist):
+        return any((x - ex) ** 2 + (y - ey) ** 2 <= dist * dist for ex, ey in expected)
+
+    detections = []
+    used = set()  # indices into regions consumed by a dipole pair
+    negs = [i for i, r in enumerate(regions) if r["sign"] == -1]
+    poss = [i for i, r in enumerate(regions) if r["sign"] == 1]
+    for i in negs:
+        best, best_d = None, None
+        for j in poss:
+            if j in used:
+                continue
+            d = (regions[i]["x"] - regions[j]["x"]) ** 2 + (regions[i]["y"] - regions[j]["y"]) ** 2
+            if d <= 9.0 and (best_d is None or d < best_d):
+                best, best_d = j, d
+        if best is None:
+            continue
+        used.add(i)
+        used.add(best)
+        mx = (regions[i]["x"] + regions[best]["x"]) / 2
+        my = (regions[i]["y"] + regions[best]["y"]) / 2
+        label = (
+            "known high-proper-motion object" if near(mx, my, 2.0)
+            else "unmatched moving candidate"
+        )
+        detections.append({"x": mx, "y": my, "label": label,
+                           "peak_sigma": max(regions[i]["peak_sigma"], regions[best]["peak_sigma"]),
+                           "sign": "dipole"})
+    for i, r in enumerate(regions):
+        if i in used:
+            continue
+        if near(r["x"], r["y"], 2.0):
+            label = "variable source"
+        elif r["size"] < 2:
+            continue  # isolated noise away from the target
+        else:
+            label = "unmatched residual"  # one sign only: brightness change, not motion
+        detections.append({"x": r["x"], "y": r["y"], "label": label,
+                           "peak_sigma": r["peak_sigma"], "sign": r["sign"]})
+    return {"detections": detections, "sigma": float(sigma),
+            "method": "rule-based: 5-sigma threshold, dipole pairing, proper-motion match"}
+
+
 def difference_image(coadd_a: np.ndarray, coadd_b: np.ndarray) -> np.ndarray:
     """epoch b minus epoch a with each coadd's own background removed. propagates nan."""
     a = coadd_a.astype(np.float32) - np.nanmedian(coadd_a)
@@ -189,6 +258,10 @@ def render_passes(
         label_a = metas[a]["epoch_label"]
         label_b = metas[b]["epoch_label"]
         diff = difference_image(coadds[a], coadds[b])
+        expected = [m["target_px"] for m in (metas[a], metas[b]) if m.get("target_px")]
+        markers = detect(diff, sigma_k=5, expected_px=expected)
+        markers_name = f"diff-{a + 1}-{b + 1}.markers.json"
+        (out_dir / markers_name).write_text(json.dumps(markers, indent=2) + "\n")
         write_diff_png(diff, out_dir / f"diff-{a + 1}-{b + 1}.png")
         meta = {
             "kind": "difference",
