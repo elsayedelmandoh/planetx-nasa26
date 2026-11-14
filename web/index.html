@@ -7,6 +7,7 @@
   <style>
     body { font-family: system-ui, sans-serif; margin: 0 auto; max-width: 900px; padding: 1rem; }
     form, #presets { display: flex; flex-wrap: wrap; gap: .5rem; margin-bottom: 1rem; }
+    #coordinate-error { flex-basis: 100%; color: #a40000; margin: 0; min-height: 1.25rem; }
     canvas { width: 100%; max-width: 600px; aspect-ratio: 1; background: #111; display: block; }
     footer { margin-top: 2rem; font-size: .85rem; color: #555; }
   </style>
@@ -14,10 +15,10 @@
 <body>
   <h1>spherex sky blink</h1>
 
-  <form id="coords">
-    <label>ra <input id="ra" name="ra" placeholder="133.795 or 08h 55m 10.8s" required></label>
-    <label>dec <input id="dec" name="dec" placeholder="-7.245 or -07d 14m 42.5s" required></label>
-    <label>fov
+  <form id="coords" novalidate>
+    <label for="ra">ra <input id="ra" name="ra" placeholder="133.795 or 08h 55m 10.8s" aria-describedby="coordinate-error" required></label>
+    <label for="dec">dec <input id="dec" name="dec" placeholder="-7.245 or -07d 14m 42.5s" aria-describedby="coordinate-error" required></label>
+    <label for="fov">fov
       <select id="fov" name="fov">
         <option value="2">2'</option>
         <option value="5" selected>5'</option>
@@ -26,9 +27,10 @@
       </select>
     </label>
     <button type="submit">show</button>
+    <p id="coordinate-error" role="status" aria-live="polite"></p>
   </form>
 
-  <div id="presets" aria-label="benchmark targets"></div>
+  <div id="presets" role="group" aria-label="benchmark targets"></div>
 
   <!-- blink player draws here (features task) -->
   <canvas id="player" width="600" height="600" aria-label="sky image player"></canvas>
@@ -40,33 +42,109 @@
 
   <script>
     const form = document.getElementById("coords");
-    const fields = ["ra", "dec", "fov"].map((id) => document.getElementById(id));
-
-    // read ?ra=&dec=&fov= so the tool is linkable and embeddable
+    const raInput = document.getElementById("ra");
+    const decInput = document.getElementById("dec");
+    const fovInput = document.getElementById("fov");
+    const error = document.getElementById("coordinate-error");
     const params = new URLSearchParams(location.search);
-    fields.forEach((el) => { if (params.has(el.id)) el.value = params.get(el.id); });
+    const fovChoices = new Set(["2", "5", "15", "30"]);
 
-    function writeUrl() {
-      const q = new URLSearchParams(fields.map((el) => [el.id, el.value]));
-      history.replaceState(null, "", "?" + q);
+    function parseCoordinate(raw, axis) {
+      const text = raw.trim().toLowerCase();
+      const decimal = text.match(/^([+-]?)((?:\d+(?:\.\d*)?|\.\d+))$/);
+      const sexagesimal = text.match(/^([+-]?)(\d+(?:\.\d+)?)\s*([hd])?\s*(?:[: ]\s*)(\d+(?:\.\d+)?)\s*m?\s*(?:[: ]\s*)(\d+(?:\.\d+)?)\s*s?$/);
+      const match = sexagesimal || decimal;
+      if (!match) return null;
+      const unit = sexagesimal?.[3];
+      if (unit && ((axis === "ra" && unit !== "h") || (axis === "dec" && unit !== "d"))) return null;
+      const sign = match[1] === "-" ? -1 : 1;
+      const primary = Number(match[2]);
+      const minute = sexagesimal ? Number(sexagesimal[4]) : 0;
+      const second = sexagesimal ? Number(sexagesimal[5]) : 0;
+      if (minute >= 60 || second >= 60) return null;
+      const magnitude = primary + minute / 60 + second / 3600;
+      const degrees = sexagesimal && axis === "ra" ? sign * 15 * magnitude : sign * magnitude;
+      const min = axis === "ra" ? 0 : -90;
+      const max = axis === "ra" ? 360 : 90;
+      return Number.isFinite(degrees) && degrees >= min && degrees <= max ? degrees : null;
     }
 
-    form.addEventListener("submit", (e) => { e.preventDefault(); writeUrl(); });
+    function setError(message) {
+      error.textContent = message;
+      raInput.setAttribute("aria-invalid", message ? "true" : "false");
+      decInput.setAttribute("aria-invalid", message ? "true" : "false");
+    }
+
+    function coordinateError() {
+      if (parseCoordinate(raInput.value, "ra") === null) {
+        return "ra must be between 0 and 360 degrees in decimal or sexagesimal format.";
+      }
+      if (parseCoordinate(decInput.value, "dec") === null) {
+        return "dec must be between -90 and 90 degrees in decimal or sexagesimal format.";
+      }
+      return "";
+    }
+
+    function writeUrl() {
+      const message = coordinateError();
+      setError(message);
+      if (message) return;
+      const query = new URLSearchParams({
+        ra: raInput.value.trim(),
+        dec: decInput.value.trim(),
+        fov: fovInput.value,
+      });
+      const url = new URL(location.href);
+      url.search = query.toString();
+      history.replaceState(null, "", url);
+    }
+
+    if (params.has("ra")) raInput.value = params.get("ra");
+    if (params.has("dec")) decInput.value = params.get("dec");
+    if (fovChoices.has(params.get("fov"))) fovInput.value = params.get("fov");
+    if (params.has("ra") || params.has("dec")) setError(coordinateError());
+
+    raInput.addEventListener("change", writeUrl);
+    decInput.addEventListener("change", writeUrl);
+    fovInput.addEventListener("change", () => {
+      if (raInput.value.trim() && decInput.value.trim()) writeUrl();
+    });
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      writeUrl();
+    });
 
     fetch("/api/targets")
-      .then((r) => r.json())
+      .then((response) => {
+        if (!response.ok) throw new Error("targets request failed");
+        return response.json();
+      })
       .then((targets) => {
         const box = document.getElementById("presets");
-        targets.forEach((t) => {
-          const b = document.createElement("button");
-          b.type = "button";
-          b.textContent = t.name;
-          b.title = t.kind;
-          b.onclick = () => { fields[0].value = t.ra_deg; fields[1].value = t.dec_deg; writeUrl(); };
-          box.appendChild(b);
+        targets.forEach((target) => {
+          const button = document.createElement("button");
+          button.type = "button";
+          button.textContent = target.name;
+          button.title = target.kind;
+          button.addEventListener("click", () => {
+            raInput.value = Number(target.ra_deg).toFixed(6);
+            decInput.value = Number(target.dec_deg).toFixed(6);
+            writeUrl();
+          });
+          box.appendChild(button);
         });
       })
       .catch(() => { document.getElementById("presets").textContent = "presets failed to load"; });
+
+    if (params.get("selftest") === "1") {
+      console.assert(
+        Math.abs(parseCoordinate("08h 55m 10.831s", "ra") - 133.795129) < 1e-6 &&
+        Math.abs(parseCoordinate("-07d 14m 42.53s", "dec") + 7.245147) < 1e-6 &&
+        Math.abs(parseCoordinate("08:55:10.831", "ra") - 133.795129) < 1e-6 &&
+        parseCoordinate("400", "ra") === null,
+        "coordinate parser self-check"
+      );
+    }
   </script>
 </body>
 </html>
